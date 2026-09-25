@@ -1,13 +1,12 @@
 // app/layout.jsx
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import MotionProvider from "@/components/ui/MotionProvider";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
-  weight: ["300", "400", "500", "600", "700", "800"]
+  weight: ["400", "500", "600", "700", "800"]
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -17,45 +16,32 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"]
 });
 
+const SHARE_TITLE = "ZUGEE — Business software built for the way your business operates";
+const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
+
 export const metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zugee.com"),
   title: {
-    default: "GST Billing & Inventory Software for Small Business | Zugee",
-    template: "%s | Zugee Systems Technologies"
+    default: "ZUGEE — Business Software for Indian Businesses",
+    template: "%s | ZUGEE"
   },
-  description:
-    "Business management software for small businesses in India: GST billing, stock tracking and WhatsApp payment reminders in one login. From ₹1,999/month.",
-  keywords: [
-    "Zugee",
-    "business management software for small business India",
-    "GST billing and inventory software",
-    "GST billing software",
-    "inventory management software India",
-    "WhatsApp payment reminders",
-    "Tally alternative"
-  ],
+  description: SHARE_DESCRIPTION,
   authors: [{ name: "Zugee Systems Technologies Pvt. Ltd." }],
   openGraph: {
-    title: "Zugee — GST billing and inventory software for small businesses in India",
-    description: "GST billing, stock tracking and WhatsApp payment reminders in one login. From ₹1,999/month.",
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
     url: "/",
-    siteName: "Zugee Systems Technologies",
-    images: [
-      {
-        url: "/zugee-brand-banner.png",
-        width: 1024,
-        height: 512,
-        alt: "Zugee Systems Technologies — Engineered for operational precision."
-      }
-    ],
+    siteName: "ZUGEE",
+    // 1200×630 JPEG under 60 KB: WhatsApp and LinkedIn drop previews for large images.
+    images: [{ url: "/og.jpg", width: 1200, height: 630, alt: SHARE_TITLE }],
     locale: "en_IN",
     type: "website"
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zugee — GST billing and inventory software for small businesses in India",
-    description: "GST billing, stock tracking and WhatsApp payment reminders in one login. From ₹1,999/month.",
-    images: ["/zugee-brand-banner.png"]
+    title: SHARE_TITLE,
+    description: SHARE_DESCRIPTION,
+    images: ["/og.jpg"]
   },
   // Mascot head crop. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
   icons: {
@@ -67,11 +53,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`dark ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased bg-[#06090F] text-white selection:bg-[#00F0FF]/30 selection:text-white">
-        <MotionProvider>{children}</MotionProvider>
+        {children}
       </body>
     </html>
   );

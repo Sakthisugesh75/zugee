@@ -1,5 +1,13 @@
 # OAuth Integration Setup Guide
 
+> **Removed in Phase 0 — to be rebuilt (see ZUGEE-PLATFORM-PLAN.md Phase 3).**
+> `/api/app/oauth/meta`, `/api/app/oauth/google`, `/api/app/crm/ad-accounts`,
+> `/api/app/ads/campaigns`, `lib/oauth-refresh.js` and the CRM "Ad Integrations" panel were
+> deleted: the OAuth `state` was the raw customer UUID (account-linking CSRF) and the callbacks
+> wrote a column that does not exist. The Ads page now shows "Coming Soon".
+> `lib/oauth-encryption.js` (AES-GCM token encryption) is kept for the rebuild.
+> Do not register the redirect URIs below; kept only as historical reference.
+
 This guide explains how to set up Meta Ads and Google Ads OAuth integrations for Zugee.
 
 ## Overview

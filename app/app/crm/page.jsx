@@ -5,8 +5,15 @@ import { useState, useEffect } from 'react';
 import AppPageHeader from '@/components/app/AppPageHeader';
 import LeadList from '@/components/app/crm/LeadList';
 import LeadDetail from '@/components/app/crm/LeadDetail';
-import AdIntegrations from '@/components/app/crm/AdIntegrations';
-import { Plus } from 'lucide-react';
+
+async function fetchLeads({ searchQuery, filterStatus }, signal) {
+  const params = new URLSearchParams();
+  if (searchQuery) params.append('search', searchQuery);
+  if (filterStatus !== 'all') params.append('status', filterStatus);
+
+  const response = await fetch(`/api/app/crm/leads?${params.toString()}`, { signal });
+  return response.json();
+}
 
 export default function CRMPage() {
   const [leads, setLeads] = useState([]);
@@ -14,32 +21,38 @@ export default function CRMPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [showAddLeadModal, setShowAddLeadModal] = useState(false);
 
-  const fetchLeads = async () => {
-    try {
-      setLoading(true);
-      
-      const params = new URLSearchParams();
-      if (searchQuery) params.append('search', searchQuery);
-      if (filterStatus !== 'all') params.append('status', filterStatus);
+  // Loads leads for the current search/filter. Stale requests are aborted so an
+  // older, slower response can never overwrite a newer one.
+  useEffect(() => {
+    const controller = new AbortController();
 
-      const response = await fetch(`/api/app/crm/leads?${params.toString()}`);
-      const data = await response.json();
+    fetchLeads({ searchQuery, filterStatus }, controller.signal)
+      .then((data) => {
+        if (data.success) {
+          setLeads(data.leads);
+        }
+      })
+      .catch((error) => {
+        if (error.name === 'AbortError') return;
+        console.error('Failed to fetch leads:', error);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setLoading(false);
+      });
 
-      if (data.success) {
-        setLeads(data.leads);
-      }
-    } catch (error) {
-      console.error('Failed to fetch leads:', error);
-    } finally {
-      setLoading(false);
-    }
+    return () => controller.abort();
+  }, [searchQuery, filterStatus]);
+
+  const handleSearchChange = (value) => {
+    setLoading(true);
+    setSearchQuery(value);
   };
 
-  useEffect(() => {
-    fetchLeads();
-  }, [searchQuery, filterStatus]);
+  const handleFilterChange = (value) => {
+    setLoading(true);
+    setFilterStatus(value);
+  };
 
   const handleLeadSelect = (lead) => {
     setSelectedLead(lead);
@@ -47,60 +60,42 @@ export default function CRMPage() {
 
   const handleLeadUpdate = async (updatedLead) => {
     // Update the lead in the list
-    setLeads(leads.map(l => l.id === updatedLead.id ? updatedLead : l));
+    setLeads(prev => prev.map(l => l.id === updatedLead.id ? updatedLead : l));
     setSelectedLead(updatedLead);
-  };
-
-  const handleAddLead = () => {
-    setShowAddLeadModal(true);
   };
 
   return (
     <div className="h-full flex flex-col bg-slate-50">
       <AppPageHeader
-        title="CRM - Leads & Sales"
-        description="Manage your leads and sales pipeline"
-        actions={
-          <button
-            onClick={handleAddLead}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-          >
-            <Plus className="w-4 h-4" />
-            Add Lead
-          </button>
-        }
+        title="CRM"
+        description="Track your leads and follow-ups"
       />
 
-      {/* Content - three columns on xl, stacked below that */}
+      {/* Content - two columns on xl, stacked below that */}
       <div className="flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
         <div className="max-w-[1600px] mx-auto p-8 xl:h-full">
           <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:h-full">
             {/* Left Column - Lead List */}
-            <div className="xl:col-span-3 h-[560px] xl:h-auto xl:min-h-0 overflow-hidden">
+            <div className="xl:col-span-4 h-[560px] xl:h-auto xl:min-h-0 overflow-hidden">
               <LeadList
                 leads={leads}
                 loading={loading}
                 selectedLead={selectedLead}
                 onSelectLead={handleLeadSelect}
                 searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
+                onSearchChange={handleSearchChange}
                 filterStatus={filterStatus}
-                onFilterChange={setFilterStatus}
+                onFilterChange={handleFilterChange}
               />
             </div>
 
-            {/* Center Column - Lead Detail */}
-            <div className="xl:col-span-6 h-[640px] xl:h-auto xl:min-h-0 overflow-hidden">
+            {/* Right Column - Lead Detail (keyed so the form resets when the lead changes) */}
+            <div className="xl:col-span-8 h-[640px] xl:h-auto xl:min-h-0 overflow-hidden">
               <LeadDetail
+                key={selectedLead?.id || 'none'}
                 lead={selectedLead}
                 onUpdate={handleLeadUpdate}
-                onRefresh={fetchLeads}
               />
-            </div>
-
-            {/* Right Column - Ad Integrations */}
-            <div className="xl:col-span-3 xl:min-h-0 xl:overflow-hidden">
-              <AdIntegrations />
             </div>
           </div>
         </div>

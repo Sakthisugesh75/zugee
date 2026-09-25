@@ -2,13 +2,55 @@
 "use client";
 
 import { useState } from 'react';
-import { Mail, Phone, Building2, Calendar, DollarSign, MessageSquare, Save, X } from 'lucide-react';
+import { Mail, Phone, IndianRupee, MessageSquare, Save, X, AlertCircle } from 'lucide-react';
 import EmptyState from '../EmptyState';
 
-export default function LeadDetail({ lead, onUpdate, onRefresh }) {
+// Fields the user can edit here. Only fields that actually changed are sent.
+const EDITABLE_FIELDS = ['email', 'phone', 'status', 'priority', 'estimated_value', 'next_follow_up_at', 'notes'];
+
+// ISO timestamp -> value for <input type="datetime-local"> in the browser's timezone
+function toLocalInputValue(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function toFormData(lead) {
+  if (!lead) return {};
+  return {
+    email: lead.email || '',
+    phone: lead.phone || '',
+    status: lead.status || 'new',
+    priority: lead.priority || 'medium',
+    estimated_value: lead.estimated_value ?? '',
+    next_follow_up_at: toLocalInputValue(lead.next_follow_up_at),
+    notes: lead.notes || ''
+  };
+}
+
+// Convert a form value to what the API/database expects
+function normalize(field, value) {
+  if (field === 'estimated_value') {
+    return value === '' || value === null ? null : Number(value);
+  }
+  if (field === 'next_follow_up_at') {
+    return value ? new Date(value).toISOString() : null;
+  }
+  if (field === 'email' || field === 'phone' || field === 'notes') {
+    const trimmed = (value || '').trim();
+    return trimmed === '' ? null : trimmed;
+  }
+  return value;
+}
+
+// The CRM page keys this component by lead.id, so all state resets when a different lead is selected.
+export default function LeadDetail({ lead, onUpdate }) {
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [formData, setFormData] = useState(lead || {});
+  const [saveError, setSaveError] = useState('');
+  const [formData, setFormData] = useState(() => toFormData(lead));
 
   if (!lead) {
     return (
@@ -16,30 +58,47 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
         <EmptyState
           icon={MessageSquare}
           title="Select a lead to view details"
-          description="Choose a lead from the list on the left to see their information and update their status."
+          description="Choose a lead from the list to see their information and update their status."
         />
       </div>
     );
   }
 
   const handleEdit = () => {
-    setFormData(lead);
+    setFormData(toFormData(lead));
+    setSaveError('');
     setEditing(true);
   };
 
   const handleCancel = () => {
-    setFormData(lead);
+    setFormData(toFormData(lead));
+    setSaveError('');
     setEditing(false);
   };
 
   const handleSave = async () => {
+    // Send only the fields that changed
+    const original = toFormData(lead);
+    const changes = {};
+    for (const field of EDITABLE_FIELDS) {
+      if (String(formData[field] ?? '') !== String(original[field] ?? '')) {
+        changes[field] = normalize(field, formData[field]);
+      }
+    }
+
+    if (Object.keys(changes).length === 0) {
+      setEditing(false);
+      return;
+    }
+
     try {
       setSaving(true);
+      setSaveError('');
 
       const response = await fetch('/api/app/crm/leads', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: lead.id, ...formData })
+        body: JSON.stringify({ id: lead.id, ...changes })
       });
 
       const data = await response.json();
@@ -48,11 +107,11 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
         onUpdate(data.lead);
         setEditing(false);
       } else {
-        alert('Failed to update lead');
+        setSaveError(data.error || 'Failed to update lead');
       }
     } catch (error) {
       console.error('Failed to update lead:', error);
-      alert('Failed to update lead');
+      setSaveError('Failed to update lead');
     } finally {
       setSaving(false);
     }
@@ -72,6 +131,8 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
       minute: '2-digit'
     });
   };
+
+  const hasEstimatedValue = lead.estimated_value !== null && lead.estimated_value !== undefined && lead.estimated_value !== '';
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-full flex flex-col overflow-hidden">
@@ -116,6 +177,13 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-6 space-y-6">
+        {saveError && (
+          <div role="alert" className="p-3 rounded-lg bg-red-50 border border-red-200 flex items-start gap-2">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{saveError}</p>
+          </div>
+        )}
+
         {/* Contact Information */}
         <div>
           <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
@@ -125,20 +193,22 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
             {editing ? (
               <>
                 <div>
-                  <label className="text-xs font-medium text-slate-700 mb-1 block">Email</label>
+                  <label htmlFor="lead-email" className="text-xs font-medium text-slate-700 mb-1 block">Email</label>
                   <input
+                    id="lead-email"
                     type="email"
-                    value={formData.email || ''}
+                    value={formData.email}
                     onChange={(e) => handleChange('email', e.target.value)}
                     className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                     placeholder="email@example.com"
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-slate-700 mb-1 block">Phone</label>
+                  <label htmlFor="lead-phone" className="text-xs font-medium text-slate-700 mb-1 block">Phone</label>
                   <input
+                    id="lead-phone"
                     type="tel"
-                    value={formData.phone || ''}
+                    value={formData.phone}
                     onChange={(e) => handleChange('phone', e.target.value)}
                     className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                     placeholder="+91 98765 43210"
@@ -167,10 +237,11 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
           </h4>
           <div className="space-y-3">
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1 block">Status</label>
+              <label htmlFor="lead-status" className="text-xs font-medium text-slate-700 mb-1 block">Status</label>
               {editing ? (
                 <select
-                  value={formData.status || 'new'}
+                  id="lead-status"
+                  value={formData.status}
                   onChange={(e) => handleChange('status', e.target.value)}
                   className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 >
@@ -183,15 +254,16 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                   <option value="lost">Lost</option>
                 </select>
               ) : (
-                <p className="text-sm text-slate-900 capitalize">{lead.status.replace('_', ' ')}</p>
+                <p className="text-sm text-slate-900 capitalize">{(lead.status || '').replace('_', ' ')}</p>
               )}
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1 block">Priority</label>
+              <label htmlFor="lead-priority" className="text-xs font-medium text-slate-700 mb-1 block">Priority</label>
               {editing ? (
                 <select
-                  value={formData.priority || 'medium'}
+                  id="lead-priority"
+                  value={formData.priority}
                   onChange={(e) => handleChange('priority', e.target.value)}
                   className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 >
@@ -205,25 +277,39 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1 block">Source</label>
-              <p className="text-sm text-slate-900 capitalize">{lead.source.replace('_', ' ')}</p>
+              <p className="text-xs font-medium text-slate-700 mb-1">Source</p>
+              <p className="text-sm text-slate-900 capitalize">{(lead.source || '').replace('_', ' ')}</p>
             </div>
 
             {editing ? (
-              <div>
-                <label className="text-xs font-medium text-slate-700 mb-1 block">Estimated Value</label>
-                <input
-                  type="number"
-                  value={formData.estimated_value || ''}
-                  onChange={(e) => handleChange('estimated_value', e.target.value)}
-                  className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
-                  placeholder="0"
-                />
-              </div>
-            ) : lead.estimated_value && (
+              <>
+                <div>
+                  <label htmlFor="lead-value" className="text-xs font-medium text-slate-700 mb-1 block">Estimated Value (₹)</label>
+                  <input
+                    id="lead-value"
+                    type="number"
+                    min="0"
+                    value={formData.estimated_value}
+                    onChange={(e) => handleChange('estimated_value', e.target.value)}
+                    className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
+                    placeholder="0"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lead-follow-up" className="text-xs font-medium text-slate-700 mb-1 block">Next Follow-up</label>
+                  <input
+                    id="lead-follow-up"
+                    type="datetime-local"
+                    value={formData.next_follow_up_at}
+                    onChange={(e) => handleChange('next_follow_up_at', e.target.value)}
+                    className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
+                  />
+                </div>
+              </>
+            ) : hasEstimatedValue && (
               <div className="flex items-center gap-2 text-sm">
-                <DollarSign className="w-4 h-4 text-slate-400" />
-                <span className="text-slate-900">₹{parseFloat(lead.estimated_value).toLocaleString()}</span>
+                <IndianRupee className="w-4 h-4 text-slate-400" />
+                <span className="text-slate-900">₹{parseFloat(lead.estimated_value).toLocaleString('en-IN')}</span>
               </div>
             )}
           </div>
@@ -267,9 +353,11 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
           </h4>
           {editing ? (
             <textarea
-              value={formData.notes || ''}
+              value={formData.notes}
               onChange={(e) => handleChange('notes', e.target.value)}
               rows={4}
+              maxLength={5000}
+              aria-label="Notes"
               className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
               placeholder="Add notes about this lead..."
             />

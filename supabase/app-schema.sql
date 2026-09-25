@@ -6,6 +6,11 @@
 -- Each customer account can ONLY access their own data
 --
 -- Run this AFTER schema.sql in the Supabase SQL editor
+--
+-- PHASE 0 NOTE (see docs/ZUGEE-PLATFORM-PLAN.md): this file received only minimal
+-- safety fixes in Phase 0 (fresh-DB order, no RLS-bypassing views, billing columns
+-- not client-writable). Phase 2 (multi-tenancy & RBAC) replaces this whole file
+-- with versioned migrations. Do not build new features on these tables.
 
 -- ---------------------------------------------------------------------------
 -- Customer Accounts (using Supabase Auth)
@@ -63,7 +68,27 @@ create policy "Users can view own profile"
 
 create policy "Users can update own profile"
   on public.customer_profiles for update
-  using (auth.uid() = id);
+  using (auth.uid() = id)
+  with check (auth.uid() = id);
+
+-- Billing/plan columns (plan_tier, subscription_status, trial_ends_at) must only be
+-- changed by the server (service role). The row policy above cannot restrict columns,
+-- so clients get UPDATE on the safe columns only.
+revoke update on public.customer_profiles from anon, authenticated;
+grant update (
+  updated_at,
+  business_name,
+  business_type,
+  gst_number,
+  pan_number,
+  state,
+  city,
+  address,
+  phone,
+  timezone,
+  currency,
+  onboarding_completed
+) on public.customer_profiles to authenticated;
 
 -- ---------------------------------------------------------------------------
 -- CRM: Customer Leads (PRODUCT leads, not marketing leads)
@@ -84,7 +109,9 @@ create table if not exists public.crm_leads (
   source            text not null default 'direct'
                     check (source in ('meta_ads', 'google_ads', 'direct', 'whatsapp', 
                                       'website', 'referral', 'other')),
-  source_campaign_id uuid references public.ad_campaigns(id),
+  -- FK to ad_campaigns is added after that table is created (see below),
+  -- so this script runs on a fresh database.
+  source_campaign_id uuid,
   status            text not null default 'new'
                     check (status in ('new', 'hot', 'follow_up', 'contacted', 
                                       'qualified', 'converted', 'lost')),
@@ -228,6 +255,11 @@ alter table public.ad_campaigns enable row level security;
 create policy "Customers can view own campaigns"
   on public.ad_campaigns for select
   using (customer_id = auth.uid());
+
+-- Deferred from crm_leads: ad_campaigns did not exist yet when crm_leads was created
+alter table public.crm_leads
+  add constraint crm_leads_source_campaign_id_fkey
+  foreign key (source_campaign_id) references public.ad_campaigns(id) on delete set null;
 
 -- ---------------------------------------------------------------------------
 -- GST & Billing: Invoices
@@ -610,49 +642,14 @@ create trigger update_employees_updated_at before update on public.employees
   for each row execute function update_updated_at_column();
 
 -- ---------------------------------------------------------------------------
--- Views: Dashboard Aggregates (for performance)
+-- Views: Dashboard Aggregates - REMOVED in Phase 0
 -- ---------------------------------------------------------------------------
-
--- View: Today's metrics per customer
-create or replace view public.dashboard_today_metrics as
-select
-  customer_id,
-  count(*) filter (where created_at::date = current_date) as leads_today,
-  count(*) filter (where status = 'hot' and next_follow_up_at <= now() + interval '24 hours') as pending_follow_ups_today
-from public.crm_leads
-group by customer_id;
-
--- View: Monthly revenue per customer
-create or replace view public.dashboard_monthly_revenue as
-select
-  customer_id,
-  date_trunc('month', invoice_date) as month,
-  sum(total_amount) as total_revenue,
-  sum(cgst_amount + sgst_amount + igst_amount) as total_gst_collected
-from public.invoices
-where invoice_date >= date_trunc('month', current_date)
-  and payment_status in ('paid', 'partial')
-group by customer_id, date_trunc('month', invoice_date);
-
--- View: Monthly ad spend per customer
-create or replace view public.dashboard_monthly_ad_spend as
-select
-  customer_id,
-  sum(ad_spend) as total_ad_spend,
-  sum(leads_count) as total_leads,
-  case 
-    when sum(leads_count) > 0 then sum(ad_spend) / sum(leads_count)
-    else null
-  end as avg_cpl
-from public.ad_campaigns
-where status = 'active'
-  and last_synced_at >= date_trunc('month', current_date)
-group by customer_id;
-
--- Grant access to views
-grant select on public.dashboard_today_metrics to authenticated;
-grant select on public.dashboard_monthly_revenue to authenticated;
-grant select on public.dashboard_monthly_ad_spend to authenticated;
+-- The previous views ran with the owner's rights, so they bypassed RLS and exposed
+-- every tenant's leads, revenue and GST to any signed-in user. Nothing reads them;
+-- the dashboard queries crm_leads directly under RLS. Drop them if they exist.
+drop view if exists public.dashboard_today_metrics;
+drop view if exists public.dashboard_monthly_revenue;
+drop view if exists public.dashboard_monthly_ad_spend;
 
 -- ---------------------------------------------------------------------------
 -- Sample Data Seeding (Development Only - REMOVE FOR PRODUCTION)

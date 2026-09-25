@@ -4,15 +4,14 @@
 
 import { NextResponse } from "next/server";
 import { insertLead } from "@/lib/supabase";
-import { VERTICALS } from "@/lib/verticals";
+import { BUSINESS_TYPES } from "@/lib/products";
 import { createRateLimiter, getClientIp, retryAfterMinutes } from "@/lib/rate-limit";
 
-const ALLOWED_INDUSTRIES = new Set([...VERTICALS.map((v) => v.id), "other"]);
-const ALLOWED_SOURCES = new Set(["homepage-contact", "fit-quiz", "pricing-estimator"]);
+const ALLOWED_INDUSTRIES = new Set(BUSINESS_TYPES.map((b) => b.id));
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const PHONE_PATTERN = /^[+\d][\d\s()-]{6,24}$/;
 
-const LIMITS = { name: 120, email: 254, phone: 25, goal: 300, message: 2000 };
+const LIMITS = { name: 120, email: 254, phone: 25, company: 160, message: 2000 };
 
 // 5 submissions per IP per 10 minutes.
 const submissionLimiter = createRateLimiter({ windowMs: 10 * 60 * 1000, max: 5 });
@@ -61,24 +60,25 @@ export async function POST(request) {
       return badRequest("Please provide a valid full name.");
     }
 
-    const email = optionalString(body.email, LIMITS.email);
-    if (!email || !EMAIL_PATTERN.test(email)) {
-      return badRequest("Please provide a valid corporate or official email address.");
+    // Mobile / WhatsApp is the main way the team follows up, so it is required; email is optional.
+    const phone = optionalString(body.phone, LIMITS.phone);
+    if (!phone || !PHONE_PATTERN.test(phone)) {
+      return badRequest("Please enter a valid mobile or WhatsApp number.");
     }
 
     const industry = typeof body.industry === "string" ? body.industry.trim() : "";
     if (!ALLOWED_INDUSTRIES.has(industry)) {
-      return badRequest("Please select your primary operating industry.");
+      return badRequest("Please choose your business type.");
     }
 
-    const phone = optionalString(body.phone, LIMITS.phone);
-    if (phone === undefined || (phone && !PHONE_PATTERN.test(phone))) {
-      return badRequest("Please provide a valid phone number or leave it blank.");
+    const email = optionalString(body.email, LIMITS.email);
+    if (email === undefined || (email && !EMAIL_PATTERN.test(email))) {
+      return badRequest("Please check your email address, or leave it blank.");
     }
 
-    const goal = optionalString(body.goal, LIMITS.goal);
-    if (goal === undefined) {
-      return badRequest(`Operational goals must be under ${LIMITS.goal} characters.`);
+    const company = optionalString(body.company, LIMITS.company);
+    if (company === undefined) {
+      return badRequest(`Company name must be under ${LIMITS.company} characters.`);
     }
 
     const message = optionalString(body.message, LIMITS.message);
@@ -86,23 +86,21 @@ export async function POST(request) {
       return badRequest(`Message must be under ${LIMITS.message} characters.`);
     }
 
-    const sourcePage = ALLOWED_SOURCES.has(body.source_page) ? body.source_page : "homepage-contact";
-
     const savedLead = await insertLead({
       name,
-      email: email.toLowerCase(),
       phone,
+      email: email ? email.toLowerCase() : null,
+      company_name: company,
       industry,
-      goal,
       message,
-      source_page: sourcePage
+      source_page: "homepage-contact"
     });
 
     return NextResponse.json(
       {
         success: true,
         reference_id: savedLead.reference_id,
-        message: "Your inquiry has been recorded. Our solutions engineer will contact you within one business day."
+        message: "Thanks. Our team will contact you on the number you gave to arrange a demo."
       },
       { status: 201 }
     );
@@ -111,7 +109,7 @@ export async function POST(request) {
     return NextResponse.json(
       {
         success: false,
-        error: "Failed to record inquiry. Please try again or reach out to support@zugee.com directly."
+        error: "We couldn't save your details. Please try again in a few minutes."
       },
       { status: 500 }
     );

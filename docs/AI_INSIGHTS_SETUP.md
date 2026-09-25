@@ -1,5 +1,11 @@
 # AI Insights Computation Setup
 
+> **Removed in Phase 0 — to be rebuilt (see ZUGEE-PLATFORM-PLAN.md Phase 7).**
+> `lib/ai-insights-engine.js`, `/api/app/insights/compute` and the dashboard "AI Insights"
+> panel were deleted: the engine read columns that do not exist, inserted duplicates on every
+> run and showed invented figures (e.g. "7x more likely"). Nothing below works any more.
+> Kept only as historical reference; do not schedule the cron jobs described here.
+
 This guide explains how to set up and schedule AI insights computation for Zugee.
 
 ## Overview
