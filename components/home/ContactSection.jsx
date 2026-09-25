@@ -51,6 +51,7 @@ export default function ContactSection() {
       }));
       if (source) setSourcePage(source);
 
+<<<<<<< Updated upstream
       const verticalMatch = VERTICALS.find((v) => v.id === industry);
       const label = verticalMatch ? verticalMatch.name : industry || "your assessment";
       setPrefillNotice(`Pre-filled profile: ${label}`);
@@ -64,6 +65,23 @@ export default function ContactSection() {
       clearTimeout(noticeTimerRef.current);
     };
   }, []);
+=======
+  // Pricing cards' "Get Started" notes the chosen plan in the message (only if it's still empty,
+  // so we never overwrite what the visitor typed).
+  useEffect(() => {
+    const handlePlan = (e) => {
+      const planName = e.detail?.planName;
+      if (!planName) return;
+      setFormData((prev) =>
+        prev.message.trim() ? prev : { ...prev, message: `I'm interested in the ${planName} plan.` }
+      );
+    };
+    window.addEventListener("zugee:select-plan", handlePlan);
+    return () => window.removeEventListener("zugee:select-plan", handlePlan);
+  }, []);
+
+  const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+>>>>>>> Stashed changes
 
   const handleSubmit = async (e) => {
     e.preventDefault();

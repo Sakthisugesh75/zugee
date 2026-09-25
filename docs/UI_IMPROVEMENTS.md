@@ -148,6 +148,12 @@ All interactive elements have clear hover/active states.
     - PerformanceFunnel: summary stats stack on mobile, labels wrap
     - AppTopBar: px-8, 40px icon buttons with aria-labels and focus rings, narrower search and hidden status pill on small screens
 
+9. **components/app/SubscriptionSummary.jsx** (new) and **app/app/back-office/billing/page.jsx**
+   - The billing page now shows the customer's real subscription instead of Coming Soon (invoicing stays Coming Soon)
+   - Same card style as the rest of the kit; the setup fee has its own row with a status badge: Pending (amber), ✓ Completed (emerald), Waived
+   - "Initial payment" appears only while setup is pending; "Next renewal" always shows the monthly price only
+   - Empty state: "No active subscription yet — our team sets this up after your demo."
+
 ## Recommended Next Steps
 
 ### 1. Apply Same Patterns to Other Pages

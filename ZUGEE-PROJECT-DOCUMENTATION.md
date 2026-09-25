@@ -50,6 +50,7 @@ Convert business owners from traditional tools (Tally, Excel, WhatsApp, Paper) t
 - **WhatsApp** for customer communication
 - **Paper receipts** for manual record-keeping
 
+<<<<<<< Updated upstream
 ### Core Value Proposition
 > "GST billing and inventory software that gets you paid on time."
 
@@ -69,6 +70,9 @@ Business owners struggle with:
 - **WhatsApp Integration:** Invoices, payment links, and reminders sent directly from business number
 - **Real-time Sync:** Payment gateway reconciliation happens instantly
 - **CA-Ready Reports:** GSTR-1 ready monthly reports for chartered accountants
+=======
+**Primary CTA:** Explore Products. **Conversion CTA:** Book a Demo. Sales run through a live demo meeting the team arranges after the form is submitted. **Pricing CTA:** Get Started (pre-fills the chosen plan in the demo form).
+>>>>>>> Stashed changes
 
 ---
 
@@ -236,7 +240,17 @@ Background pattern:
 4. ✅ All metrics are explicitly labeled as "targets" or "sample data"
 5. ✅ Claims are either verifiable or marked TODO for founder confirmation
 
+<<<<<<< Updated upstream
 ### Tone of Voice
+=======
+| # | Section | Component | Content source |
+|---|---|---|---|
+| 1 | Hero: H1 "Business software built for the way your business operates." + Explore Products / Book a Demo | `Hero.jsx` | inline copy |
+| 2 | Products: cards by category with honest status badges; Coming Soon list | `ProductsSection.jsx` | `lib/products.js` |
+| 3 | How it works: 3 steps | `HowWeWork.jsx` | `lib/site-content.js` |
+| 4 | Pricing: Starter and Growth cards (monthly + one-time setup shown separately, "Starting today" and "Then ₹X/month"), product-specific setup examples, FAQ | `PricingSection.jsx`, `PlanButton.jsx`, `FAQSection.jsx` | `lib/pricing.js`, `lib/site-content.js` |
+| 5 | Book a demo: short form + mascot | `ContactSection.jsx` | `BUSINESS_TYPES` from `lib/products.js` |
+>>>>>>> Stashed changes
 
 **Writing Principles:**
 - **Direct:** No fluff or marketing jargon
@@ -261,7 +275,51 @@ Background pattern:
 
 ---
 
+<<<<<<< Updated upstream
 ## 6. Page Structure & Sections
+=======
+## 6a. Pricing
+
+> **Pay once to get your business set up. Pay monthly to keep using ZUGEE.**
+
+| Plan | Monthly (recurring) | Setup & Onboarding (one-time) | Starting today | Then |
+|---|---|---|---|---|
+| Starter | ₹1,999 / month | ₹4,999 | ₹6,998 | ₹1,999 / month |
+| Growth | ₹4,099 / month | ₹9,999 | ₹14,098 | ₹4,099 / month |
+
+All prices exclude GST. The single source is `lib/pricing.js`; never type a price anywhere else.
+
+**Rules**
+- **Show both prices together, always.** The setup fee sits directly under the monthly price on every card, never hidden until checkout.
+- **Never present the setup fee as monthly.** It is charged once per product, never on renewals.
+- **Always call it "One-time Setup & Onboarding".** Never "activation", "registration" or "platform" fee.
+- **Setup lists only real services.** WhatsApp configuration is left out until an integration exists.
+- **Waivers happen in the admin portal only.** An authorised admin can waive the fee (reasons: early customer, promotion, partner referral, enterprise deal, manual). Customers can never change it.
+- **Existing customers are protected.** Anyone who subscribed before the fee existed is marked "waived (existing customer)" and is never charged it.
+- **Product-specific setup fees** are supported through `PRODUCT_PLAN_OVERRIDES` in `lib/pricing.js`. Product-specific setup work is described in `PRODUCT_SETUP_FOCUS`.
+
+**Where pricing appears**
+
+| Place | What it shows | Code |
+|---|---|---|
+| Website pricing section | Monthly price, "+ ₹X one-time setup", "Starting today" total, "Then ₹X/month", what setup includes | `components/home/PricingSection.jsx` |
+| FAQ | What the setup fee covers; that it is never charged again | `lib/site-content.js` (numbers read from `lib/pricing.js`) |
+| Admin: `/admin/subscriptions` | Customer, product, plan, monthly fee, setup fee, setup status, subscription status, start and renewal dates. Actions: record setup payment, waive setup (with reason), record monthly payment, change status | `components/admin/SubscriptionsManager.jsx`, `app/api/admin/subscriptions/*` |
+| Customer: `/app/back-office/billing` | Plan and monthly price; setup shown as Pending, ✓ Completed or Waived; initial payment only while setup is pending; next renewal | `components/app/SubscriptionSummary.jsx` |
+
+**Sales flow today (demo-led):**
+1. A lead books a demo.
+2. The team runs the demo.
+3. The admin clicks "Create subscription" on the lead.
+4. The team collects the first payment (setup + first month) by UPI or bank transfer and records it in the admin portal.
+5. Each month, the team records the renewal at the monthly price only.
+
+There is no online checkout until Phase 6 (Razorpay).
+
+---
+
+## 7. Trust elements (founder to supply)
+>>>>>>> Stashed changes
 
 The homepage follows a six-section structure optimized for conversion:
 

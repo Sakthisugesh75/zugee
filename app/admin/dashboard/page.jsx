@@ -3,9 +3,15 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import MascotLogo from "@/components/ui/MascotLogo";
 import StatusBadge from "@/components/ui/StatusBadge";
+<<<<<<< Updated upstream
 import { VERTICALS } from "@/lib/verticals";
+=======
+import AdminNav from "@/components/admin/AdminNav";
+import { BUSINESS_TYPES, PRODUCTS, businessTypeLabel } from "@/lib/products";
+>>>>>>> Stashed changes
 import {
   Search,
   Download,
@@ -16,7 +22,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   ChevronRight,
-  AlertCircle
+  AlertCircle,
+  Receipt
 } from "lucide-react";
 
 const PAGE_SIZE = 25;
@@ -37,6 +44,15 @@ function buildQuery({ page, limit, status, industry, search, stats = true }) {
 }
 
 // Quote a CSV cell and neutralise spreadsheet formula injection (cells starting with = + - @).
+// Link to the admin subscriptions page with the "New subscription" form prefilled from a lead.
+function newSubscriptionHref(lead) {
+  const params = new URLSearchParams({ lead_id: lead.id, business_name: lead.company_name || lead.name || "" });
+  if (lead.phone) params.set("phone", lead.phone);
+  if (lead.email) params.set("email", lead.email);
+  if (PRODUCTS.some((p) => p.slug === lead.industry)) params.set("product", lead.industry);
+  return `/admin/subscriptions?${params}`;
+}
+
 function csvCell(value) {
   let text = value === null || value === undefined ? "" : String(value);
   if (/^[=+\-@\t\r]/.test(text)) text = `'${text}`;
@@ -272,6 +288,7 @@ export default function AdminDashboardPage() {
             <ShieldCheck className="w-3.5 h-3.5" />
             Lead Queue Administration
           </span>
+          <AdminNav active="/admin/dashboard" />
         </div>
 
         <div className="flex items-center gap-3">
@@ -655,6 +672,13 @@ export default function AdminDashboardPage() {
 
             {/* Quick Status Changers */}
             <div className="pt-6 border-t border-white/[0.08] mt-6">
+              <Link
+                href={newSubscriptionHref(selectedLead)}
+                className="mb-4 w-full inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-mono hover:bg-emerald-500/25 font-medium transition-colors"
+              >
+                <Receipt className="w-3.5 h-3.5" />
+                Create subscription
+              </Link>
               <span className="text-xs font-mono text-slate-400 block mb-3 font-semibold">
                 Update Pipeline Status:
               </span>

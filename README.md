@@ -34,28 +34,49 @@ See [`.env.example`](.env.example).
 
 Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It creates:
 
+<<<<<<< Updated upstream
 - `leads` — contact form, fit quiz and pricing estimator submissions
 - `newsletter_subscribers` — footer sign-ups (kept out of the sales queue)
 
 Both tables have row-level security enabled with no policies, so only the service-role key used by the server can access them.
+=======
+[`supabase/app-schema.sql`](supabase/app-schema.sql) is the interim schema for `/app`. Then run [`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql). It creates `subscriptions` and `subscription_payments` (the setup fee can be recorded only once, and customers can only read their own rows), and backfills existing customers with the setup fee waived. Phase 2 replaces it with numbered migrations and the organization model.
+>>>>>>> Stashed changes
 
 ## Project structure
 
 ```
 app/
   (marketing)/        public site: layout (navbar + footer) and homepage
+<<<<<<< Updated upstream
   admin/              admin login + dashboard (server-gated by session cookie)
+=======
+  admin/              admin login, lead dashboard, subscriptions (server-gated by session cookie)
+  app/                signed-in product (CRM works; other modules show Coming Soon)
+>>>>>>> Stashed changes
   api/
     leads/            POST  public lead submission (rate limited, validated)
     subscribe/        POST  newsletter subscription
     admin/auth/       POST login · GET session · DELETE logout
     admin/leads/      GET list + stats · PATCH status (admin only)
+<<<<<<< Updated upstream
+=======
+    admin/subscriptions/  GET list · POST create · PATCH setup payment / waiver / monthly payment / status (admin only)
+    app/              product APIs (auth, dashboard, CRM leads)
+>>>>>>> Stashed changes
 components/
   home/               homepage sections
   layout/             navbar, footer
   admin/              admin client components
   ui/                 shared UI primitives
 lib/
+<<<<<<< Updated upstream
+=======
+  products.js         product catalog + statuses (single source for site, form, admin, JSON-LD)
+  pricing.js          plans: monthly price + one-time setup fee (the ONLY place prices live)
+  subscriptions.js    subscription + setup-fee data layer (server-only)
+  site-content.js     how-it-works steps and FAQ (also emitted as FAQPage JSON-LD)
+>>>>>>> Stashed changes
   auth.js             admin password check + signed httpOnly session cookie
   rate-limit.js       in-memory rate limiter
   supabase.js         data access (Supabase, dev-only in-memory fallback)
@@ -78,3 +99,4 @@ supabase/schema.sql   database schema
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run ESLint |
+| `npm test` | Pricing and subscription tests (Node test runner) |

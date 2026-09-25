@@ -3,13 +3,95 @@
 All notable changes to the ZUGEE website and platform. Newest first.
 
 **Branches**
+<<<<<<< Updated upstream
 - **`phase-0-truth`** (pushed to `origin/phase-0-truth`) has the latest work: the new product-catalog homepage and the Phase 0 cleanup. **Not merged into `main` yet.**
+=======
+- **`phase-0-truth`** (pushed to `origin/phase-0-truth`) has the latest work: the new product-catalog homepage, the Phase 0 cleanup, and the pricing and setup fee (not committed yet). **Not merged into `main` yet.**
+>>>>>>> Stashed changes
 - **`main`** still serves the older GST-billing homepage (the 2026-09-25 18:18 entry below).
 
 After switching branches, run `npm install`, because the two branches have different dependencies (`main` still uses framer-motion).
 
 ---
 
+<<<<<<< Updated upstream
+=======
+## [Pricing & one-time setup fee] — 2026-09-25 · branch `phase-0-truth` · not committed yet
+
+> **Pay once to get your business set up. Pay monthly to keep using ZUGEE.**
+
+Monthly prices are **unchanged**. A separate **one-time Setup & Onboarding fee** was added.
+
+| Plan | Monthly (recurring) | One-time setup | Starting today | Then |
+|---|---|---|---|---|
+| Starter | ₹1,999 | ₹4,999 | ₹6,998 | ₹1,999/month |
+| Growth | ₹4,099 | ₹9,999 | ₹14,098 | ₹4,099/month |
+
+Prices exclude GST (to be confirmed by the founder).
+
+### Added
+- **`lib/pricing.js`:** the only place prices live.
+  - Both plans with monthly price, setup fee, features and what setup includes.
+  - Product-specific overrides (`PRODUCT_PLAN_OVERRIDES`) and setup focus (`PRODUCT_SETUP_FOCUS`: Tours & Travels, Transposs, Resort).
+  - Setup waiver reasons.
+  - `calculateCharges`: first payment vs recurring.
+- **Website pricing section:**
+  - Starter and Growth cards show the monthly price with "+ ₹X one-time setup" directly underneath.
+  - A "Starting today" total with its breakdown, then "Then ₹X/month".
+  - A "What the setup includes" list, and "Get Started", which pre-fills the chosen plan in the demo form (`PlanButton.jsx`).
+  - A "Setup is tailored to your product" block.
+- **FAQ:** "What is the one-time setup fee?" and "Do I pay the setup fee again every month?" The numbers are read from `lib/pricing.js`.
+- **`supabase/migrations/0001_subscriptions_setup_fee.sql`:**
+  - `subscriptions` (prices copied at creation; setup status pending/paid/waived/refunded; waiver reason, who and when; start and renewal dates).
+  - `subscription_payments` (setup and monthly payments as separate rows).
+  - The database allows only **one** setup payment per subscription.
+  - Setup status can't go backwards, and prices can't be edited after creation.
+  - Customers can only view their own rows; no customer writes at all.
+  - Existing customers are backfilled with the setup fee **waived (existing customer)**, so nobody is charged unexpectedly.
+- **`lib/subscriptions.js`:** server-only data layer with the same rules enforced in code: setup charged once, renewals at the monthly price only, waivers only while setup is pending. It has an in-memory dev store that starts empty.
+- **Admin, `/admin/subscriptions`:**
+  - List with customer, product, plan, monthly fee, setup fee, setup status, subscription status, start and renewal dates.
+  - "New subscription" form showing the first payment and "Then ₹X/month".
+  - Actions: record setup payment, waive setup fee (with reason), record monthly payment, change status.
+  - "Create subscription" link on each lead.
+  - Leads / Subscriptions navigation.
+  - API: `/api/admin/subscriptions` and `/api/admin/subscriptions/[id]` (admin session required; prices and statuses can never be sent by the client).
+- **Customer billing, `/app/back-office/billing`:**
+  - Plan and monthly price.
+  - Setup shown as Pending, ✓ Completed or Waived.
+  - The initial payment appears only while setup is pending; next renewal at the monthly price.
+  - Component: `components/app/SubscriptionSummary.jsx`.
+- **Tests:** `npm test` runs 22 tests (Node's built-in runner) across `tests/pricing.test.mjs` and `tests/subscriptions.test.mjs`.
+
+### Changed
+- **Homepage pricing:** replaced the "quote depends on…" block with the two plan cards.
+- **Demo form:** "Get Started" on a plan pre-fills "I'm interested in the … plan" in the demo form.
+- **Docs:**
+  - `ZUGEE-PROJECT-DOCUMENTATION.md` gained section 6a (pricing rules, where pricing appears, the demo-led sales flow).
+  - `README.md` covers the migration run order, the new routes and `npm test`.
+  - `docs/ZUGEE-PLATFORM-PLAN.md` records Phase 6 progress.
+  - `docs/UI_IMPROVEMENTS.md` covers the billing summary.
+
+### Not built yet
+- **Online checkout or payment gateway:** Razorpay is Phase 6. Until then, admins record payments the team collects (UPI or bank transfer).
+- **Invoices** with separate "Setup" and "Subscription" line items.
+- **Customer access to the billing page:** customer login is still broken (Phase 1).
+- **Real-database test of the migration:** it hasn't been run against a real Supabase database yet, so test it on a copy first.
+
+### Verified
+- `npm test`: 22/22 pass.
+- `eslint` is clean.
+- `npm run build` passes with no env vars.
+- Over the API:
+  - no admin session returns 401
+  - Growth's first payment is ₹14,098
+  - a waiver makes the setup payable ₹0
+  - a second setup payment is refused (409)
+  - a monthly payment records ₹4,099 only and moves the renewal date forward one month
+
+---
+
+>>>>>>> Stashed changes
 ## [Phase 0 — Truth & cleanup] — 2026-09-25 · commit `eba54fa` · branch `phase-0-truth`
 
 The site was restructured from a single "GST billing software" product into the **ZUGEE multi-product platform**, following the Product Suite Restructuring brief. Anything that wasn't true or didn't work was removed or marked Coming Soon. 83 files changed (+2,220 / −7,492 lines).
