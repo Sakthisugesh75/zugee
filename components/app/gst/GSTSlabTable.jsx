@@ -1,7 +1,7 @@
 // components/app/gst/GSTSlabTable.jsx
 "use client";
 
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, Receipt } from 'lucide-react';
 
 export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected }) {
   const formatCurrency = (amount) => {
@@ -27,9 +27,12 @@ export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected
 
   if (!gstSlabs || gstSlabs.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
-        <p className="text-slate-600">No GST data available for this month</p>
-        <p className="text-sm text-slate-500 mt-1">
+      <div className="bg-white rounded-2xl border border-slate-200 p-8 py-12 text-center shadow-sm">
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-4">
+          <Receipt className="w-8 h-8 text-slate-400" />
+        </div>
+        <p className="text-sm font-semibold text-slate-900">No GST data available for this month</p>
+        <p className="text-sm text-slate-600 mt-1">
           Create invoices to see GST slab breakdown
         </p>
       </div>
@@ -37,18 +40,22 @@ export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       {/* Header */}
-      <div className="p-6 border-b border-slate-200">
-        <div className="flex items-center gap-2 mb-1">
-          <TrendingUp className="w-5 h-5 text-blue-600" />
-          <h3 className="text-lg font-semibold text-slate-900">
-            GST Slab-wise Revenue Breakdown
-          </h3>
+      <div className="p-8 border-b border-slate-200">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+            <TrendingUp className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">
+              GST Slab-wise Revenue Breakdown
+            </h3>
+            <p className="text-sm text-slate-600">
+              Revenue and tax collection across different GST rates
+            </p>
+          </div>
         </div>
-        <p className="text-sm text-slate-600">
-          Revenue and tax collection across different GST rates
-        </p>
       </div>
 
       {/* Table */}
@@ -56,24 +63,24 @@ export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected
         <table className="w-full">
           <thead className="bg-slate-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 GST Slab
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Revenue
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Tax Collected
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 Invoices
               </th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <th className="px-6 py-3 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
                 % of Revenue
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-200">
+          <tbody className="divide-y divide-slate-100">
             {gstSlabs.map((slab) => {
               const revenuePercentage = totalRevenue > 0 
                 ? (slab.revenue / totalRevenue) * 100 
@@ -112,7 +119,7 @@ export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected
               );
             })}
           </tbody>
-          <tfoot className="bg-slate-50 border-t-2 border-slate-300">
+          <tfoot className="bg-slate-50 border-t border-slate-200">
             <tr className="font-semibold">
               <td className="px-6 py-4 text-sm text-slate-900">
                 Total
@@ -135,8 +142,8 @@ export default function GSTSlabTable({ gstSlabs, totalRevenue, totalTaxCollected
       </div>
 
       {/* Footer Note */}
-      <div className="p-4 bg-slate-50 border-t border-slate-200">
-        <p className="text-xs text-slate-600">
+      <div className="px-8 py-4 bg-slate-50 border-t border-slate-200">
+        <p className="text-xs text-slate-500">
           💡 <strong>Note:</strong> Tax breakdown is based on invoices generated this month. 
           Revenue excludes tax amount. ITC (Input Tax Credit) is estimated based on purchase patterns.
         </p>

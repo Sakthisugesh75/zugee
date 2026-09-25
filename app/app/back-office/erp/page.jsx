@@ -3,11 +3,12 @@
 
 import { useState, useEffect } from 'react';
 import AppPageHeader from '@/components/app/AppPageHeader';
+import KPICard from '@/components/app/KPICard';
 import { Package, Plus, AlertTriangle } from 'lucide-react';
 
 export default function ERPPage() {
   return (
-    <div>
+    <div className="h-full flex flex-col bg-slate-50">
       <AppPageHeader
         title="ERP Operations"
         description="Inventory, operations, and supply chain management"
@@ -16,66 +17,74 @@ export default function ERPPage() {
           { label: 'ERP Operations' }
         ]}
         actions={
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium">
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
             <Plus className="w-4 h-4" />
             Add Product
           </button>
         }
       />
 
-      <div className="p-6 space-y-6">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            { label: 'Total Products', value: '—', icon: Package, color: 'blue' },
-            { label: 'In Stock', value: '—', icon: Package, color: 'emerald' },
-            { label: 'Low Stock', value: '—', icon: AlertTriangle, color: 'amber' },
-            { label: 'Out of Stock', value: '—', icon: AlertTriangle, color: 'red' }
-          ].map((metric) => {
-            const Icon = metric.icon;
-            return (
-              <div key={metric.label} className="bg-white rounded-xl border border-slate-200 p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                    {metric.label}
-                  </p>
-                  <Icon className="w-5 h-5 text-slate-400" />
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-[1600px] mx-auto p-8 space-y-8">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {[
+              { label: 'Total Products', value: '—', icon: Package, color: 'blue' },
+              { label: 'In Stock', value: '—', icon: Package, color: 'emerald' },
+              { label: 'Low Stock', value: '—', icon: AlertTriangle, color: 'amber' },
+              { label: 'Out of Stock', value: '—', icon: AlertTriangle, color: 'red' }
+            ].map((metric) => (
+              <KPICard
+                key={metric.label}
+                icon={metric.icon}
+                label={metric.label}
+                value={metric.value}
+                color={metric.color}
+              />
+            ))}
+          </div>
+
+          {/* Products/Inventory Table */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-8 py-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                  <Package className="w-5 h-5 text-blue-600" />
                 </div>
-                <p className="text-2xl font-bold text-slate-900">{metric.value}</p>
+                <h3 className="text-lg font-semibold text-slate-900">Products & Inventory</h3>
               </div>
-            );
-          })}
-        </div>
+            </div>
 
-        {/* Products/Inventory Table */}
-        <div className="bg-white rounded-xl border border-slate-200">
-          <div className="p-4 border-b border-slate-200">
-            <h3 className="text-lg font-semibold text-slate-900">Products & Inventory</h3>
-          </div>
-
-          <div className="p-8 text-center">
-            <Package className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-600 font-medium">No products yet</p>
-            <p className="text-sm text-slate-500 mt-1">
-              Add products to start tracking inventory and stock levels
-            </p>
-            <button className="mt-4 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium">
-              Add First Product
-            </button>
-          </div>
-        </div>
-
-        {/* Low Stock Alerts */}
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-          <div className="flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-semibold text-amber-900 mb-1">
-                Stock Alerts
-              </h4>
-              <p className="text-xs text-amber-700">
-                Set up low stock thresholds to receive alerts when inventory runs low
+            <div className="px-8 py-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-4">
+                <Package className="w-8 h-8 text-slate-400" />
+              </div>
+              <h4 className="text-sm font-semibold text-slate-900 mb-1">No products yet</h4>
+              <p className="text-sm text-slate-600 max-w-md mx-auto">
+                Add products to start tracking inventory and stock levels
               </p>
+              <button className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                <Plus className="w-4 h-4" />
+                Add First Product
+              </button>
+            </div>
+          </div>
+
+          {/* Low Stock Alerts */}
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="w-10 h-10 rounded-xl bg-white border border-amber-200 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h4 className="text-sm font-semibold text-amber-900 mb-1">
+                  Stock Alerts
+                </h4>
+                <p className="text-sm text-amber-700">
+                  Set up low stock thresholds to receive alerts when inventory runs low
+                </p>
+              </div>
             </div>
           </div>
         </div>

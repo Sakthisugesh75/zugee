@@ -52,39 +52,39 @@ export default function CampaignCard({ campaign }) {
   const roas = campaign.roas ? parseFloat(campaign.roas) : 0;
 
   return (
-    <div className={`bg-white rounded-xl border p-5 hover:shadow-md transition-shadow ${platformInfo.color}`}>
+    <div className={`bg-white rounded-2xl border p-6 shadow-sm hover:shadow-md transition-shadow ${platformInfo.color}`}>
       {/* Header */}
-      <div className="flex items-start justify-between gap-2 mb-4">
-        <div className="flex items-start gap-2 flex-1 min-w-0">
-          <span className="text-2xl shrink-0">{platformInfo.icon}</span>
+      <div className="flex items-start justify-between gap-3 mb-5">
+        <div className="flex items-start gap-3 flex-1 min-w-0">
+          <span className="w-10 h-10 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-xl shrink-0" aria-hidden="true">{platformInfo.icon}</span>
           <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-slate-900 mb-1 line-clamp-2">
               {campaign.campaign_name}
             </h3>
-            <p className="text-xs text-slate-600">{campaign.account_name}</p>
+            <p className="text-xs text-slate-500 truncate">{campaign.account_name}</p>
           </div>
         </div>
         
-        <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${getStatusColor(campaign.status)}`}>
+        <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize border shrink-0 ${getStatusColor(campaign.status)}`}>
           {campaign.status}
         </span>
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
+      <div className="grid grid-cols-2 gap-3 mb-5">
         {/* Ad Spend */}
-        <div className="p-3 rounded-lg bg-white border border-slate-200">
+        <div className="p-3 rounded-xl bg-white border border-slate-200">
           <div className="flex items-center gap-2 mb-1">
             <DollarSign className="w-4 h-4 text-slate-400" />
             <span className="text-xs text-slate-600">Ad Spend</span>
           </div>
-          <p className="text-lg font-bold text-slate-900">
+          <p className="text-lg font-bold text-slate-900 tracking-tight">
             {formatCurrency(adSpend)}
           </p>
         </div>
 
         {/* ROAS */}
-        <div className="p-3 rounded-lg bg-white border border-slate-200">
+        <div className="p-3 rounded-xl bg-white border border-slate-200">
           <div className="flex items-center gap-2 mb-1">
             {roas > 1 ? (
               <TrendingUp className="w-4 h-4 text-emerald-500" />
@@ -99,30 +99,30 @@ export default function CampaignCard({ campaign }) {
         </div>
 
         {/* Leads */}
-        <div className="p-3 rounded-lg bg-white border border-slate-200">
+        <div className="p-3 rounded-xl bg-white border border-slate-200">
           <div className="flex items-center gap-2 mb-1">
             <Users className="w-4 h-4 text-slate-400" />
             <span className="text-xs text-slate-600">Leads</span>
           </div>
-          <p className="text-lg font-bold text-slate-900">
+          <p className="text-lg font-bold text-slate-900 tracking-tight">
             {formatNumber(leads)}
           </p>
         </div>
 
         {/* CPL */}
-        <div className="p-3 rounded-lg bg-white border border-slate-200">
+        <div className="p-3 rounded-xl bg-white border border-slate-200">
           <div className="flex items-center gap-2 mb-1">
             <DollarSign className="w-4 h-4 text-slate-400" />
             <span className="text-xs text-slate-600">CPL</span>
           </div>
-          <p className="text-lg font-bold text-slate-900">
+          <p className="text-lg font-bold text-slate-900 tracking-tight">
             {cpl > 0 ? `₹${cpl.toFixed(0)}` : '—'}
           </p>
         </div>
       </div>
 
       {/* Additional Stats */}
-      <div className="flex items-center justify-between text-xs text-slate-600 mb-3 pb-3 border-b border-slate-200">
+      <div className="flex items-center justify-between flex-wrap gap-x-4 gap-y-1 text-xs text-slate-600 mb-4 pb-4 border-b border-slate-200">
         <div>
           <span className="text-slate-500">Impressions:</span>{' '}
           <span className="font-medium text-slate-900">
@@ -144,14 +144,14 @@ export default function CampaignCard({ campaign }) {
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3">
         <span className="text-xs text-slate-500">
           {campaign.last_synced_at 
             ? `Synced ${new Date(campaign.last_synced_at).toLocaleTimeString()}`
             : 'Never synced'
           }
         </span>
-        <button className="flex items-center gap-1 text-xs font-medium text-[#1B6FF8] hover:text-[#1557C7] transition-colors">
+        <button className="inline-flex items-center gap-1 px-2 py-1.5 -mr-2 rounded-lg text-xs font-medium text-[#1B6FF8] hover:text-[#1557C7] hover:bg-blue-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
           Details
           <ExternalLink className="w-3 h-3" />
         </button>

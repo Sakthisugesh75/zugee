@@ -2,6 +2,7 @@
 "use client";
 
 import { TrendingUp, Users, DollarSign, Target } from 'lucide-react';
+import KPICard from '../KPICard';
 
 export default function AdsOverview({ summary }) {
   const formatCurrency = (amount) => {
@@ -48,40 +49,19 @@ export default function AdsOverview({ summary }) {
     }
   ];
 
-  const colorClasses = {
-    blue: 'bg-blue-50 border-blue-200 text-blue-600',
-    cyan: 'bg-cyan-50 border-cyan-200 text-cyan-600',
-    emerald: 'bg-emerald-50 border-emerald-200 text-emerald-600',
-    amber: 'bg-amber-50 border-amber-200 text-amber-600'
-  };
-
+  // Rendered with the shared KPICard so metrics match the dashboard
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      {metrics.map((metric) => {
-        const Icon = metric.icon;
-        const colorClass = colorClasses[metric.color];
-
-        return (
-          <div key={metric.label} className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-                {metric.label}
-              </p>
-              <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${colorClass}`}>
-                <Icon className="w-5 h-5" />
-              </div>
-            </div>
-
-            <p className="text-3xl font-bold text-slate-900 mb-1">
-              {metric.value}
-            </p>
-
-            <p className="text-xs text-slate-600">
-              {metric.subtitle}
-            </p>
-          </div>
-        );
-      })}
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+      {metrics.map((metric) => (
+        <KPICard
+          key={metric.label}
+          icon={metric.icon}
+          label={metric.label}
+          value={metric.value}
+          subtitle={metric.subtitle}
+          color={metric.color}
+        />
+      ))}
     </div>
   );
 }

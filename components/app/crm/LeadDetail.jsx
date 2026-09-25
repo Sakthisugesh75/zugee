@@ -12,7 +12,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
 
   if (!lead) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 h-full">
+      <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-full">
         <EmptyState
           icon={MessageSquare}
           title="Select a lead to view details"
@@ -74,29 +74,30 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 h-full flex flex-col">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-full flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-slate-200 flex items-start justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-slate-900">{lead.name}</h3>
+      <div className="p-6 border-b border-slate-200 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h3 className="text-lg font-semibold text-slate-900 tracking-tight truncate">{lead.name}</h3>
           {lead.company && (
-            <p className="text-sm text-slate-600">{lead.company}</p>
+            <p className="text-sm text-slate-600 truncate">{lead.company}</p>
           )}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           {editing ? (
             <>
               <button
                 onClick={handleCancel}
                 disabled={saving}
-                className="px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-50"
+                aria-label="Cancel editing"
+                className="inline-flex items-center justify-center w-10 h-10 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <X className="w-4 h-4" />
               </button>
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-[#1B6FF8] rounded-lg hover:bg-[#1557C7] transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-4 h-10 text-sm font-medium text-white bg-[#1B6FF8] rounded-lg hover:bg-[#1557C7] transition-colors disabled:opacity-50 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               >
                 <Save className="w-4 h-4" />
                 {saving ? 'Saving...' : 'Save'}
@@ -105,7 +106,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
           ) : (
             <button
               onClick={handleEdit}
-              className="px-3 py-1.5 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
+              className="px-4 h-10 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               Edit
             </button>
@@ -114,7 +115,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-6 space-y-6">
         {/* Contact Information */}
         <div>
           <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">
@@ -129,7 +130,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                     type="email"
                     value={formData.email || ''}
                     onChange={(e) => handleChange('email', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                    className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                     placeholder="email@example.com"
                   />
                 </div>
@@ -139,7 +140,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                     type="tel"
                     value={formData.phone || ''}
                     onChange={(e) => handleChange('phone', e.target.value)}
-                    className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                    className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                     placeholder="+91 98765 43210"
                   />
                 </div>
@@ -147,11 +148,11 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
             ) : (
               <>
                 <div className="flex items-center gap-2 text-sm">
-                  <Mail className="w-4 h-4 text-slate-400" />
-                  <span className="text-slate-900">{lead.email || 'No email'}</span>
+                  <Mail className="w-4 h-4 text-slate-400 shrink-0" />
+                  <span className="text-slate-900 truncate">{lead.email || 'No email'}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <Phone className="w-4 h-4 text-slate-400" />
+                  <Phone className="w-4 h-4 text-slate-400 shrink-0" />
                   <span className="text-slate-900">{lead.phone || 'No phone'}</span>
                 </div>
               </>
@@ -171,7 +172,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                 <select
                   value={formData.status || 'new'}
                   onChange={(e) => handleChange('status', e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                  className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 >
                   <option value="new">New</option>
                   <option value="hot">Hot</option>
@@ -192,7 +193,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                 <select
                   value={formData.priority || 'medium'}
                   onChange={(e) => handleChange('priority', e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                  className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -215,7 +216,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
                   type="number"
                   value={formData.estimated_value || ''}
                   onChange={(e) => handleChange('estimated_value', e.target.value)}
-                  className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                  className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                   placeholder="0"
                 />
               </div>
@@ -234,26 +235,26 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
             Timeline
           </h4>
           <div className="space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-600">Created</span>
-              <span className="text-slate-900">{formatDate(lead.created_at)}</span>
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-slate-500">Created</span>
+              <span className="text-slate-900 text-right">{formatDate(lead.created_at)}</span>
             </div>
             {lead.first_contact_at && (
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">First Contact</span>
-                <span className="text-slate-900">{formatDate(lead.first_contact_at)}</span>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-slate-500">First Contact</span>
+                <span className="text-slate-900 text-right">{formatDate(lead.first_contact_at)}</span>
               </div>
             )}
             {lead.last_contact_at && (
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">Last Contact</span>
-                <span className="text-slate-900">{formatDate(lead.last_contact_at)}</span>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-slate-500">Last Contact</span>
+                <span className="text-slate-900 text-right">{formatDate(lead.last_contact_at)}</span>
               </div>
             )}
             {lead.next_follow_up_at && (
-              <div className="flex items-center justify-between">
-                <span className="text-slate-600">Next Follow-up</span>
-                <span className="text-slate-900">{formatDate(lead.next_follow_up_at)}</span>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-slate-500">Next Follow-up</span>
+                <span className="text-slate-900 text-right">{formatDate(lead.next_follow_up_at)}</span>
               </div>
             )}
           </div>
@@ -269,7 +270,7 @@ export default function LeadDetail({ lead, onUpdate, onRefresh }) {
               value={formData.notes || ''}
               onChange={(e) => handleChange('notes', e.target.value)}
               rows={4}
-              className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+              className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
               placeholder="Add notes about this lead..."
             />
           ) : (

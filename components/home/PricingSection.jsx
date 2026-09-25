@@ -15,10 +15,10 @@ export default function PricingSection() {
       <div className="container relative z-10">
         <MotionReveal className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
-            Simple pricing. Start free for 14 days.
+            Simple pricing. Two plans, billed monthly.
           </h2>
           <p className="text-sm font-mono text-slate-400">
-            Free for 14 days after your call · No credit card · Prices exclude GST
+            Free 2-week setup with your real data after your call · Prices exclude GST
           </p>
         </MotionReveal>
 

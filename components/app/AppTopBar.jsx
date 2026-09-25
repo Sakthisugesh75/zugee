@@ -8,20 +8,20 @@ export default function AppTopBar({ profile, currentSection = 'Dashboard' }) {
   const [searchQuery, setSearchQuery] = useState('');
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6">
+    <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between gap-4 px-8">
       {/* Left Side - Section Name & System Status */}
-      <div className="flex items-center gap-4">
-        <h1 className="text-xl font-bold text-slate-900">{currentSection}</h1>
+      <div className="flex items-center gap-4 min-w-0">
+        <h1 className="text-xl font-bold text-slate-900 tracking-tight truncate">{currentSection}</h1>
         
         {/* System Live Indicator */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span className="text-xs font-medium text-emerald-700">System Live</span>
         </div>
       </div>
 
       {/* Right Side - Search, Notifications, Filter, User */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 shrink-0">
         {/* Global Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -30,23 +30,24 @@ export default function AppTopBar({ profile, currentSection = 'Dashboard' }) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search..."
-            className="pl-10 pr-4 py-2 w-64 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent transition-all"
+            aria-label="Search"
+            className="pl-10 pr-4 py-2 w-40 md:w-64 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent transition-all"
           />
         </div>
 
         {/* Notifications */}
-        <button className="relative p-2 rounded-lg hover:bg-slate-100 transition-colors">
+        <button className="relative w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Notifications">
           <Bell className="w-5 h-5 text-slate-600" />
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 border-2 border-white" />
+          <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-500 border-2 border-white" />
         </button>
 
         {/* Filter */}
-        <button className="p-2 rounded-lg hover:bg-slate-100 transition-colors">
+        <button className="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" aria-label="Filter">
           <Filter className="w-5 h-5 text-slate-600" />
         </button>
 
         {/* User Menu */}
-        <button className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-100 transition-colors">
+        <button className="flex items-center gap-2 px-2 py-1 min-h-10 rounded-lg hover:bg-slate-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1B6FF8] to-[#00F0FF] flex items-center justify-center text-white text-sm font-bold">
             {profile?.business_name?.[0]?.toUpperCase() || 'U'}
           </div>

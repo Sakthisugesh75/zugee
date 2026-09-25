@@ -6,10 +6,12 @@ import { FileText, Download, Calendar, Clock } from 'lucide-react';
 export default function ReportHistory({ reports = [], onDownload }) {
   if (reports.length === 0) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-8 text-center">
-        <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-        <p className="text-slate-600 font-medium">No reports generated yet</p>
-        <p className="text-sm text-slate-500 mt-1">
+      <div className="bg-white rounded-2xl border border-slate-200 p-8 py-12 text-center shadow-sm">
+        <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-4">
+          <FileText className="w-8 h-8 text-slate-400" />
+        </div>
+        <p className="text-sm font-semibold text-slate-900">No reports generated yet</p>
+        <p className="text-sm text-slate-600 mt-1">
           Generate your first report to see it here
         </p>
       </div>
@@ -40,21 +42,21 @@ export default function ReportHistory({ reports = [], onDownload }) {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200">
-      <div className="p-4 border-b border-slate-200">
-        <h3 className="text-lg font-semibold text-slate-900">Report History</h3>
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+      <div className="px-8 py-6 border-b border-slate-200">
+        <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Report History</h3>
         <p className="text-sm text-slate-600 mt-1">Recently generated reports</p>
       </div>
 
-      <div className="divide-y divide-slate-200">
+      <div className="divide-y divide-slate-100">
         {reports.map((report) => (
           <div
             key={report.id}
-            className="p-4 hover:bg-slate-50 transition-colors"
+            className="px-8 py-5 hover:bg-slate-50 transition-colors"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-start gap-3 flex-1">
-                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex items-start gap-4 flex-1 min-w-0">
+                <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center shrink-0">
                   <FileText className="w-5 h-5" />
                 </div>
 
@@ -63,7 +65,7 @@ export default function ReportHistory({ reports = [], onDownload }) {
                     {formatReportType(report.report_type)}
                   </h4>
 
-                  <div className="flex items-center gap-4 text-xs text-slate-600">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
                       <span>
@@ -80,7 +82,7 @@ export default function ReportHistory({ reports = [], onDownload }) {
                   </div>
 
                   <div className="mt-2">
-                    <span className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs font-medium uppercase">
+                    <span className="inline-flex items-center px-2 py-1 bg-slate-100 text-slate-600 rounded-md text-xs font-medium uppercase tracking-wider">
                       {report.format}
                     </span>
                   </div>
@@ -89,7 +91,7 @@ export default function ReportHistory({ reports = [], onDownload }) {
 
               <button
                 onClick={() => onDownload(report)}
-                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#1B6FF8] hover:bg-blue-50 rounded-lg transition-colors"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 self-start shrink-0 text-sm font-medium text-[#1B6FF8] border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-200 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <Download className="w-4 h-4" />
                 Download

@@ -104,6 +104,50 @@ All interactive elements have clear hover/active states.
    - Improved title/description layout
    - Better action button alignment
 
+4. **app/app/crm/page.jsx** + **components/app/crm/LeadList.jsx, LeadDetail.jsx, AdIntegrations.jsx**
+   - Full-height layout with max-w-[1600px] container and p-8 padding
+   - Three columns (3/6/3) on xl, stacked with fixed-height panels below xl
+   - rounded-2xl + shadow-sm panels, roomier headers (p-5/p-6)
+   - Icon empty state for the lead list, focus rings and aria-labels on search, filters and icon-only buttons
+   - 40px touch targets for Edit/Save/Cancel and disconnect buttons
+
+5. **app/app/ads/page.jsx** + **components/app/ads/AdsOverview.jsx, CampaignCard.jsx**
+   - Full-height layout with scrollable content area for loading, empty and main states
+   - Error state card (matches dashboard) when campaigns fail to load
+   - AdsOverview now renders the shared KPICard (sm:2 / xl:4 columns, gap-6)
+   - Filter bar as a rounded-2xl card that stacks on mobile; campaign grid gap-6
+   - CampaignCard: rounded-2xl, shadow-sm, platform icon in a rounded container
+
+6. **app/app/gst/page.jsx** + **components/app/gst/GSTEngineHeader.jsx, TaxMetricsCards.jsx, GSTSlabTable.jsx**
+   - Full-height layout, centered loading state, dashboard-style error card
+   - Engine header: rounded-2xl, icon container for the "configuration required" state, stacking edit actions on mobile
+   - Tax metric cards aligned with KPICard styling (rounded-2xl, p-6, rounded-xl icon container)
+   - Slab table: header icon container, softer dividers, icon empty state
+
+7. **app/app/reports/page.jsx** + **components/app/reports/ReportCard.jsx, ReportHistory.jsx**
+   - Loading state now keeps the page header instead of a bare spinner
+   - Full-height layout with max-w container and gap-8 sections
+   - ReportCard: rounded-2xl, p-8, fixed-size icon container, wrapping date inputs with aria-labels
+   - ReportHistory: rounded-2xl, icon empty state, rows stack on mobile
+
+8. **app/app/back-office/billing, erp, hr/page.jsx**
+   - Full-height layout with scrollable content, max-w container, p-8
+   - Summary cards use the shared KPICard (sm:2 / xl:4 columns)
+   - Section cards with icon-container headers and icon empty states
+   - HR quick actions as rounded-2xl cards with icon containers and focus rings
+
+9. **components/app/KPICard.jsx**
+   - rounded-2xl, p-6, shadow-sm, rounded-xl icon container
+   - Hover: shadow-md + border-slate-300
+   - tracking-tight value, subtitle/trend row no longer collides
+
+10. **components/app/EmptyState.jsx, LoadingSpinner.jsx, AIInsightCard.jsx, PerformanceFunnel.jsx, AppTopBar.jsx**
+    - EmptyState: p-8, tracking-tight title
+    - LoadingSpinner: role="status" with screen-reader text
+    - AIInsightCard: rounded-xl icon container, larger dismiss target with focus ring
+    - PerformanceFunnel: summary stats stack on mobile, labels wrap
+    - AppTopBar: px-8, 40px icon buttons with aria-labels and focus rings, narrower search and hidden status pill on small screens
+
 ## Recommended Next Steps
 
 ### 1. Apply Same Patterns to Other Pages
@@ -190,11 +234,11 @@ text-xs text-slate-500   /* Meta info */
 - [x] Dashboard page layout
 - [x] AppPageHeader component
 - [x] App layout structure
-- [ ] All other app pages (CRM, Ads, GST, etc.)
-- [ ] All Back Office pages
-- [ ] Reports page
+- [x] All other app pages (CRM, Ads, GST, etc.)
+- [x] All Back Office pages
+- [x] Reports page
 - [ ] Auth pages
-- [ ] KPICard component refinement
+- [x] KPICard component refinement
 - [ ] Mobile responsiveness testing
 - [ ] Accessibility audit
 

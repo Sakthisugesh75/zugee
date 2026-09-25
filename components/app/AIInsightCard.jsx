@@ -66,9 +66,9 @@ export default function AIInsightCard({
   const colors = getSeverityColor();
 
   return (
-    <div className={`rounded-xl border p-4 ${colors.bg} ${colors.border}`}>
+    <div className={`rounded-xl border p-4 transition-shadow hover:shadow-sm ${colors.bg} ${colors.border}`}>
       <div className="flex items-start gap-3">
-        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${colors.icon}`}>
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${colors.icon}`}>
           {getIcon()}
         </div>
 
@@ -80,8 +80,8 @@ export default function AIInsightCard({
             {onDismiss && (
               <button
                 onClick={onDismiss}
-                className={`p-1 rounded hover:bg-white/50 transition-colors ${colors.button}`}
-                aria-label="Dismiss"
+                className={`p-1.5 -m-1 rounded-lg hover:bg-white/50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${colors.button}`}
+                aria-label="Dismiss insight"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -95,7 +95,7 @@ export default function AIInsightCard({
           {action_label && action_url && (
             <a
               href={action_url}
-              className={`inline-flex items-center text-xs font-medium ${colors.button} px-3 py-1.5 rounded-lg transition-colors`}
+              className={`inline-flex items-center text-xs font-medium ${colors.button} px-3 py-1.5 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500`}
             >
               {action_label} →
             </a>

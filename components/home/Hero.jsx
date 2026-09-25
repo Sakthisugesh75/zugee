@@ -41,7 +41,7 @@ export default function Hero() {
           </div>
 
           <p className="mt-4 text-xs font-mono text-slate-400">
-            From ₹1,999/month · 14-day free trial · No credit card
+            From ₹1,999/month · Free 2-week setup with your real data
           </p>
         </div>
 

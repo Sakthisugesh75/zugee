@@ -3,11 +3,12 @@
 
 import { useState, useEffect } from 'react';
 import AppPageHeader from '@/components/app/AppPageHeader';
-import { FileText, Plus, Search } from 'lucide-react';
+import KPICard from '@/components/app/KPICard';
+import { FileText, Plus, Search, CheckCircle, Clock, AlertCircle } from 'lucide-react';
 
 export default function BillingPage() {
   return (
-    <div>
+    <div className="h-full flex flex-col bg-slate-50">
       <AppPageHeader
         title="Sales & Billing"
         description="Manage invoices, payments, and billing records"
@@ -16,54 +17,67 @@ export default function BillingPage() {
           { label: 'Sales & Billing' }
         ]}
         actions={
-          <button className="flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium">
+          <button className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
             <Plus className="w-4 h-4" />
             Create Invoice
           </button>
         }
       />
 
-      <div className="p-6 space-y-6">
-        {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[
-            { label: 'Total Invoices', value: '—', color: 'blue' },
-            { label: 'Paid', value: '—', color: 'emerald' },
-            { label: 'Pending', value: '—', color: 'amber' },
-            { label: 'Overdue', value: '—', color: 'red' }
-          ].map((metric) => (
-            <div key={metric.label} className="bg-white rounded-xl border border-slate-200 p-5">
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
-                {metric.label}
-              </p>
-              <p className="text-2xl font-bold text-slate-900">{metric.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Invoices Table */}
-        <div className="bg-white rounded-xl border border-slate-200">
-          <div className="p-4 border-b border-slate-200 flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-slate-900">Recent Invoices</h3>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-              <input
-                type="text"
-                placeholder="Search invoices..."
-                className="pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-[1600px] mx-auto p-8 space-y-8">
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            {[
+              { label: 'Total Invoices', value: '—', icon: FileText, color: 'blue' },
+              { label: 'Paid', value: '—', icon: CheckCircle, color: 'emerald' },
+              { label: 'Pending', value: '—', icon: Clock, color: 'amber' },
+              { label: 'Overdue', value: '—', icon: AlertCircle, color: 'red' }
+            ].map((metric) => (
+              <KPICard
+                key={metric.label}
+                icon={metric.icon}
+                label={metric.label}
+                value={metric.value}
+                color={metric.color}
               />
-            </div>
+            ))}
           </div>
 
-          <div className="p-8 text-center">
-            <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-600 font-medium">No invoices yet</p>
-            <p className="text-sm text-slate-500 mt-1">
-              Create your first invoice to start tracking sales and payments
-            </p>
-            <button className="mt-4 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium">
-              Create First Invoice
-            </button>
+          {/* Invoices Table */}
+          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="px-8 py-6 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
+                  <FileText className="w-5 h-5 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-slate-900">Recent Invoices</h3>
+              </div>
+              <div className="relative w-full sm:w-auto">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <input
+                  type="text"
+                  placeholder="Search invoices..."
+                  aria-label="Search invoices"
+                  className="w-full sm:w-64 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            <div className="px-8 py-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-4">
+                <FileText className="w-8 h-8 text-slate-400" />
+              </div>
+              <h4 className="text-sm font-semibold text-slate-900 mb-1">No invoices yet</h4>
+              <p className="text-sm text-slate-600 max-w-md mx-auto">
+                Create your first invoice to start tracking sales and payments
+              </p>
+              <button className="mt-6 inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2">
+                <Plus className="w-4 h-4" />
+                Create First Invoice
+              </button>
+            </div>
           </div>
         </div>
       </div>

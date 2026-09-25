@@ -21,53 +21,56 @@ export default function ReportCard({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-start gap-4">
+    <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex flex-col sm:flex-row sm:items-start gap-4">
         {/* Icon */}
-        <div className={`p-3 rounded-xl ${iconColorClasses[iconColor]}`}>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${iconColorClasses[iconColor]}`}>
           <Icon className="w-6 h-6" />
         </div>
 
         {/* Content */}
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-slate-900 mb-1">{title}</h3>
-          <p className="text-sm text-slate-600 mb-4">{description}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg font-semibold text-slate-900 tracking-tight mb-1">{title}</h3>
+          <p className="text-sm text-slate-600 mb-6">{description}</p>
 
           {/* Period Selector */}
           {periodType === 'date-range' && (
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-6">
               <Calendar className="w-4 h-4 text-slate-400" />
               <input
                 type="date"
-                className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                aria-label="Start date"
+                className="px-3 py-2 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 defaultValue={new Date().toISOString().split('T')[0]}
               />
-              <span className="text-slate-400">to</span>
+              <span className="text-sm text-slate-500">to</span>
               <input
                 type="date"
-                className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                aria-label="End date"
+                className="px-3 py-2 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 defaultValue={new Date().toISOString().split('T')[0]}
               />
             </div>
           )}
 
           {periodType === 'month' && (
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex flex-wrap items-center gap-2 mb-6">
               <Calendar className="w-4 h-4 text-slate-400" />
               <input
                 type="month"
-                className="px-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+                aria-label="Report month"
+                className="px-3 py-2 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
                 defaultValue={new Date().toISOString().substring(0, 7)}
               />
             </div>
           )}
 
           {/* Format and Generate Button */}
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
             <button
               onClick={onGenerate}
               disabled={generating}
-              className="flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
             >
               {generating ? (
                 <>
@@ -82,7 +85,7 @@ export default function ReportCard({
               )}
             </button>
 
-            <div className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium uppercase">
+            <div className="px-3 py-1.5 bg-slate-100 text-slate-600 rounded-lg text-xs font-medium uppercase tracking-wider">
               {format}
             </div>
           </div>

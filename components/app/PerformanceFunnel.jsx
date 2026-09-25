@@ -44,8 +44,8 @@ export default function PerformanceFunnel({ data, loading = false }) {
 
         return (
           <div key={item.stage} className="relative">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3 mb-2">
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 min-w-0">
                 <span className="text-sm font-semibold text-slate-900">
                   {item.stage}
                 </span>
@@ -77,7 +77,7 @@ export default function PerformanceFunnel({ data, loading = false }) {
       })}
 
       {/* Overall Funnel Stats */}
-      <div className="mt-6 pt-4 border-t border-slate-200 grid grid-cols-3 gap-4">
+      <div className="mt-6 pt-4 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div>
           <p className="text-xs text-slate-500 mb-1">Overall Conversion</p>
           <p className="text-lg font-bold text-slate-900">

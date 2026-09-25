@@ -15,11 +15,12 @@ export default function LoadingSpinner({
   };
 
   const content = (
-    <div className="flex flex-col items-center justify-center gap-3">
+    <div className="flex flex-col items-center justify-center gap-3" role="status" aria-live="polite">
       <Loader2 className={`${sizeClasses[size]} text-[#1B6FF8] animate-spin`} />
       {text && (
         <p className="text-sm text-slate-600 font-medium">{text}</p>
       )}
+      {!text && <span className="sr-only">Loading</span>}
     </div>
   );
 

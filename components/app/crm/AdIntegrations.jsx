@@ -119,17 +119,17 @@ export default function AdIntegrations() {
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 h-full flex flex-col">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-full flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b border-slate-200">
-        <h3 className="text-lg font-semibold text-slate-900">Ad Integrations</h3>
-        <p className="text-xs text-slate-600 mt-1">
+      <div className="p-5 border-b border-slate-200">
+        <h3 className="text-lg font-semibold text-slate-900 tracking-tight">Ad Integrations</h3>
+        <p className="text-sm text-slate-600 mt-1">
           Connect your ad accounts to sync leads automatically
         </p>
       </div>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 overflow-y-auto p-5 space-y-6">
         {/* Connected Accounts */}
         {loading ? (
           <div className="flex items-center justify-center py-8">
@@ -148,13 +148,13 @@ export default function AdIntegrations() {
               return (
                 <div
                   key={account.id}
-                  className={`p-3 rounded-lg border ${platformInfo.color}`}
+                  className={`p-4 rounded-xl border ${platformInfo.color}`}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{platformInfo.icon}</span>
-                      <div>
-                        <h5 className="text-sm font-semibold">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="text-lg" aria-hidden="true">{platformInfo.icon}</span>
+                      <div className="min-w-0">
+                        <h5 className="text-sm font-semibold truncate">
                           {account.account_name || platformInfo.name}
                         </h5>
                         <p className="text-xs opacity-75">
@@ -164,8 +164,9 @@ export default function AdIntegrations() {
                     </div>
                     <button
                       onClick={() => handleDisconnect(account.id)}
-                      className="p-1 hover:bg-white/50 rounded transition-colors"
+                      className="p-2 -m-1 shrink-0 hover:bg-white/50 rounded-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                       title="Disconnect"
+                      aria-label={`Disconnect ${account.account_name || platformInfo.name}`}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -199,11 +200,11 @@ export default function AdIntegrations() {
             <button
               onClick={() => handleConnect('meta_ads')}
               disabled={connecting === 'meta_ads'}
-              className="w-full p-3 rounded-lg border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-4 rounded-xl border border-blue-200 bg-blue-50 hover:bg-blue-100 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">📘</span>
-                <div className="flex-1">
+                <span className="text-2xl" aria-hidden="true">📘</span>
+                <div className="flex-1 min-w-0">
                   <h5 className="text-sm font-semibold text-blue-900">
                     Connect Meta Ads
                   </h5>
@@ -225,11 +226,11 @@ export default function AdIntegrations() {
             <button
               onClick={() => handleConnect('google_ads')}
               disabled={connecting === 'google_ads'}
-              className="w-full p-3 rounded-lg border border-red-200 bg-red-50 hover:bg-red-100 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full p-4 rounded-xl border border-red-200 bg-red-50 hover:bg-red-100 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <div className="flex items-center gap-3">
-                <span className="text-2xl">🔍</span>
-                <div className="flex-1">
+                <span className="text-2xl" aria-hidden="true">🔍</span>
+                <div className="flex-1 min-w-0">
                   <h5 className="text-sm font-semibold text-red-900">
                     Connect Google Ads
                   </h5>
@@ -249,8 +250,8 @@ export default function AdIntegrations() {
       </div>
 
       {/* Footer Note */}
-      <div className="p-3 border-t border-slate-200 bg-slate-50">
-        <p className="text-xs text-slate-600 text-center">
+      <div className="px-5 py-3 border-t border-slate-200 bg-slate-50">
+        <p className="text-xs text-slate-500 text-center">
           Standard OAuth connection. No partner certification required.
         </p>
       </div>

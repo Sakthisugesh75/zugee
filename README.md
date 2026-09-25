@@ -14,7 +14,9 @@ npm run dev
 
 Open http://localhost:3000.
 
-Without Supabase credentials, development uses an in-memory lead store seeded with sample records, and the admin password defaults to `zugee_admin_dev`. **Production refuses to run requests without real credentials.**
+Without Supabase credentials, the marketing site and admin portal still run in development: leads go to an in-memory store seeded with sample records, and the admin password defaults to `zugee_admin_dev`. **Production refuses to run requests without real credentials.**
+
+The customer product under `/app/*` (dashboard, CRM, ads, GST, reports, back office) has no dev fallback. It needs `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, plus the tables in `supabase/app-schema.sql`, or every `/app` page returns a 500 (`Missing env.SUPABASE_URL`). Ad integrations and AI insights need further variables; see [`docs/OAUTH_SETUP.md`](docs/OAUTH_SETUP.md) and [`docs/AI_INSIGHTS_SETUP.md`](docs/AI_INSIGHTS_SETUP.md).
 
 ## Environment variables
 

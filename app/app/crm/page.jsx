@@ -56,14 +56,14 @@ export default function CRMPage() {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="h-full flex flex-col bg-slate-50">
       <AppPageHeader
         title="CRM - Leads & Sales"
         description="Manage your leads and sales pipeline"
         actions={
           <button
             onClick={handleAddLead}
-            className="flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             <Plus className="w-4 h-4" />
             Add Lead
@@ -71,34 +71,38 @@ export default function CRMPage() {
         }
       />
 
-      {/* Three-Column Layout */}
-      <div className="flex-1 grid grid-cols-12 gap-4 p-4 overflow-hidden">
-        {/* Left Column - Lead List */}
-        <div className="col-span-3 overflow-hidden">
-          <LeadList
-            leads={leads}
-            loading={loading}
-            selectedLead={selectedLead}
-            onSelectLead={handleLeadSelect}
-            searchQuery={searchQuery}
-            onSearchChange={setSearchQuery}
-            filterStatus={filterStatus}
-            onFilterChange={setFilterStatus}
-          />
-        </div>
+      {/* Content - three columns on xl, stacked below that */}
+      <div className="flex-1 min-h-0 overflow-y-auto xl:overflow-hidden">
+        <div className="max-w-[1600px] mx-auto p-8 xl:h-full">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:h-full">
+            {/* Left Column - Lead List */}
+            <div className="xl:col-span-3 h-[560px] xl:h-auto xl:min-h-0 overflow-hidden">
+              <LeadList
+                leads={leads}
+                loading={loading}
+                selectedLead={selectedLead}
+                onSelectLead={handleLeadSelect}
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                filterStatus={filterStatus}
+                onFilterChange={setFilterStatus}
+              />
+            </div>
 
-        {/* Center Column - Lead Detail */}
-        <div className="col-span-6 overflow-hidden">
-          <LeadDetail
-            lead={selectedLead}
-            onUpdate={handleLeadUpdate}
-            onRefresh={fetchLeads}
-          />
-        </div>
+            {/* Center Column - Lead Detail */}
+            <div className="xl:col-span-6 h-[640px] xl:h-auto xl:min-h-0 overflow-hidden">
+              <LeadDetail
+                lead={selectedLead}
+                onUpdate={handleLeadUpdate}
+                onRefresh={fetchLeads}
+              />
+            </div>
 
-        {/* Right Column - Ad Integrations */}
-        <div className="col-span-3 overflow-hidden">
-          <AdIntegrations />
+            {/* Right Column - Ad Integrations */}
+            <div className="xl:col-span-3 xl:min-h-0 xl:overflow-hidden">
+              <AdIntegrations />
+            </div>
+          </div>
         </div>
       </div>
     </div>

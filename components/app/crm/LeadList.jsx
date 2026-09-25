@@ -67,9 +67,9 @@ export default function LeadList({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 h-full flex flex-col">
+    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-full flex flex-col overflow-hidden">
       {/* Header with Search */}
-      <div className="p-4 border-b border-slate-200">
+      <div className="p-5 border-b border-slate-200">
         <div className="relative mb-3">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <input
@@ -77,7 +77,8 @@ export default function LeadList({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search leads..."
-            className="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
+            aria-label="Search leads"
+            className="w-full pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
           />
         </div>
 
@@ -85,7 +86,8 @@ export default function LeadList({
         <select
           value={filterStatus}
           onChange={(e) => onFilterChange(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent bg-white"
+          aria-label="Filter leads by status"
+          className="w-full px-3 py-2.5 text-sm text-slate-900 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent bg-white"
         >
           <option value="all">All Leads</option>
           <option value="new">New</option>
@@ -105,9 +107,12 @@ export default function LeadList({
             <LoadingSpinner size="md" text="Loading leads..." />
           </div>
         ) : leads.length === 0 ? (
-          <div className="flex items-center justify-center h-full p-6">
+          <div className="flex items-center justify-center h-full p-8">
             <div className="text-center">
-              <p className="text-sm font-medium text-slate-900 mb-1">No leads found</p>
+              <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mx-auto mb-3">
+                <Search className="w-5 h-5 text-slate-400" />
+              </div>
+              <p className="text-sm font-semibold text-slate-900 mb-1">No leads found</p>
               <p className="text-xs text-slate-600">Try adjusting your filters or add a new lead</p>
             </div>
           </div>
@@ -117,8 +122,8 @@ export default function LeadList({
               <button
                 key={lead.id}
                 onClick={() => onSelectLead(lead)}
-                className={`w-full text-left p-4 hover:bg-slate-50 transition-colors ${
-                  selectedLead?.id === lead.id ? 'bg-blue-50 border-l-4 border-[#1B6FF8]' : ''
+                className={`w-full text-left p-4 hover:bg-slate-50 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500 ${
+                  selectedLead?.id === lead.id ? 'bg-blue-50 border-l-4 border-[#1B6FF8]' : 'border-l-4 border-transparent'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
@@ -130,13 +135,13 @@ export default function LeadList({
                       <p className="text-xs text-slate-600 truncate">{lead.company}</p>
                     )}
                   </div>
-                  <span className="text-lg shrink-0">
+                  <span className="text-lg shrink-0" aria-hidden="true">
                     {getSourceIcon(lead.source)}
                   </span>
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${getStatusColor(lead.status)}`}>
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium border ${getStatusColor(lead.status)}`}>
                     {getStatusLabel(lead.status)}
                   </span>
                   <span className="text-xs text-slate-500">
@@ -150,8 +155,8 @@ export default function LeadList({
       </div>
 
       {/* Footer with Count */}
-      <div className="p-3 border-t border-slate-200 bg-slate-50">
-        <p className="text-xs text-slate-600 text-center">
+      <div className="px-5 py-3 border-t border-slate-200 bg-slate-50">
+        <p className="text-xs text-slate-500 text-center">
           {leads.length} {leads.length === 1 ? 'lead' : 'leads'}
         </p>
       </div>

@@ -48,7 +48,7 @@ const structuredData = {
         name: tier.name,
         price: String(tier.price),
         priceCurrency: "INR",
-        description: `${tier.audience} 14-day free trial, no credit card needed.`,
+        description: `${tier.audience} Free 2-week setup with your real data after a discovery call.`,
         priceSpecification: {
           "@type": "UnitPriceSpecification",
           price: String(tier.price),

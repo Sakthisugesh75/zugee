@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { VERTICALS } from "@/lib/verticals";
 import {
   Send,
@@ -172,8 +173,23 @@ export default function ContactSection() {
           </div>
         </MotionReveal>
 
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] gap-10 items-center">
+        {/* Mascot — desktop only, so the form stays first on phones. The webp has its black
+            background converted to transparency, so it sits directly on the section glow. */}
+        <div aria-hidden="true" className="hidden lg:flex justify-center relative">
+          <div className="absolute bottom-6 w-48 h-10 rounded-full bg-[#00F0FF]/20 blur-2xl" />
+          <Image
+            src="/zugee-mascot-cutout.webp"
+            alt=""
+            width={1024}
+            height={1536}
+            sizes="300px"
+            className="w-full max-w-[300px] h-auto animate-mascot-float"
+          />
+        </div>
+
         {/* Main Form Container */}
-        <MotionReveal delay={0.15} className="max-w-2xl mx-auto">
+        <MotionReveal delay={0.15} className="w-full max-w-2xl mx-auto">
           {submitStatus === "success" && confirmedData ? (
             /* Success confirmation card — ONLY appears after verified database write */
             <div className="glass-panel p-8 sm:p-10 rounded-3xl border-[#00F0FF]/40 bg-[#0A0F1D]/90 shadow-[0_20px_70px_rgba(0,0,0,0.8)] text-center space-y-6 animate-fade-in backdrop-blur-2xl">
@@ -423,6 +439,7 @@ export default function ContactSection() {
             </form>
           )}
         </MotionReveal>
+        </div>
       </div>
     </section>
   );

@@ -57,23 +57,23 @@ export default function TaxMetricsCards({ taxMetrics }) {
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
       {metrics.map((metric) => {
         const Icon = metric.icon;
         const colorClass = colorClasses[metric.color];
 
         return (
-          <div key={metric.label} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-4">
+          <div key={metric.label} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all">
+            <div className="flex items-start justify-between gap-3 mb-4">
               <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
                 {metric.label}
               </p>
-              <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${colorClass}`}>
+              <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${colorClass}`}>
                 <Icon className="w-5 h-5" />
               </div>
             </div>
 
-            <p className="text-3xl font-bold text-slate-900 mb-1">
+            <p className="text-3xl font-bold text-slate-900 tracking-tight mb-1">
               {metric.value}
             </p>
 

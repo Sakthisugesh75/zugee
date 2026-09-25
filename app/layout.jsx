@@ -57,10 +57,10 @@ export const metadata = {
     description: "GST billing, stock tracking and WhatsApp payment reminders in one login. From ₹1,999/month.",
     images: ["/zugee-brand-banner.png"]
   },
+  // Mascot head crop. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
   icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-    apple: "/favicon.svg"
+    icon: [{ url: "/icon-192.png", type: "image/png", sizes: "192x192" }],
+    apple: "/apple-touch-icon.png"
   }
 };
 

@@ -8,7 +8,7 @@ export default function EmptyState({
   action 
 }) {
   return (
-    <div className="flex items-center justify-center min-h-[400px] p-6">
+    <div className="flex items-center justify-center min-h-[400px] p-8">
       <div className="text-center max-w-md">
         {Icon && (
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-100 border border-slate-200 mb-4">
@@ -16,7 +16,7 @@ export default function EmptyState({
           </div>
         )}
         
-        <h3 className="text-lg font-semibold text-slate-900 mb-2">
+        <h3 className="text-lg font-semibold text-slate-900 tracking-tight mb-2">
           {title}
         </h3>
         

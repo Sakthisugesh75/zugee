@@ -1,80 +1,14 @@
 // components/ui/MascotLogo.jsx
-"use client";
+// Brand lockup: the Zugee mascot (head + "Z" chest crop) as the icon, plus the ZUGEE wordmark.
+// Used in both server and client components, so no client-only hooks here.
 
-import React, { useId } from "react";
 import Image from "next/image";
-
-/**
- * Precision SVG of the Official Zugee 3D Folded Ribbon 'Z' Mark
- */
-export function ZugeeRibbonGlyph({ size = 36, className = "" }) {
-  // Unique gradient IDs per instance: the logo renders in both navbar and footer, and duplicate
-  // SVG ids make the gradients disappear when the first instance is hidden (e.g. display:none).
-  const uid = useId().replace(/:/g, "");
-  const topId = `ribbonTop-${uid}`;
-  const diagId = `ribbonDiag-${uid}`;
-  const bottomId = `ribbonBottom-${uid}`;
-
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 100 100"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      className={`shrink-0 ${className}`}
-    >
-      <defs>
-        {/* Top Fold Gradient: Dark Navy to Royal Blue */}
-        <linearGradient id={topId}x1="10" y1="15" x2="85" y2="35" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#071E4A" />
-          <stop offset="30%" stopColor="#0E46B8" />
-          <stop offset="100%" stopColor="#1B6FF8" />
-        </linearGradient>
-
-        {/* Diagonal Ribbon: Vibrant Royal Blue to Electric Cyan */}
-        <linearGradient id={diagId}x1="15" y1="65" x2="85" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#00D2FF" />
-          <stop offset="40%" stopColor="#147BFF" />
-          <stop offset="100%" stopColor="#0837A3" />
-        </linearGradient>
-
-        {/* Bottom Fold Gradient: Electric Cyan to Deep Azure */}
-        <linearGradient id={bottomId}x1="8" y1="58" x2="90" y2="88" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#00F0FF" />
-          <stop offset="50%" stopColor="#0B56E2" />
-          <stop offset="100%" stopColor="#072A80" />
-        </linearGradient>
-
-      </defs>
-
-      {/* Top horizontal stroke */}
-      <path
-        d="M12 28 C12 24 16 22 22 22 L86 22 C92 22 95 27 91 32 L72 54 L38 54 L58 32 L20 32 C15 32 12 30 12 28 Z"
-        fill={`url(#${topId})`}
-      />
-
-      {/* Diagonal folded band */}
-      <path
-        d="M88 24 L34 78 L12 78 C8 78 6 73 10 68 L60 24 Z"
-        fill={`url(#${diagId})`}
-      />
-
-      {/* Bottom fold and base horizontal stroke */}
-      <path
-        d="M12 78 C8 78 7 74 11 69 L32 46 L68 46 L46 70 L80 70 C86 70 90 73 90 78 C90 82 86 84 80 84 L18 84 C13 84 12 81 12 78 Z"
-        fill={`url(#${bottomId})`}
-      />
-    </svg>
-  );
-}
 
 export default function MascotLogo({
   size = 40,
   showWordmark = true,
   showSubline = true,
   showTagline = false,
-  showMascotThumbnail = false,
   sublineClassName = "",
   taglineClassName = "",
   className = ""
@@ -85,21 +19,20 @@ export default function MascotLogo({
       <div className="relative flex items-center justify-center shrink-0 group">
         {/* Ambient subtle cyan/blue backglow */}
         <div className="absolute -inset-1.5 rounded-xl bg-gradient-to-r from-[#1B6FF8]/30 to-[#00F0FF]/30 opacity-70 blur-md group-hover:opacity-100 transition-opacity duration-300" />
-        
-        <div className="relative flex items-center justify-center rounded-xl bg-[#090E1A] border border-white/[0.12] p-1.5 shadow-lg shadow-black/50">
-          {showMascotThumbnail ? (
-            <div className="relative overflow-hidden rounded-lg" style={{ width: size, height: size }}>
-              <Image
-                src="/zugee-mascot-3d.png"
-                alt="Zugee Cyber Genie"
-                fill
-                className="object-cover object-top"
-                priority
-              />
-            </div>
-          ) : (
-            <ZugeeRibbonGlyph size={size} />
-          )}
+
+        {/* The mascot art sits on pure black, so a black tile makes the crop edge invisible */}
+        <div
+          className="relative overflow-hidden rounded-xl bg-black border border-white/[0.12] shadow-lg shadow-black/50"
+          style={{ width: size + 12, height: size + 12 }}
+        >
+          <Image
+            src="/zugee-mascot-icon.png"
+            alt="Zugee"
+            fill
+            sizes={`${size + 12}px`}
+            className="object-cover"
+            priority
+          />
         </div>
       </div>
 

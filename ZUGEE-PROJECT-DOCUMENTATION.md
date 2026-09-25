@@ -1,7 +1,7 @@
 # Zugee Project — Complete Design & Content Documentation
 
 **Document Version:** 1.0  
-**Last Updated:** 2026-09-22  
+**Last Updated:** 2026-09-25  
 **Project:** Zugee Systems Technologies Pvt. Ltd. — Marketing Website
 
 ---
@@ -89,17 +89,22 @@ Business owners struggle with:
 
 ### Visual Identity
 
-#### Mascot
-- **Character:** A friendly, confident blue robot/AI character with the "Z" logo on its chest
+#### Mascot (current logo)
+- **Character:** A friendly blue genie-robot with a visor face, arms crossed, a glowing "Z" on its chest, and a flowing tail instead of legs
 - **Personality:** Helpful, reliable, futuristic, approachable
-- **Design Style:** 3D glossy, rounded forms with glowing cyan accents
-- **Animation:** Subtle floating/levitating motion
+- **Design Style:** 3D glossy, rounded forms with glowing cyan accents, on a pure black background
+- **Animation:** Subtle floating/levitating motion (`.animate-mascot-float`, off under reduced motion)
+- **Usage:**
+  - **Logo icon** everywhere (navbar, footer, app sidebar, auth, admin): head + chest crop in `public/zugee-mascot-icon.png`, on a black rounded tile so the crop edge disappears
+  - **Favicon:** head crop in `app/favicon.ico` (16/32px), `public/icon-192.png` and `public/apple-touch-icon.png`
+  - **Full figure:** `public/zugee-mascot-cutout.webp`, shown beside the final CTA form on desktop; its black background is converted to transparency
+  - Not in the hero. The hero stays focused on the headline and CTA
 
 #### Logo
-- **Wordmark:** "ZUGEE" in bold, modern sans-serif
-- **Letter Forms:** Geometric with horizontal line accent marks through letters
-- **Z Symbol:** Angular "Z" combining royal blue and cyan gradients
-- **Full Lockup:** Z symbol + wordmark + company name + tagline
+- **Wordmark:** "ZUG" in white + "EE" in a white → cyan gradient, heavy sans-serif
+- **Icon:** The mascot crop (see above). The earlier ribbon "Z" SVG mark is retired
+- **Full Lockup:** Mascot icon + wordmark + company name + tagline (`components/ui/MascotLogo.jsx`)
+- **Still on the old mark:** `public/zugee-brand-banner.png` (Open Graph / Twitter image) and `public/og-image.png`. TODO: regenerate with the mascot
 
 #### Color Palette
 
@@ -121,8 +126,8 @@ Business owners struggle with:
 #### Typography
 
 **Font Family:**
-- **Primary:** System fonts stack (San Francisco, Segoe UI, Roboto)
-- **Monospace:** Used for metrics, badges, technical labels
+- **Primary:** Plus Jakarta Sans (`next/font/google`, CSS variable `--font-sans`)
+- **Monospace:** JetBrains Mono (`--font-mono`), used for metrics, badges, technical labels
 
 **Type Scale:**
 ```css
@@ -268,7 +273,7 @@ The homepage follows a six-section structure optimized for conversion:
 - Clear value proposition (gets you paid on time)
 - Problem statement (Tally + Excel + WhatsApp)
 - Dual CTAs: Primary (Book Call) + Secondary (How it works)
-- Pricing teaser: "From ₹1,999/month"
+- Pricing teaser: "From ₹1,999/month · Free 2-week setup with your real data"
 - Visual comparison: "Today" (4 tools) vs "With Zugee" (1 platform)
 
 **Copy Pattern:**
@@ -343,13 +348,13 @@ The homepage follows a six-section structure optimized for conversion:
 - Stock tracking with alerts
 - WhatsApp payment reminders
 - Tally XML export
-- 14-day free trial
+- Free 2-week setup with the customer's real data after the discovery call (the marketing site makes no self-serve free-trial claim)
 
 **FAQ Section:**
 Six real buying objections answered:
 1. Can I move data from Tally?
 2. Does Zugee file GST returns?
-3. How much does it cost?
+3. How much does it cost? (answer mentions the free 2-week setup, not a trial)
 4. Does it work without internet?
 5. Is my data safe?
 6. How long does setup take?
@@ -358,7 +363,7 @@ Six real buying objections answered:
 **Goal:** Capture qualified leads through discovery call booking
 
 **Elements:**
-- Lead capture form
+- Lead capture form, with the floating mascot beside it on desktop
 - Industry selector (11 verticals)
 - Final CTA: "Book a Discovery Call"
 - Trust reinforcement (company name, security indicators)
@@ -367,7 +372,7 @@ Six real buying objections answered:
 
 ## 7. Target Verticals
 
-Zugee serves **11 specific verticals**, each with customized positioning:
+Zugee serves **11 specific verticals**, each with customized positioning. The "Planning target" lines are goals, not achieved results. They must never be published without the word "Target".
 
 ### 1. Education (K-12 & Higher Education)
 **Problem:** Scattered fee receipts, manual WhatsApp follow-ups, multi-week reconciliation delays  
@@ -377,52 +382,52 @@ Zugee serves **11 specific verticals**, each with customized positioning:
 ### 2. Hospitality (Resorts, Boutique Hotels)
 **Problem:** Fragmented bookings, manual ID scanning, unbilled restaurant tabs  
 **Solution:** Digital WhatsApp check-in, real-time room folios, instant GST invoices  
-**Key Feature:** 4-minute paperless guest check-ins
+**Planning target:** 4-minute paperless guest check-ins
 
 ### 3. Real Estate (Commercial Property)
 **Problem:** Rent collection spreadsheets, missed lease escalations, complex CAM math  
 **Solution:** Automated rent roll with escalations, CAM/utility billing, TDS tracking  
-**Key Feature:** 100% automated monthly rent roll generation
+**Planning target:** 100% automated monthly rent roll generation
 
 ### 4. Logistics (Warehousing & Fleet)
 **Problem:** Truck drivers stuck waiting for e-way bills, lost delivery receipts  
 **Solution:** Instant e-way bill generation via NIC API, WhatsApp driver bot, photo POD  
-**Key Feature:** Zero manual e-way bill bottlenecks
+**Planning target:** zero manual e-way bill bottlenecks
 
 ### 5. Healthcare (Clinics, Diagnostic Labs)
 **Problem:** Long reception queues, lost lab reports, missed appointments  
 **Solution:** OPD token system, automated PDF lab reports via WhatsApp  
-**Key Feature:** 5-minute diagnostic report turnaround
+**Planning target:** 5-minute diagnostic report turnaround
 
 ### 6. Professional Services (CA, Legal Firms)
 **Problem:** Untracked billable hours, scope creep, missed statutory filing dates  
 **Solution:** Retainer billing, compliance calendar, WhatsApp document collection  
-**Key Feature:** Zero unbilled hours or untracked retainers
+**Planning target:** zero unbilled hours or untracked retainers
 
 ### 7. Manufacturing (Job-Shop Fabrication)
 **Problem:** Raw material stockouts, lost job cards, untracked scrap percentages  
 **Solution:** Multi-level BOM, digital job cards, job-work challan tracking  
-**Key Feature:** Real-time BOM reconciliation
+**Planning target:** real-time BOM reconciliation
 
 ### 8. Retail (Multi-Outlet Franchises)
 **Problem:** Inventory stuck at one branch while another runs out  
 **Solution:** Multi-store inventory sync, inter-branch transfers, paperless receipts  
-**Key Feature:** Same-day inter-branch stock rebalancing
+**Planning target:** same-day inter-branch stock rebalancing
 
 ### 9. Fitness (Gyms, Wellness Studios)
 **Problem:** Expired members accessing facilities, manual PT session tracking  
 **Solution:** Turnstile access sync, automated renewal sequences, PT redemption  
-**Key Feature:** 95%+ timely renewal conversion
+**Planning target:** 95%+ timely renewal conversion
 
 ### 10. Facility Management (Field Services)
 **Problem:** Technicians missing SLA windows, unverified site visits  
 **Solution:** GPS-verified dispatch, digital sign-offs, preventive maintenance scheduler  
-**Key Feature:** 100% SLA compliance on high-priority tickets
+**Planning target:** 100% SLA compliance on high-priority tickets
 
 ### 11. Events (Equipment Rental, AV Production)
 **Problem:** Double-booked audio/lighting gear, missing flight cases, disputed damages  
 **Solution:** Equipment booking calendar, barcoded case tracking, crew call sheets  
-**Key Feature:** Zero double-booking of high-value gear
+**Planning target:** zero double-booking of high-value gear
 
 ---
 
@@ -460,7 +465,7 @@ zugee/
 │   ├── admin/
 │   │   └── AdminLoginForm.jsx
 │   └── ui/                    # Reusable primitives
-│       ├── MascotLogo.jsx     # Brand lockup component
+│       ├── MascotLogo.jsx     # Brand lockup (mascot icon + wordmark)
 │       ├── MotionProvider.jsx # Framer Motion wrapper
 │       ├── MotionReveal.jsx   # Scroll animation
 │       ├── PrecisionIcons.jsx # Custom icons
@@ -474,8 +479,11 @@ zugee/
 ├── supabase/
 │   └── schema.sql             # Database schema
 ├── public/                    # Static assets
-│   ├── mascot.svg
-│   ├── zugee-brand-banner.png
+│   ├── zugee-mascot-cutout.webp # Full mascot, transparent (final CTA)
+│   ├── zugee-mascot-icon.png  # Logo icon crop
+│   ├── icon-192.png           # Favicon (PNG)
+│   ├── apple-touch-icon.png
+│   ├── zugee-brand-banner.png # OG image (old mark, TODO)
 │   └── og-image.png
 └── package.json
 ```
@@ -629,7 +637,7 @@ Dashboard → /api/admin/leads (GET) → Supabase Query → Render Table
 | **Payment Follow-ups** | Manual | Manual | **Automated** |
 | **Multi-user** | Limited | No coordination | **Role-based** |
 | **Mobile Access** | No | Limited | **Full access** |
-| **Pricing** | ₹18,000/year | Free (labor cost) | **₹1,999/month** |
+| **Pricing** | TODO(founder): verify current Tally price | Free (labor cost) | **₹1,999/month** |
 
 ### Objection Handling
 
@@ -643,7 +651,8 @@ Dashboard → /api/admin/leads (GET) → Supabase Query → Render Table
 → How many hours do you spend each month reconciling bills, chasing payments, and updating stock? Zugee pays for itself if it saves you 3 hours of work per month.
 
 **"Is our data safe?"**
-→ Encrypted in transit and at rest. Automatic backups. Only people you add can see your data. More secure than Excel files on shared computers.
+→ Encrypted in transit and at rest. Only people you add can see your data. More secure than Excel files on shared computers.
+TODO(founder): add "automatic backups" (here and in FAQ #5 in `lib/verticals.js`) only once backups are confirmed configured, and name the hosting region.
 
 **"We need GST compliance"**
 → That's exactly why Zugee exists. GST is calculated automatically on every bill (CGST, SGST, IGST). Your GSTR-1 data is ready at month-end.
@@ -703,7 +712,7 @@ Before publishing any new content, verify:
 - [ ] All metrics labeled as "targets" or "sample data"
 - [ ] Claims are verifiable or marked TODO(founder)
 - [ ] No "AI-powered" unless actually using AI
-- [ ] GST terminology is accurate (CGST, SGST, IGSC)
+- [ ] GST terminology is accurate (CGST, SGST, IGST)
 - [ ] Pricing matches verticals.js
 - [ ] FAQ answers match FAQPage schema
 - [ ] Industry examples use generic category labels

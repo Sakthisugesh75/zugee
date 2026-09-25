@@ -38,10 +38,10 @@ export default function KPICard({
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl border border-slate-200 p-5 animate-pulse">
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm animate-pulse">
         <div className="flex items-center justify-between mb-4">
           <div className="w-24 h-4 bg-slate-200 rounded"></div>
-          <div className="w-10 h-10 bg-slate-200 rounded-lg"></div>
+          <div className="w-10 h-10 bg-slate-200 rounded-xl"></div>
         </div>
         <div className="w-32 h-8 bg-slate-200 rounded mb-2"></div>
         <div className="w-20 h-3 bg-slate-200 rounded"></div>
@@ -50,29 +50,29 @@ export default function KPICard({
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md hover:border-slate-300 transition-all">
+      <div className="flex items-center justify-between gap-3 mb-4">
         <p className="text-xs font-medium text-slate-500 uppercase tracking-wider">
           {label}
         </p>
         {Icon && (
-          <div className={`w-10 h-10 rounded-lg border flex items-center justify-center ${colorClasses[color]}`}>
+          <div className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 ${colorClasses[color]}`}>
             <Icon className="w-5 h-5" />
           </div>
         )}
       </div>
 
-      <p className="text-3xl font-bold text-slate-900 mb-1">
+      <p className="text-3xl font-bold text-slate-900 tracking-tight mb-1">
         {value}
       </p>
 
-      <div className="flex items-center justify-between">
-        <p className="text-xs text-slate-600">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-xs text-slate-600 min-w-0">
           {subtitle}
         </p>
 
         {trendValue && (
-          <div className={`flex items-center gap-1 text-xs font-medium ${getTrendColor()}`}>
+          <div className={`flex items-center gap-1 text-xs font-medium shrink-0 ${getTrendColor()}`}>
             {getTrendIcon()}
             <span>{trendValue}</span>
             {trendLabel && <span className="text-slate-500 ml-1">{trendLabel}</span>}

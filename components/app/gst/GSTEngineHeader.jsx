@@ -51,11 +51,13 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
 
   if (!gstConfig) {
     return (
-      <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
-        <div className="flex items-start gap-3">
-          <Settings className="w-6 h-6 text-amber-600 shrink-0 mt-0.5" />
+      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6 shadow-sm">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 rounded-xl bg-white border border-amber-200 flex items-center justify-center shrink-0">
+            <Settings className="w-6 h-6 text-amber-600" />
+          </div>
           <div>
-            <h3 className="text-lg font-semibold text-amber-900 mb-1">
+            <h3 className="text-lg font-semibold text-amber-900 tracking-tight mb-1">
               GST Configuration Required
             </h3>
             <p className="text-sm text-amber-700">
@@ -68,17 +70,17 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
   }
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl p-6">
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex items-start gap-3">
+    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-2xl p-8 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-6">
+        <div className="flex items-start gap-4 min-w-0">
           <div className="w-12 h-12 rounded-xl bg-white border border-blue-200 flex items-center justify-center shrink-0">
             <Settings className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900 mb-1">
+            <h3 className="text-lg font-bold text-slate-900 tracking-tight mb-1">
               {gstConfig.registered_state} GST Engine {gstConfig.engine_version}
             </h3>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-slate-600">
               State-specific tax calculation engine configured for your business
             </p>
           </div>
@@ -87,7 +89,7 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
         {!editing && (
           <button
             onClick={handleEdit}
-            className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-700 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 self-start shrink-0 text-sm font-medium text-blue-700 bg-white border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <Edit2 className="w-4 h-4" />
             Edit
@@ -96,15 +98,16 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
       </div>
 
       {/* Configuration Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white rounded-lg border border-slate-200 p-4">
-          <p className="text-xs text-slate-600 mb-1">GST Number</p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 mb-1">GST Number</p>
           {editing ? (
             <input
               type="text"
               value={formData.gst_number || ''}
               onChange={(e) => handleChange('gst_number', e.target.value)}
-              className="w-full px-2 py-1 text-sm border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+              aria-label="GST Number"
+              className="w-full px-3 py-2 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
               placeholder="Enter GST number"
             />
           ) : (
@@ -114,13 +117,14 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
           )}
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-4">
-          <p className="text-xs text-slate-600 mb-1">Default GST Rate</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 mb-1">Default GST Rate</p>
           {editing ? (
             <select
               value={formData.default_gst_rate || 18}
               onChange={(e) => handleChange('default_gst_rate', parseFloat(e.target.value))}
-              className="w-full px-2 py-1 text-sm border border-slate-200 rounded focus:outline-none focus:ring-2 focus:ring-[#1B6FF8]"
+              aria-label="Default GST Rate"
+              className="w-full px-3 py-2 text-sm text-slate-900 border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[#1B6FF8] focus:border-transparent"
             >
               <option value="0">0%</option>
               <option value="5">5%</option>
@@ -135,10 +139,10 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
           )}
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-4">
-          <p className="text-xs text-slate-600 mb-1">Composition Scheme</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 mb-1">Composition Scheme</p>
           {editing ? (
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 min-h-10 cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.composition_scheme || false}
@@ -154,10 +158,10 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
           )}
         </div>
 
-        <div className="bg-white rounded-lg border border-slate-200 p-4">
-          <p className="text-xs text-slate-600 mb-1">Reverse Charge</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+          <p className="text-xs font-medium text-slate-500 mb-1">Reverse Charge</p>
           {editing ? (
-            <label className="flex items-center gap-2">
+            <label className="flex items-center gap-2 min-h-10 cursor-pointer">
               <input
                 type="checkbox"
                 checked={formData.reverse_charge || false}
@@ -176,11 +180,11 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
 
       {/* Edit Actions */}
       {editing && (
-        <div className="flex items-center justify-end gap-2 mt-4 pt-4 border-t border-blue-200">
+        <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3 mt-6 pt-6 border-t border-blue-200">
           <button
             onClick={handleCancel}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <X className="w-4 h-4" />
             Cancel
@@ -188,7 +192,7 @@ export default function GSTEngineHeader({ gstConfig, onRefresh }) {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1B6FF8] rounded-lg hover:bg-[#1557C7] transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-[#1B6FF8] rounded-lg hover:bg-[#1557C7] transition-colors disabled:opacity-50 shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           >
             <Save className="w-4 h-4" />
             {saving ? 'Saving...' : 'Save Changes'}

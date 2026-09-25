@@ -216,62 +216,78 @@ export default function ReportsPage() {
     }
   };
 
+  const breadcrumbs = [
+    { label: 'Back Office', href: '/app/dashboard' },
+    { label: 'Reports' }
+  ];
+
   if (loading) {
-    return <LoadingSpinner />;
+    return (
+      <div className="h-full flex flex-col bg-slate-50">
+        <AppPageHeader
+          title="Reports"
+          description="Generate business reports, GST audits, and export data"
+          breadcrumbs={breadcrumbs}
+        />
+        <div className="flex-1 flex items-center justify-center p-8">
+          <LoadingSpinner size="lg" text="Loading reports..." />
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="h-full flex flex-col bg-slate-50">
       <AppPageHeader
         title="Reports"
         description="Generate business reports, GST audits, and export data"
-        breadcrumbs={[
-          { label: 'Back Office', href: '/app/dashboard' },
-          { label: 'Reports' }
-        ]}
+        breadcrumbs={breadcrumbs}
       />
 
-      <div className="p-6 space-y-6">
-        {/* Report Generation Cards */}
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Generate Reports</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <ReportCard
-              title="Daily Business Report"
-              description="Comprehensive daily performance report with leads, revenue, ad spend, and conversions"
-              icon={BarChart3}
-              iconColor="blue"
-              periodType="date-range"
-              format="pdf"
-              generating={generating.daily_business}
-              onGenerate={() => {
-                const today = new Date().toISOString().split('T')[0];
-                generateReport('daily_business', 'pdf', today, today);
-              }}
-            />
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto">
+        <div className="max-w-[1600px] mx-auto p-8 space-y-8">
+          {/* Report Generation Cards */}
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 tracking-tight mb-4">Generate Reports</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ReportCard
+                title="Daily Business Report"
+                description="Comprehensive daily performance report with leads, revenue, ad spend, and conversions"
+                icon={BarChart3}
+                iconColor="blue"
+                periodType="date-range"
+                format="pdf"
+                generating={generating.daily_business}
+                onGenerate={() => {
+                  const today = new Date().toISOString().split('T')[0];
+                  generateReport('daily_business', 'pdf', today, today);
+                }}
+              />
 
-            <ReportCard
-              title="Monthly GST Audit"
-              description="Detailed GST audit report with slab-wise breakdown and invoice details for compliance"
-              icon={Receipt}
-              iconColor="emerald"
-              periodType="month"
-              format="csv"
-              generating={generating.monthly_gst_audit}
-              onGenerate={() => {
-                const now = new Date();
-                const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
-                const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
-                generateReport('monthly_gst_audit', 'csv', firstDay, lastDay);
-              }}
-            />
-          </div>
-        </div>
+              <ReportCard
+                title="Monthly GST Audit"
+                description="Detailed GST audit report with slab-wise breakdown and invoice details for compliance"
+                icon={Receipt}
+                iconColor="emerald"
+                periodType="month"
+                format="csv"
+                generating={generating.monthly_gst_audit}
+                onGenerate={() => {
+                  const now = new Date();
+                  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+                  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
+                  generateReport('monthly_gst_audit', 'csv', firstDay, lastDay);
+                }}
+              />
+            </div>
+          </section>
 
-        {/* Report History */}
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900 mb-4">Recent Reports</h2>
-          <ReportHistory reports={reports} onDownload={handleDownload} />
+          {/* Report History */}
+          <section>
+            <h2 className="text-lg font-semibold text-slate-900 tracking-tight mb-4">Recent Reports</h2>
+            <ReportHistory reports={reports} onDownload={handleDownload} />
+          </section>
         </div>
       </div>
     </div>
