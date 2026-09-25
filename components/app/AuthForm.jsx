@@ -154,13 +154,13 @@ export default function AuthForm() {
       <div className="text-center mb-8">
         <h1 className="text-3xl font-extrabold text-white mb-2">
           {mode === 'signin' && 'Welcome back'}
-          {mode === 'signup' && 'Start your 14-day free trial'}
+          {mode === 'signup' && 'Create your account'}
           {mode === 'magic-link' && 'Sign in with magic link'}
           {mode === 'reset' && 'Reset your password'}
         </h1>
         <p className="text-slate-400">
           {mode === 'signin' && 'Sign in to your Zugee dashboard'}
-          {mode === 'signup' && 'No credit card required'}
+          {mode === 'signup' && 'Set up your Zugee dashboard'}
           {mode === 'magic-link' && 'We\'ll email you a link to sign in'}
           {mode === 'reset' && 'We\'ll email you a link to reset your password'}
         </p>
@@ -341,7 +341,7 @@ export default function AuthForm() {
               </>
             ) : (
               <>
-                Start Free Trial
+                Create account
                 <ArrowRight className="w-5 h-5" />
               </>
             )}
@@ -441,13 +441,13 @@ export default function AuthForm() {
               Sign in with magic link instead
             </button>
             <div className="text-sm text-slate-400">
-              Don't have an account?{' '}
+              Don&apos;t have an account?{' '}
               <button
                 type="button"
                 onClick={() => setMode('signup')}
                 className="text-[#00F0FF] hover:text-[#3BC4E8] transition-colors font-medium"
               >
-                Start free trial
+                Create account
               </button>
             </div>
             <button

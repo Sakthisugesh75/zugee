@@ -1,64 +1,38 @@
 // app/(marketing)/page.jsx
-// Homepage: six sections that sell the platform to one buyer — the owner of a 5–50 person Indian
-// business running on Tally, Excel and WhatsApp. Industry detail lives in the compact strip inside
-// the final CTA (and, later, on dedicated /industries/* pages).
+// Homepage: what ZUGEE makes, which products are ready (honestly), how buying works, how pricing is
+// decided, and a short form to talk to the team. Every claim must pass the rule in
+// docs/ZUGEE-PLATFORM-PLAN.md: "can the product actually do this today?"
 
 import Hero from "@/components/home/Hero";
-import ProofSection from "@/components/home/ProofSection";
-import ProductSection from "@/components/home/ProductSection";
-import WhyZugee from "@/components/home/WhyZugee";
+import ProductsSection from "@/components/home/ProductsSection";
+import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import ContactSection from "@/components/home/ContactSection";
-import { FAQ_ITEMS, PRICING_TIERS } from "@/lib/verticals";
+import { BUSINESS_TYPES } from "@/lib/products";
+import { FAQ_ITEMS } from "@/lib/site-content";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zugee.com";
 
 export const metadata = {
-  title: { absolute: "GST Billing & Inventory Software for Small Business | Zugee" },
+  title: { absolute: "ZUGEE — Business Software for Indian Businesses" },
   description:
-    "Business management software for small businesses in India: GST billing, stock tracking and WhatsApp payment reminders in one login. From ₹1,999/month.",
+    "ZUGEE makes industry-focused CRM, ERP, billing and operations software for Indian businesses: fleet, travel, water supply, real estate, manufacturing and more.",
   alternates: {
     canonical: "/"
   }
 };
 
-// Structured data is generated from the same arrays that render the page, so the visible
-// FAQ answers and prices can never drift from what search engines are told.
+// Structured data is generated from the same arrays that render the page, so what search engines
+// are told can never drift from what visitors see.
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "SoftwareApplication",
-      name: "Zugee",
+      "@type": "Organization",
+      name: "ZUGEE",
+      legalName: "Zugee Systems Technologies Pvt. Ltd.",
       url: `${SITE_URL}/`,
-      description:
-        "GST billing and inventory software for small businesses in India. Billing, stock, payments and WhatsApp customer communication in one login.",
-      applicationCategory: "BusinessApplication",
-      applicationSubCategory: "Billing and inventory management",
-      operatingSystem: "Web browser",
-      inLanguage: "en-IN",
-      countriesSupported: "IN",
-      publisher: {
-        "@type": "Organization",
-        name: "Zugee Systems Technologies Pvt. Ltd.",
-        url: `${SITE_URL}/`
-      },
-      offers: PRICING_TIERS.map((tier) => ({
-        "@type": "Offer",
-        name: tier.name,
-        price: String(tier.price),
-        priceCurrency: "INR",
-        description: `${tier.audience} Free 2-week setup with your real data after a discovery call.`,
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: String(tier.price),
-          priceCurrency: "INR",
-          unitText: "MONTH",
-          valueAddedTaxIncluded: false
-        },
-        url: `${SITE_URL}/#pricing`,
-        availability: "https://schema.org/InStock"
-      }))
+      logo: `${SITE_URL}/zugee-mascot-icon.png`
     },
     {
       "@type": "FAQPage",
@@ -80,23 +54,12 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
       />
 
-      {/* 1. Hero — one outcome, one keyword, primary CTA */}
       <Hero />
-
-      {/* 2. Proof — testimonials + metric (TODO(founder): content) */}
-      <ProofSection />
-
-      {/* 3. Product — dashboard preview + four outcomes */}
-      <ProductSection />
-
-      {/* 4. Why Zugee — three differentiators */}
-      <WhyZugee />
-
-      {/* 5. Pricing — two tiers + the six buying-objection FAQs */}
+      <ProductsSection />
+      <HowWeWork />
       <PricingSection />
-
-      {/* 6. Final CTA — industries strip + discovery-call form */}
-      <ContactSection />
+      {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}
+      <ContactSection businessTypes={BUSINESS_TYPES} />
     </>
   );
 }

@@ -1,11 +1,10 @@
 // components/layout/Navbar.jsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -21,8 +20,8 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "Product", href: "#product" },
-    { label: "Why Zugee", href: "#why-zugee" },
+    { label: "Products", href: "#products" },
+    { label: "How it works", href: "#how-it-works" },
     { label: "Pricing", href: "#pricing" },
     { label: "FAQ", href: "#faq" }
   ];
@@ -43,7 +42,7 @@ export default function Navbar() {
               size={36}
               showWordmark={true}
               showSubline={true}
-              showTagline={false}
+              preload
               sublineClassName="hidden sm:block lg:hidden xl:block"
             />
           </Link>
@@ -67,10 +66,9 @@ export default function Navbar() {
 
           <a
             href="#contact"
-            className="btn-primary text-xs uppercase font-mono tracking-wider !py-2.5 !px-5 whitespace-nowrap"
+            className="btn-primary text-sm !py-2.5 !px-5 whitespace-nowrap"
           >
-            <span className="xl:hidden">Book a Call</span>
-            <span className="hidden xl:inline">Book Discovery Call</span>
+            <span>Book a Demo</span>
             <ArrowRight className="w-3.5 h-3.5 shrink-0" />
           </a>
         </div>
@@ -79,13 +77,13 @@ export default function Navbar() {
         <div className="flex items-center gap-2.5 lg:hidden">
           <a
             href="#contact"
-            className="btn-primary text-xs !py-2 !px-3.5 font-mono"
+            className="btn-primary text-xs !py-2 !px-3.5"
           >
-            Demo
+            Book a Demo
           </a>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white hover:border-[#00F0FF] focus:outline-none transition-colors"
+            className="p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white hover:border-[#00F0FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF] transition-colors"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -95,14 +93,9 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Drawer Menu */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto bg-[#0A0F1D]/95 backdrop-blur-2xl border-b border-white/[0.1] p-6 shadow-2xl text-white z-50"
+      {mobileMenuOpen && (
+          <div
+            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto bg-[#0A0F1D]/95 backdrop-blur-2xl border-b border-white/[0.1] p-6 shadow-2xl text-white z-50"
           >
             <div className="flex flex-col gap-4">
 
@@ -122,9 +115,9 @@ export default function Navbar() {
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="btn-primary w-full text-center justify-center font-mono uppercase tracking-wider text-xs !py-3.5"
+                  className="btn-primary w-full text-center justify-center text-sm !py-3.5"
                 >
-                  Book a Discovery Call
+                  Book a Demo
                 </a>
                 <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-mono">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#00F0FF]" />
@@ -132,9 +125,8 @@ export default function Navbar() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </header>
   );
 }

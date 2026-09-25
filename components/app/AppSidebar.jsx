@@ -43,41 +43,46 @@ export default function AppSidebar({ profile }) {
     {
       name: 'CRM',
       href: '/app/crm',
-      icon: Users,
-      badge: 'Leads & Sales'
+      icon: Users
     },
     {
-      name: 'Ads & Intelligence',
+      name: 'Ads',
       href: '/app/ads',
-      icon: TrendingUp
+      icon: TrendingUp,
+      comingSoon: true
     },
     {
-      name: 'GST & Compliance',
+      name: 'GST',
       href: '/app/gst',
-      icon: FileText
+      icon: FileText,
+      comingSoon: true
     }
   ];
 
   const backOfficeItems = [
     {
-      name: 'Sales & Billing',
+      name: 'Billing',
       href: '/app/back-office/billing',
-      icon: ShoppingCart
+      icon: ShoppingCart,
+      comingSoon: true
     },
     {
-      name: 'ERP Operations',
+      name: 'Inventory',
       href: '/app/back-office/erp',
-      icon: Package
+      icon: Package,
+      comingSoon: true
     },
     {
-      name: 'HR & Employees',
+      name: 'Employees',
       href: '/app/back-office/hr',
-      icon: UsersRound
+      icon: UsersRound,
+      comingSoon: true
     },
     {
       name: 'Reports',
       href: '/app/reports',
-      icon: BarChart3
+      icon: BarChart3,
+      comingSoon: true
     }
   ];
 
@@ -119,8 +124,8 @@ export default function AppSidebar({ profile }) {
               >
                 <Icon className="w-5 h-5 shrink-0" />
                 <span className="flex-1">{item.name}</span>
-                {item.badge && (
-                  <span className="text-[10px] font-mono text-slate-500">{item.badge}</span>
+                {item.comingSoon && (
+                  <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.06] text-slate-400 border border-white/[0.08]">Soon</span>
                 )}
               </Link>
             );
@@ -161,6 +166,9 @@ export default function AppSidebar({ profile }) {
                   >
                     <Icon className="w-5 h-5 shrink-0" />
                     <span className="flex-1">{item.name}</span>
+                    {item.comingSoon && (
+                      <span className="text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white/[0.06] text-slate-400 border border-white/[0.08]">Soon</span>
+                    )}
                   </Link>
                 );
               })}
@@ -175,11 +183,6 @@ export default function AppSidebar({ profile }) {
         <div className="px-3 py-2 mb-2">
           <p className="text-sm font-medium text-white truncate">
             {profile?.business_name || 'Business Name'}
-          </p>
-          <p className="text-xs text-slate-400 truncate">
-            {profile?.plan_tier === 'starter' && 'Starter Plan'}
-            {profile?.plan_tier === 'growth' && 'Growth Plan'}
-            {profile?.plan_tier === 'enterprise' && 'Enterprise Plan'}
           </p>
         </div>
 

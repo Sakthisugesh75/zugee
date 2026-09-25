@@ -6,12 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import MascotLogo from "@/components/ui/MascotLogo";
 import StatusBadge from "@/components/ui/StatusBadge";
-<<<<<<< Updated upstream
-import { VERTICALS } from "@/lib/verticals";
-=======
 import AdminNav from "@/components/admin/AdminNav";
 import { BUSINESS_TYPES, PRODUCTS, businessTypeLabel } from "@/lib/products";
->>>>>>> Stashed changes
 import {
   Search,
   Download,
@@ -224,11 +220,12 @@ export default function AdminDashboardPage() {
         "Reference ID",
         "Date",
         "Name",
-        "Email",
         "Phone",
-        "Industry",
+        "Email",
+        "Company",
+        "Business type",
         "Status",
-        "Operational Goals",
+        "Goal (older form)",
         "Message",
         "Source Page"
       ];
@@ -238,9 +235,10 @@ export default function AdminDashboardPage() {
           l.reference_id,
           l.created_at ? new Date(l.created_at).toISOString() : "",
           l.name,
-          l.email,
           l.phone,
-          l.industry,
+          l.email,
+          l.company_name,
+          businessTypeLabel(l.industry),
           l.status,
           l.goal,
           l.message,
@@ -369,7 +367,7 @@ export default function AdminDashboardPage() {
               {stats.qualified}
             </div>
             <span className="text-[11px] font-mono text-emerald-400 mt-1 block font-medium">
-              Moving to 14-day setup
+              Ready for a demo or setup
             </span>
           </div>
         </div>
@@ -402,7 +400,7 @@ export default function AdminDashboardPage() {
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="search"
-                placeholder="Name, email, phone or ref ID..."
+                placeholder="Name, phone, email, company or ref ID..."
                 aria-label="Search leads"
                 value={searchQuery}
                 maxLength={100}
@@ -423,13 +421,12 @@ export default function AdminDashboardPage() {
               }}
               className="bg-[#06090F] border border-white/[0.1] focus:border-[#00F0FF] rounded-xl px-3 py-2 text-xs text-white font-mono outline-none cursor-pointer w-auto"
             >
-              <option value="all">All Verticals</option>
-              {VERTICALS.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.shortName}
+              <option value="all">All business types</option>
+              {BUSINESS_TYPES.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.label}
                 </option>
               ))}
-              <option value="other">Other / Bespoke</option>
             </select>
           </div>
         </div>
@@ -492,16 +489,15 @@ export default function AdminDashboardPage() {
                         <div className="font-semibold text-white font-sans text-sm">
                           {lead.name}
                         </div>
-                        <div className="text-slate-400 text-[11px]">{lead.email}</div>
-                        {lead.phone && (
-                          <div className="text-slate-400 text-[10px]">{lead.phone}</div>
-                        )}
+                        {lead.phone && <div className="text-slate-300 text-[11px]">{lead.phone}</div>}
+                        {lead.email && <div className="text-slate-400 text-[10px]">{lead.email}</div>}
+                        {lead.company_name && <div className="text-slate-400 text-[10px]">{lead.company_name}</div>}
                       </td>
 
                       {/* Industry */}
                       <td className="py-3.5 px-4 whitespace-nowrap">
-                        <span className="px-2.5 py-1 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/25 uppercase text-[10px] font-semibold">
-                          {lead.industry}
+                        <span className="px-2.5 py-1 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/25 text-[10px] font-semibold">
+                          {businessTypeLabel(lead.industry)}
                         </span>
                       </td>
 
@@ -625,10 +621,14 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Official Email</span>
-                    <a href={`mailto:${selectedLead.email}`} className="text-white break-all hover:text-[#00F0FF]">
-                      {selectedLead.email}
-                    </a>
+                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Email</span>
+                    {selectedLead.email ? (
+                      <a href={`mailto:${selectedLead.email}`} className="text-white break-all hover:text-[#00F0FF]">
+                        {selectedLead.email}
+                      </a>
+                    ) : (
+                      <span className="text-slate-400">Not provided</span>
+                    )}
                   </div>
                   <div>
                     <span className="text-slate-400 uppercase block mb-1 font-semibold">Phone / WhatsApp</span>
@@ -638,24 +638,27 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Operating Industry</span>
-                    <span className="text-[#00F0FF] capitalize font-medium">{selectedLead.industry}</span>
+                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Business type</span>
+                    <span className="text-[#00F0FF] font-medium">{businessTypeLabel(selectedLead.industry)}</span>
                   </div>
                   <div>
-                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Source Ingestion</span>
-                    <span className="text-slate-300">{selectedLead.source_page || "homepage"}</span>
+                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Company</span>
+                    <span className="text-slate-300">{selectedLead.company_name || "Not provided"}</span>
                   </div>
                 </div>
 
-                <div>
-                  <span className="text-slate-400 uppercase block mb-1 font-semibold">Operational Goals</span>
-                  <div className="p-3.5 rounded-xl bg-[#06090F] text-slate-300 border border-white/[0.08] font-sans text-xs leading-relaxed whitespace-pre-wrap break-words">
-                    {selectedLead.goal || "No specific operational goals specified."}
+                {/* `goal` is only present on leads captured before Phase 0. */}
+                {selectedLead.goal && (
+                  <div>
+                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Goal (older form)</span>
+                    <div className="p-3.5 rounded-xl bg-[#06090F] text-slate-300 border border-white/[0.08] font-sans text-xs leading-relaxed whitespace-pre-wrap break-words">
+                      {selectedLead.goal}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div>
-                  <span className="text-slate-400 uppercase block mb-1 font-semibold">Inquiry Message / Notes</span>
+                  <span className="text-slate-400 uppercase block mb-1 font-semibold">What they need</span>
                   <div className="p-3.5 rounded-xl bg-[#06090F] text-slate-300 border border-white/[0.08] font-sans text-xs leading-relaxed whitespace-pre-wrap break-words">
                     {selectedLead.message || "No additional message provided."}
                   </div>

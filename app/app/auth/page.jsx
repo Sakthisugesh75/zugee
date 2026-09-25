@@ -6,7 +6,7 @@ import MascotLogo from '@/components/ui/MascotLogo';
 import Link from 'next/link';
 
 export const metadata = {
-  title: 'Sign In | Zugee Dashboard',
+  title: 'Sign In',
   description: 'Sign in to your Zugee business dashboard'
 };
 
@@ -37,12 +37,12 @@ export default async function AuthPage() {
           </Link>
           
           <h2 className="text-4xl font-extrabold text-white mb-4 tracking-tight">
-            Business management,{' '}
-            <span className="blue-cyan-gradient-text">engineered for precision</span>
+            Your business,{' '}
+            <span className="blue-cyan-gradient-text">in one place</span>
           </h2>
           
           <p className="text-lg text-slate-300 mb-8 leading-relaxed">
-            GST billing, inventory tracking, CRM, and payment follow-ups — all in one unified dashboard.
+            Sign in to track your leads, their status and your next follow-ups.
           </p>
 
           <div className="space-y-4">
@@ -51,28 +51,8 @@ export default async function AuthPage() {
                 <span className="text-[#00F0FF] font-bold">✓</span>
               </div>
               <div>
-                <h3 className="text-white font-semibold mb-1">14-Day Free Trial</h3>
-                <p className="text-sm text-slate-400">No credit card required. Cancel anytime.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="w-8 h-8 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/30 flex items-center justify-center shrink-0">
-                <span className="text-[#00F0FF] font-bold">✓</span>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">GST-Native Platform</h3>
-                <p className="text-sm text-slate-400">CGST, SGST, IGST calculated automatically on every invoice.</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="w-8 h-8 rounded-lg bg-[#00F0FF]/10 border border-[#00F0FF]/30 flex items-center justify-center shrink-0">
-                <span className="text-[#00F0FF] font-bold">✓</span>
-              </div>
-              <div>
-                <h3 className="text-white font-semibold mb-1">WhatsApp Integration</h3>
-                <p className="text-sm text-slate-400">Send invoices and payment reminders from your business number.</p>
+                <h3 className="text-white font-semibold mb-1">Lead tracking</h3>
+                <p className="text-sm text-slate-400">Keep every enquiry with its status, priority, notes and next follow-up date.</p>
               </div>
             </div>
           </div>

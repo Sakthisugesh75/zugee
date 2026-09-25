@@ -1,5 +1,5 @@
 -- supabase/schema.sql
--- Database schema for the Zugee marketing site.
+-- Database schema for the ZUGEE marketing site (lead form).
 -- Run in the Supabase SQL editor (or via `supabase db push`) before deploying.
 --
 -- Security model: the Next.js server talks to Supabase with the service_role key only.
@@ -8,20 +8,22 @@
 create extension if not exists pgcrypto;
 
 -- ---------------------------------------------------------------------------
--- Sales leads (contact form, fit quiz, pricing estimator)
+-- Sales leads ("Talk to our team" form)
+-- `industry` holds the business type: a product slug from lib/products.js, or 'other'.
 -- ---------------------------------------------------------------------------
 create table if not exists public.leads (
   id            uuid primary key default gen_random_uuid(),
   created_at    timestamptz not null default now(),
   reference_id  text not null unique,
   name          text not null check (char_length(name) between 2 and 120),
-  email         text not null check (char_length(email) <= 254),
-  phone         text check (phone is null or char_length(phone) <= 25),
+  phone         text not null check (char_length(phone) between 7 and 25),
+  email         text check (email is null or char_length(email) <= 254),
+  company_name  text check (company_name is null or char_length(company_name) <= 160),
   industry      text not null check (char_length(industry) <= 40),
-  goal          text check (goal is null or char_length(goal) <= 300),
+  goal          text check (goal is null or char_length(goal) <= 300), -- legacy; no longer collected
   message       text check (message is null or char_length(message) <= 2000),
   source_page   text not null default 'homepage-contact'
-                check (source_page in ('homepage-contact', 'fit-quiz', 'pricing-estimator')),
+                check (source_page in ('homepage-contact')),
   status        text not null default 'new'
                 check (status in ('new', 'contacted', 'qualified', 'archived'))
 );
@@ -33,32 +35,22 @@ create index if not exists leads_industry_idx on public.leads (industry);
 alter table public.leads enable row level security;
 
 -- ---------------------------------------------------------------------------
--- Newsletter subscribers (footer) — kept out of the sales lead queue
+-- Migrating an existing database (Phase 0, 2026-09-25)
 -- ---------------------------------------------------------------------------
-create table if not exists public.newsletter_subscribers (
-  id           uuid primary key default gen_random_uuid(),
-  created_at   timestamptz not null default now(),
-  email        text not null unique check (char_length(email) <= 254),
-  source_page  text not null default 'footer-newsletter'
-);
-
-alter table public.newsletter_subscribers enable row level security;
-
--- ---------------------------------------------------------------------------
--- Migrating an existing database
--- ---------------------------------------------------------------------------
--- If newsletter sign-ups were previously stored in `leads`, move them across:
+-- Run once on a database created from the previous version of this file:
 --
---   insert into public.newsletter_subscribers (email, created_at)
---   select distinct on (email) email, created_at
---   from public.leads
---   where source_page = 'footer-newsletter'
---   on conflict (email) do nothing;
+--   alter table public.leads add column if not exists company_name text
+--     check (company_name is null or char_length(company_name) <= 160);
+--   alter table public.leads alter column email drop not null;
 --
---   delete from public.leads where source_page = 'footer-newsletter';
+--   -- Phone becomes required. Old leads without a phone keep a placeholder so the constraint holds.
+--   update public.leads set phone = 'not-given' where phone is null;
+--   alter table public.leads alter column phone set not null;
 --
--- Legacy source_page values (e.g. 'hero-cta', 'industries-tab') must be normalised
--- before adding the source_page check constraint to an existing table:
+--   -- The fit quiz and pricing estimator no longer exist.
+--   update public.leads set source_page = 'homepage-contact' where source_page <> 'homepage-contact';
+--   alter table public.leads drop constraint if exists leads_source_page_check;
+--   alter table public.leads add constraint leads_source_page_check check (source_page in ('homepage-contact'));
 --
---   update public.leads set source_page = 'homepage-contact'
---   where source_page not in ('homepage-contact', 'fit-quiz', 'pricing-estimator');
+--   -- The footer newsletter was removed. Export the list first if you want to keep it.
+--   drop table if exists public.newsletter_subscribers;

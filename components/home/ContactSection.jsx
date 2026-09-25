@@ -1,71 +1,41 @@
 // components/home/ContactSection.jsx
+// Final CTA: a short demo-request form. The team calls back to arrange a demo meeting.
+// Required: name, mobile/WhatsApp, business type. Everything else is
+// optional — most Indian SMB owners would rather be called or WhatsApped than emailed.
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { VERTICALS } from "@/lib/verticals";
-import {
-  Send,
-  CheckCircle2,
-  AlertCircle,
-  Clock,
-  Copy,
-  Check,
-  Sparkles
-} from "lucide-react";
-import { MotionReveal } from "@/components/ui/MotionReveal";
+import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 
 // Keep in sync with the limits enforced in app/api/leads/route.js
-const MAX_LENGTHS = { name: 120, email: 254, phone: 25, goal: 300, message: 2000 };
+const MAX_LENGTHS = { name: 120, phone: 25, email: 254, company: 160, message: 2000 };
 
-const EMPTY_FORM = {
-  name: "",
-  email: "",
-  phone: "",
-  industry: "",
-  goal: "",
-  message: ""
-};
+const EMPTY_FORM = { name: "", phone: "", industry: "", email: "", company: "", message: "" };
 
-export default function ContactSection() {
+const inputClass =
+  "w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors";
+const labelClass = "block text-sm font-medium text-slate-200 mb-2";
+
+export default function ContactSection({ businessTypes }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
-  const [sourcePage, setSourcePage] = useState("homepage-contact");
   const [honeypot, setHoneypot] = useState("");
-
   const [submitStatus, setSubmitStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
-  const [confirmedData, setConfirmedData] = useState(null);
-  const [copied, setCopied] = useState(false);
-  const [prefillNotice, setPrefillNotice] = useState(null);
-  const noticeTimerRef = useRef(null);
+  const [confirmed, setConfirmed] = useState(null);
 
-  // Listen for prefill events from Quiz and Pricing Estimator
+  // Product cards pre-select the business type before scrolling here.
   useEffect(() => {
-    const handlePrefill = (e) => {
-      const { industry, goal, message, source } = e.detail || {};
-      setFormData((prev) => ({
-        ...prev,
-        industry: industry || prev.industry,
-        goal: (goal || prev.goal).slice(0, MAX_LENGTHS.goal),
-        message: (message || prev.message).slice(0, MAX_LENGTHS.message)
-      }));
-      if (source) setSourcePage(source);
-
-<<<<<<< Updated upstream
-      const verticalMatch = VERTICALS.find((v) => v.id === industry);
-      const label = verticalMatch ? verticalMatch.name : industry || "your assessment";
-      setPrefillNotice(`Pre-filled profile: ${label}`);
-      clearTimeout(noticeTimerRef.current);
-      noticeTimerRef.current = setTimeout(() => setPrefillNotice(null), 8000);
+    const handleSelect = (e) => {
+      const slug = e.detail?.slug;
+      if (slug && businessTypes.some((b) => b.id === slug)) {
+        setFormData((prev) => ({ ...prev, industry: slug }));
+      }
     };
+    window.addEventListener("zugee:select-product", handleSelect);
+    return () => window.removeEventListener("zugee:select-product", handleSelect);
+  }, [businessTypes]);
 
-    window.addEventListener("zugee:prefill-contact", handlePrefill);
-    return () => {
-      window.removeEventListener("zugee:prefill-contact", handlePrefill);
-      clearTimeout(noticeTimerRef.current);
-    };
-  }, []);
-=======
   // Pricing cards' "Get Started" notes the chosen plan in the message (only if it's still empty,
   // so we never overwrite what the visitor typed).
   useEffect(() => {
@@ -81,7 +51,6 @@ export default function ContactSection() {
   }, []);
 
   const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
->>>>>>> Stashed changes
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,371 +61,244 @@ export default function ContactSection() {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          source_page: sourcePage,
-          company_website: honeypot
-        })
+        body: JSON.stringify({ ...formData, source_page: "homepage-contact", company_website: honeypot })
       });
-
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        // Confirmation is shown ONLY after database write succeeds
-        const industryMatch = VERTICALS.find((v) => v.id === formData.industry);
-        setConfirmedData({
-          referenceId: result.reference_id,
-          name: formData.name,
-          email: formData.email,
-          industry: industryMatch ? industryMatch.name : "Other / Bespoke"
-        });
+        setConfirmed({ name: formData.name, phone: formData.phone, referenceId: result.reference_id });
         setSubmitStatus("success");
       } else {
         setSubmitStatus("error");
-        setErrorMessage(
-          result.error || "Failed to record inquiry. Please check your inputs and try again."
-        );
+        setErrorMessage(result.error || "We couldn't send your details. Please check the form and try again.");
       }
     } catch {
       setSubmitStatus("error");
-      setErrorMessage("Network error: Unable to reach lead server. Please try again.");
-    }
-  };
-
-  const copyRefId = async () => {
-    if (!confirmedData?.referenceId) return;
-    try {
-      await navigator.clipboard.writeText(confirmedData.referenceId);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      // Clipboard unavailable (insecure context or denied) — the ID is still visible to copy manually
+      setErrorMessage("We couldn't reach our server. Please check your connection and try again.");
     }
   };
 
   const resetForm = () => {
     setFormData(EMPTY_FORM);
-    setSourcePage("homepage-contact");
     setSubmitStatus("idle");
-    setConfirmedData(null);
+    setConfirmed(null);
   };
 
-  const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
-
-  const selectIndustry = (industryId) => {
-    setFormData((prev) => ({ ...prev, industry: industryId }));
-    document.getElementById("contact-name")?.focus({ preventScroll: true });
-  };
+  const busy = submitStatus === "loading";
 
   return (
-    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden">
-      {/* Background ambient radial glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none blur-3xl" />
+    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-20">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container relative z-10">
-        {/* Section Header — final CTA */}
-        <MotionReveal className="max-w-3xl mx-auto text-center mb-10">
+        <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
-            Stop juggling <span className="blue-cyan-gradient-text">Tally, Excel and WhatsApp.</span>
+            Book a demo
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-            Book a 20-minute call and see Zugee set up for your trade.
+            Tell us about your business. We&apos;ll call or WhatsApp you to fix a time and show you the product live.
           </p>
-        </MotionReveal>
-
-        {/* Compact industries strip — the eleven verticals now live here as a one-line selector,
-            not as the pitch. Choosing one pre-fills the industry field below.
-            TODO(seo): once /industries/* landing pages exist with real content, turn these into links. */}
-        <MotionReveal delay={0.05} className="max-w-4xl mx-auto mb-8">
-          <div id="industries" className="scroll-mt-28 flex flex-wrap items-center justify-center gap-2">
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-400 mr-1">Built for your trade:</span>
-            {[...VERTICALS.map((v) => ({ id: v.id, label: v.shortName })), { id: "other", label: "Other" }].map((v) => {
-              const active = formData.industry === v.id;
-              return (
-                <button
-                  key={v.id}
-                  type="button"
-                  onClick={() => selectIndustry(v.id)}
-                  aria-pressed={active}
-                  className={`px-3 py-1.5 rounded-full text-xs border transition-colors cursor-pointer ${
-                    active
-                      ? "bg-[#00F0FF]/15 text-[#00F0FF] border-[#00F0FF]/50"
-                      : "bg-white/[0.03] text-slate-300 border-white/[0.1] hover:border-[#00F0FF]/40 hover:text-white"
-                  }`}
-                >
-                  {v.label}
-                </button>
-              );
-            })}
-          </div>
-        </MotionReveal>
-
-        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] gap-10 items-center">
-        {/* Mascot — desktop only, so the form stays first on phones. The webp has its black
-            background converted to transparency, so it sits directly on the section glow. */}
-        <div aria-hidden="true" className="hidden lg:flex justify-center relative">
-          <div className="absolute bottom-6 w-48 h-10 rounded-full bg-[#00F0FF]/20 blur-2xl" />
-          <Image
-            src="/zugee-mascot-cutout.webp"
-            alt=""
-            width={1024}
-            height={1536}
-            sizes="300px"
-            className="w-full max-w-[300px] h-auto animate-mascot-float"
-          />
         </div>
 
-        {/* Main Form Container */}
-        <MotionReveal delay={0.15} className="w-full max-w-2xl mx-auto">
-          {submitStatus === "success" && confirmedData ? (
-            /* Success confirmation card — ONLY appears after verified database write */
-            <div className="glass-panel p-8 sm:p-10 rounded-3xl border-[#00F0FF]/40 bg-[#0A0F1D]/90 shadow-[0_20px_70px_rgba(0,0,0,0.8)] text-center space-y-6 animate-fade-in backdrop-blur-2xl">
-              <div className="w-16 h-16 rounded-2xl bg-[#00F0FF]/15 text-[#00F0FF] flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(0,240,255,0.25)] border border-[#00F0FF]/40">
-                <CheckCircle2 className="w-9 h-9" />
-              </div>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] gap-10 items-center">
+          {/* Mascot — desktop only, so the form stays first on phones. The webp has its black
+              background converted to transparency, so it sits directly on the section glow. */}
+          <div aria-hidden="true" className="hidden lg:flex justify-center relative">
+            <div className="absolute bottom-6 w-48 h-10 rounded-full bg-[#00F0FF]/20 blur-2xl" />
+            <Image
+              src="/zugee-mascot-cutout.webp"
+              alt=""
+              width={1024}
+              height={1536}
+              sizes="300px"
+              className="w-full max-w-[300px] h-auto animate-mascot-float"
+            />
+          </div>
 
-              <div>
-                <span className="text-xs font-mono uppercase tracking-widest text-[#00F0FF] block mb-2 font-bold">
-                  Confirmed & Queued
-                </span>
-                <h3 className="text-2xl sm:text-3xl font-bold text-white font-sans mb-2">
-                  Inquiry Verified & Saved
-                </h3>
+          {/* Not wrapped in a reveal animation: CTAs jump straight here, so the form must be visible at once. */}
+          <div className="w-full max-w-2xl mx-auto">
+            {submitStatus === "success" && confirmed ? (
+              <div
+                role="status"
+                className="rounded-3xl border border-[#00F0FF]/40 bg-[#0A0F1D]/90 p-8 sm:p-10 text-center space-y-5"
+              >
+                <div className="w-14 h-14 rounded-2xl bg-[#00F0FF]/15 text-[#00F0FF] flex items-center justify-center mx-auto border border-[#00F0FF]/40">
+                  <CheckCircle2 className="w-8 h-8" aria-hidden="true" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Thanks, {confirmed.name}.</h3>
                 <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
-                  Thank you, <strong className="text-white">{confirmedData.name}</strong>. Your inquiry has been securely recorded into our lead queue.
+                  We&apos;ll contact you on{" "}
+                  <strong className="text-white">{confirmed.phone}</strong> to arrange your demo.
                 </p>
-              </div>
-
-              {/* Reference ID Pill with Copy */}
-              {confirmedData.referenceId && (
-                <div className="p-4 rounded-2xl bg-[#06090F] border border-white/[0.08] max-w-sm mx-auto flex items-center justify-between">
-                  <div className="text-left">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase block font-semibold">
-                      Lead Reference ID
-                    </span>
-                    <span className="text-base font-mono font-bold text-[#00F0FF]">
-                      {confirmedData.referenceId}
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={copyRefId}
-                    className="p-2 rounded-xl bg-white/[0.05] border border-white/[0.1] text-slate-300 hover:text-white hover:border-[#00F0FF] cursor-pointer transition-colors"
-                    title="Copy Reference ID"
-                    aria-label="Copy reference ID"
-                  >
-                    {copied ? <Check className="w-4 h-4 text-[#00F0FF]" /> : <Copy className="w-4 h-4" />}
-                  </button>
-                </div>
-              )}
-
-              <div className="p-4 rounded-2xl bg-[#06090F] border border-white/[0.08] text-xs text-slate-400 font-mono text-left space-y-2">
-                <div className="flex items-center justify-between gap-4">
-                  <span>Selected Industry:</span>
-                  <span className="text-white font-medium text-right">{confirmedData.industry}</span>
-                </div>
-                <div className="flex items-center justify-between gap-4">
-                  <span>We&apos;ll reply to:</span>
-                  <span className="text-white font-medium text-right break-all">{confirmedData.email}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span>SLA Response Window:</span>
-                  <span className="text-[#00F0FF] font-semibold">Within 1 business day</span>
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="btn-secondary text-xs font-mono !py-2.5 !px-6 cursor-pointer"
-                >
-                  Submit Another Inquiry
+                {confirmed.referenceId && (
+                  <p className="text-xs text-slate-400">
+                    Your reference: <span className="text-slate-200 font-semibold">{confirmed.referenceId}</span>
+                  </p>
+                )}
+                <button type="button" onClick={resetForm} className="btn-secondary text-sm !py-2.5 !px-6 cursor-pointer">
+                  Send another request
                 </button>
               </div>
-            </div>
-          ) : (
-            /* Lead Capture Form */
-            <form
-              onSubmit={handleSubmit}
-              className="glass-panel p-8 sm:p-10 rounded-3xl space-y-6 shadow-[0_20px_70px_rgba(0,0,0,0.8)] border-white/[0.12] bg-[#0A0F1D]/85 backdrop-blur-2xl"
-            >
-              {prefillNotice && (
-                <div className="p-3.5 rounded-2xl bg-[#00F0FF]/10 border border-[#00F0FF]/30 flex items-center justify-between text-xs font-mono text-[#00F0FF] animate-fade-in shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-[#00F0FF] shrink-0" />
-                    <span>{prefillNotice} — review details and submit below.</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setPrefillNotice(null)}
-                    className="text-slate-400 hover:text-white ml-2 text-xs cursor-pointer"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-
-              {/* Honeypot: hidden from people and assistive tech, bots tend to fill it */}
-              <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
-                <label htmlFor="contact-company-website">Company website</label>
-                <input
-                  id="contact-company-website"
-                  type="text"
-                  tabIndex={-1}
-                  autoComplete="off"
-                  value={honeypot}
-                  onChange={(e) => setHoneypot(e.target.value)}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label htmlFor="contact-name" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                    Name <span className="text-[#00F0FF]">*</span>
-                  </label>
+            ) : (
+              <form
+                onSubmit={handleSubmit}
+                className="rounded-3xl border border-white/[0.12] bg-[#0A0F1D]/85 p-5 sm:p-10 space-y-5"
+              >
+                {/* Honeypot: hidden from people and assistive tech, bots tend to fill it */}
+                <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+                  <label htmlFor="contact-company-website">Company website</label>
                   <input
-                    id="contact-name"
+                    id="contact-company-website"
                     type="text"
-                    required
-                    minLength={2}
-                    maxLength={MAX_LENGTHS.name}
-                    autoComplete="name"
-                    placeholder="e.g. Ramesh Sharma"
-                    value={formData.name}
-                    onChange={updateField("name")}
-                    className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors"
-                    disabled={submitStatus === "loading"}
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={honeypot}
+                    onChange={(e) => setHoneypot(e.target.value)}
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="contact-email" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                    Email <span className="text-[#00F0FF]">*</span>
-                  </label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    required
-                    maxLength={MAX_LENGTHS.email}
-                    autoComplete="email"
-                    placeholder="name@company.com"
-                    value={formData.email}
-                    onChange={updateField("email")}
-                    className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors"
-                    disabled={submitStatus === "loading"}
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="contact-name" className={labelClass}>
+                      Your name <span className="text-[#00F0FF]">*</span>
+                    </label>
+                    <input
+                      id="contact-name"
+                      type="text"
+                      required
+                      minLength={2}
+                      maxLength={MAX_LENGTHS.name}
+                      autoComplete="name"
+                      value={formData.name}
+                      onChange={updateField("name")}
+                      className={inputClass}
+                      disabled={busy}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-phone" className={labelClass}>
+                      Mobile / WhatsApp <span className="text-[#00F0FF]">*</span>
+                    </label>
+                    <input
+                      id="contact-phone"
+                      type="tel"
+                      required
+                      maxLength={MAX_LENGTHS.phone}
+                      autoComplete="tel"
+                      inputMode="tel"
+                      placeholder="+91 98765 43210"
+                      value={formData.phone}
+                      onChange={updateField("phone")}
+                      className={inputClass}
+                      disabled={busy}
+                    />
+                  </div>
                 </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                <div>
-                  <label htmlFor="contact-phone" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                    WhatsApp number (optional)
-                  </label>
-                  <input
-                    id="contact-phone"
-                    type="tel"
-                    maxLength={MAX_LENGTHS.phone}
-                    autoComplete="tel"
-                    placeholder="+91 98765 43210"
-                    value={formData.phone}
-                    onChange={updateField("phone")}
-                    className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors"
-                    disabled={submitStatus === "loading"}
-                  />
-                </div>
 
                 <div>
-                  <label htmlFor="contact-industry" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                    Your trade <span className="text-[#00F0FF]">*</span>
+                  <label htmlFor="contact-industry" className={labelClass}>
+                    Business type <span className="text-[#00F0FF]">*</span>
                   </label>
                   <select
                     id="contact-industry"
                     required
                     value={formData.industry}
                     onChange={updateField("industry")}
-                    className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors cursor-pointer"
-                    disabled={submitStatus === "loading"}
+                    className={`${inputClass} cursor-pointer`}
+                    disabled={busy}
                   >
                     <option value="" disabled className="bg-[#0A0F1D] text-slate-400">
-                      Choose your trade...
+                      Choose your business type…
                     </option>
-                    {VERTICALS.map((v) => (
-                      <option key={v.id} value={v.id} className="bg-[#0A0F1D] text-white">
-                        {v.shortName}
+                    {businessTypes.map((b) => (
+                      <option key={b.id} value={b.id} className="bg-[#0A0F1D] text-white">
+                        {b.label}
                       </option>
                     ))}
-                    <option value="other" className="bg-[#0A0F1D] text-white">Other</option>
                   </select>
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="contact-goal" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                  Main goal (optional)
-                </label>
-                <input
-                  id="contact-goal"
-                  type="text"
-                  maxLength={MAX_LENGTHS.goal}
-                  placeholder="e.g. Automating fee collection & instant WhatsApp receipts"
-                  value={formData.goal}
-                  onChange={updateField("goal")}
-                  className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors"
-                  disabled={submitStatus === "loading"}
-                />
-              </div>
-
-              <div>
-                <label htmlFor="contact-message" className="block text-xs font-mono text-slate-300 uppercase tracking-wider mb-2">
-                  What you use today (optional)
-                </label>
-                <textarea
-                  id="contact-message"
-                  rows={3}
-                  maxLength={MAX_LENGTHS.message}
-                  placeholder="Briefly describe your current spreadsheets, billing software, or bottlenecks..."
-                  value={formData.message}
-                  onChange={updateField("message")}
-                  className="w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white font-sans text-sm outline-none transition-colors resize-none"
-                  disabled={submitStatus === "loading"}
-                />
-              </div>
-
-              {submitStatus === "error" && (
-                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-xs text-rose-400">
-                  <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
-                  <span>{errorMessage}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="contact-email" className={labelClass}>
+                      Email <span className="text-slate-400 font-normal">(optional)</span>
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      maxLength={MAX_LENGTHS.email}
+                      autoComplete="email"
+                      value={formData.email}
+                      onChange={updateField("email")}
+                      className={inputClass}
+                      disabled={busy}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="contact-company" className={labelClass}>
+                      Company name <span className="text-slate-400 font-normal">(optional)</span>
+                    </label>
+                    <input
+                      id="contact-company"
+                      type="text"
+                      maxLength={MAX_LENGTHS.company}
+                      autoComplete="organization"
+                      value={formData.company}
+                      onChange={updateField("company")}
+                      className={inputClass}
+                      disabled={busy}
+                    />
+                  </div>
                 </div>
-              )}
 
-              <button
-                type="submit"
-                disabled={submitStatus === "loading"}
-                className="btn-primary w-full text-xs font-mono uppercase tracking-wider !py-4 shadow-xl cursor-pointer justify-center"
-              >
-                {submitStatus === "loading" ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                    Recording into secure lead queue...
-                  </span>
-                ) : (
-                  <span className="flex items-center justify-center gap-2">
-                    <span>Book a Discovery Call</span>
-                    <Send className="w-3.5 h-3.5" />
-                  </span>
+                <div>
+                  <label htmlFor="contact-message" className={labelClass}>
+                    What do you need? <span className="text-slate-400 font-normal">(optional)</span>
+                  </label>
+                  <textarea
+                    id="contact-message"
+                    rows={3}
+                    maxLength={MAX_LENGTHS.message}
+                    placeholder="For example: we run 3 branches and track stock in Excel"
+                    value={formData.message}
+                    onChange={updateField("message")}
+                    className={`${inputClass} resize-none`}
+                    disabled={busy}
+                  />
+                </div>
+
+                {submitStatus === "error" && (
+                  <div role="alert" className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-start gap-3 text-sm text-rose-300">
+                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                    <span>{errorMessage}</span>
+                  </div>
                 )}
-              </button>
 
-              <div className="flex items-center justify-center gap-2 text-[11px] font-mono text-slate-400 text-center">
-                <Clock className="w-3.5 h-3.5 text-[#00F0FF]" />
-                <span>No spam. We reply within one business day.</span>
-              </div>
-            </form>
-          )}
-        </MotionReveal>
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="btn-primary w-full text-sm !py-4 cursor-pointer justify-center"
+                >
+                  {busy ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                      Sending…
+                    </span>
+                  ) : (
+                    <span className="flex items-center justify-center gap-2">
+                      <span>Book a Demo</span>
+                      <Send className="w-4 h-4" aria-hidden="true" />
+                    </span>
+                  )}
+                </button>
+
+                {/* TODO(founder): link a real /privacy page here once it exists (Phase 3). */}
+                <p className="text-xs text-slate-400 text-center">
+                  We only use these details to contact you about ZUGEE.
+                </p>
+              </form>
+            )}
+          </div>
         </div>
       </div>
     </section>

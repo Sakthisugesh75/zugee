@@ -3,19 +3,13 @@
 All notable changes to the ZUGEE website and platform. Newest first.
 
 **Branches**
-<<<<<<< Updated upstream
-- **`phase-0-truth`** (pushed to `origin/phase-0-truth`) has the latest work: the new product-catalog homepage and the Phase 0 cleanup. **Not merged into `main` yet.**
-=======
 - **`phase-0-truth`** (pushed to `origin/phase-0-truth`) has the latest work: the new product-catalog homepage, the Phase 0 cleanup, and the pricing and setup fee (not committed yet). **Not merged into `main` yet.**
->>>>>>> Stashed changes
 - **`main`** still serves the older GST-billing homepage (the 2026-09-25 18:18 entry below).
 
 After switching branches, run `npm install`, because the two branches have different dependencies (`main` still uses framer-motion).
 
 ---
 
-<<<<<<< Updated upstream
-=======
 ## [Pricing & one-time setup fee] — 2026-09-25 · branch `phase-0-truth` · not committed yet
 
 > **Pay once to get your business set up. Pay monthly to keep using ZUGEE.**
@@ -91,7 +85,6 @@ Prices exclude GST (to be confirmed by the founder).
 
 ---
 
->>>>>>> Stashed changes
 ## [Phase 0 — Truth & cleanup] — 2026-09-25 · commit `eba54fa` · branch `phase-0-truth`
 
 The site was restructured from a single "GST billing software" product into the **ZUGEE multi-product platform**, following the Product Suite Restructuring brief. Anything that wasn't true or didn't work was removed or marked Coming Soon. 83 files changed (+2,220 / −7,492 lines).

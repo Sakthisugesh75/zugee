@@ -2,12 +2,20 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import AppPageHeader from '@/components/app/AppPageHeader';
 import KPICard from '@/components/app/KPICard';
-import AIInsightCard from '@/components/app/AIInsightCard';
-import PerformanceFunnel from '@/components/app/PerformanceFunnel';
-import LoadingSpinner from '@/components/app/LoadingSpinner';
-import { Users, DollarSign, TrendingUp, Clock, Sparkles, RefreshCw } from 'lucide-react';
+import { Users, UserPlus, Clock, CheckCircle, RefreshCw } from 'lucide-react';
+
+async function fetchDashboard(signal) {
+  const response = await fetch('/api/app/dashboard', { signal });
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch dashboard data');
+  }
+
+  return response.json();
+}
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
@@ -15,67 +23,42 @@ export default function DashboardPage() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
 
-  const fetchDashboardData = async (isRefresh = false) => {
-    try {
-      if (isRefresh) {
-        setRefreshing(true);
-      } else {
-        setLoading(true);
-      }
-
-      const response = await fetch('/api/app/dashboard');
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch dashboard data');
-      }
-
-      const result = await response.json();
-      setData(result);
-      setError(null);
-    } catch (err) {
-      console.error('Dashboard fetch error:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
+  // Bumped by Refresh / Try Again to re-run the fetch effect
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
+    const controller = new AbortController();
 
-  const handleDismissInsight = async (insightId) => {
-    try {
-      // TODO: Implement dismiss insight API call
-      setData(prevData => ({
-        ...prevData,
-        insights: prevData.insights.filter(i => i.id !== insightId)
-      }));
-    } catch (err) {
-      console.error('Failed to dismiss insight:', err);
-    }
-  };
+    fetchDashboard(controller.signal)
+      .then((result) => {
+        setData(result);
+        setError(null);
+      })
+      .catch((err) => {
+        if (err.name === 'AbortError') return;
+        console.error('Dashboard fetch error:', err);
+        setError(err.message);
+      })
+      .finally(() => {
+        if (controller.signal.aborted) return;
+        setLoading(false);
+        setRefreshing(false);
+      });
+
+    return () => controller.abort();
+  }, [reloadKey]);
 
   const handleRefresh = () => {
-    fetchDashboardData(true);
+    setRefreshing(true);
+    setReloadKey((k) => k + 1);
   };
-
-  // Sample funnel data (will be replaced with real data from campaigns)
-  const funnelData = [
-    { stage: 'Impressions', value: 125000, color: 'bg-blue-500' },
-    { stage: 'Clicks', value: 3200, color: 'bg-cyan-500' },
-    { stage: 'Leads', value: data?.kpis?.leadsToday?.value || 0, color: 'bg-emerald-500' },
-    { stage: 'Qualified', value: Math.floor((data?.kpis?.leadsToday?.value || 0) * 0.6), color: 'bg-amber-500' },
-    { stage: 'Converted', value: Math.floor((data?.kpis?.leadsToday?.value || 0) * 0.2), color: 'bg-green-600' }
-  ];
 
   if (loading && !data) {
     return (
       <div className="h-full flex flex-col">
         <AppPageHeader
           title="Dashboard"
-          description="Welcome to your Zugee dashboard"
+          description="Your leads at a glance"
         />
         <div className="flex-1 p-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
@@ -93,7 +76,7 @@ export default function DashboardPage() {
       <div className="h-full flex flex-col">
         <AppPageHeader
           title="Dashboard"
-          description="Welcome to your Zugee dashboard"
+          description="Your leads at a glance"
         />
         <div className="flex-1 p-8">
           <div className="max-w-2xl mx-auto">
@@ -119,12 +102,14 @@ export default function DashboardPage() {
     );
   }
 
+  const kpis = data?.kpis || {};
+
   return (
     <div className="h-full flex flex-col bg-slate-50">
       {/* Header */}
       <AppPageHeader
         title="Dashboard"
-        description={`Welcome back, ${data?.profile?.business_name || 'User'}`}
+        description={data?.profile?.business_name ? `Welcome back, ${data.profile.business_name}` : 'Your leads at a glance'}
         actions={
           <button
             onClick={handleRefresh}
@@ -140,105 +125,52 @@ export default function DashboardPage() {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         <div className="max-w-[1600px] mx-auto p-8">
-          {/* KPI Cards Grid */}
+          {/* KPI Cards Grid - counts of your CRM leads, nothing estimated */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
             <KPICard
               icon={Users}
-              label="Today's Leads"
-              value={data?.kpis?.leadsToday?.value || 0}
-              subtitle={data?.kpis?.leadsToday?.subtitle || 'No leads yet'}
-              trend={data?.kpis?.leadsToday?.trend}
-              trendValue={data?.kpis?.leadsToday?.trendValue}
+              label="Total Leads"
+              value={kpis.totalLeads ?? 0}
+              subtitle="All leads in your CRM"
               color="blue"
             />
 
             <KPICard
-              icon={DollarSign}
-              label="Revenue (MTD)"
-              value={data?.kpis?.revenue?.formatted || '₹0'}
-              subtitle={data?.kpis?.revenue?.subtitle || 'No revenue yet'}
-              trend={data?.kpis?.revenue?.trend}
-              trendValue={data?.kpis?.revenue?.trendValue}
-              color="emerald"
-            />
-
-            <KPICard
-              icon={TrendingUp}
-              label="Ad Spend (MTD)"
-              value={data?.kpis?.adSpend?.formatted || '₹0'}
-              subtitle={data?.kpis?.adSpend?.subtitle || 'No campaigns'}
-              trend={data?.kpis?.adSpend?.trend}
-              trendValue={data?.kpis?.adSpend?.trendValue}
+              icon={UserPlus}
+              label="New Today"
+              value={kpis.leadsToday ?? 0}
+              subtitle="Added since midnight (IST)"
               color="cyan"
             />
 
             <KPICard
               icon={Clock}
-              label="Pending Follow-ups"
-              value={data?.kpis?.pendingFollowUps?.value || 0}
-              subtitle={data?.kpis?.pendingFollowUps?.subtitle || 'All caught up'}
-              trend={data?.kpis?.pendingFollowUps?.trend}
-              trendValue={data?.kpis?.pendingFollowUps?.trendValue}
+              label="Follow-ups Due"
+              value={kpis.followUpsDue ?? 0}
+              subtitle="Due today or overdue"
               color="amber"
+            />
+
+            <KPICard
+              icon={CheckCircle}
+              label="Converted"
+              value={kpis.converted ?? 0}
+              subtitle="Leads marked converted"
+              color="emerald"
             />
           </div>
 
-          {/* Main Content Grid */}
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Performance Funnel - Takes 2 columns on xl */}
-            <div className="xl:col-span-2">
-              <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                    <TrendingUp className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-900">Performance Funnel</h3>
-                    <p className="text-sm text-slate-600">Conversion metrics at each stage</p>
-                  </div>
-                </div>
-                <PerformanceFunnel data={funnelData} loading={loading} />
-              </div>
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h3 className="text-base font-semibold text-slate-900">Work your leads</h3>
+              <p className="text-sm text-slate-600">Update status, priority, follow-up dates and notes in the CRM.</p>
             </div>
-
-            {/* AI Insights - Takes 1 column on xl */}
-            <div className="xl:col-span-1">
-              <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-amber-600" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-slate-900">AI Insights</h3>
-                    <p className="text-sm text-slate-600">Actionable recommendations</p>
-                  </div>
-                </div>
-
-                {data?.insights && data.insights.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.insights.map((insight) => (
-                      <AIInsightCard
-                        key={insight.id}
-                        insight={insight}
-                        onDismiss={() => handleDismissInsight(insight.id)}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="w-16 h-16 rounded-2xl bg-emerald-50 border-2 border-emerald-100 flex items-center justify-center mx-auto mb-4">
-                      <Sparkles className="w-8 h-8 text-emerald-600" />
-                    </div>
-                    <h4 className="text-sm font-semibold text-slate-900 mb-2">
-                      All systems optimal
-                    </h4>
-                    <p className="text-sm text-slate-600">
-                      No issues detected. Keep up the great work!
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
+            <Link
+              href="/app/crm"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-[#1B6FF8] text-white rounded-lg hover:bg-[#1557C7] transition-colors text-sm font-medium shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 shrink-0"
+            >
+              Open CRM
+            </Link>
           </div>
         </div>
       </div>
