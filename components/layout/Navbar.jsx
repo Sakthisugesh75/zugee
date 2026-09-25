@@ -20,11 +20,29 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { label: "Products", href: "#products" },
-    { label: "How it works", href: "#how-it-works" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "FAQ", href: "#faq" }
+    { label: "Products", targetId: "products" },
+    { label: "How it works", targetId: "how-it-works" },
+    { label: "Pricing", targetId: "pricing" },
+    { label: "FAQ", targetId: "faq" }
   ];
+
+  const scrollToSection = (targetId) => {
+    const section = document.getElementById(targetId);
+    if (!section) return;
+
+    const navbar = document.querySelector("header");
+    const navbarHeight = navbar?.getBoundingClientRect().height || 0;
+    const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+    const targetPosition = sectionTop - navbarHeight - 16;
+
+    window.scrollTo({
+      top: Math.max(0, targetPosition),
+      behavior: "smooth"
+    });
+
+    // Close mobile menu if open
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header
@@ -51,36 +69,39 @@ export default function Navbar() {
         {/* Desktop Navigation Links */}
         <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 px-2 xl:px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-md shrink-0">
           {navLinks.map((link) => (
-            <a
+            <button
               key={link.label}
-              href={link.href}
-              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all hover:bg-white/[0.06] no-underline whitespace-nowrap"
+              type="button"
+              onClick={() => scrollToSection(link.targetId)}
+              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all hover:bg-white/[0.06] whitespace-nowrap bg-transparent border-none cursor-pointer"
             >
               {link.label}
-            </a>
+            </button>
           ))}
         </nav>
 
         {/* Action CTAs & Live Badge */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
 
-          <a
-            href="#contact"
-            className="btn-primary text-sm !py-2.5 !px-5 whitespace-nowrap"
+          <button
+            type="button"
+            onClick={() => scrollToSection("contact")}
+            className="btn-primary text-sm !py-2.5 !px-5 whitespace-nowrap cursor-pointer"
           >
             <span>Book a Demo</span>
             <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-          </a>
+          </button>
         </div>
 
         {/* Mobile Hamburger Toggle */}
         <div className="flex items-center gap-2.5 lg:hidden">
-          <a
-            href="#contact"
+          <button
+            type="button"
+            onClick={() => scrollToSection("contact")}
             className="btn-primary text-xs !py-2 !px-3.5"
           >
             Book a Demo
-          </a>
+          </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white hover:border-[#00F0FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF] transition-colors"
@@ -100,25 +121,25 @@ export default function Navbar() {
             <div className="flex flex-col gap-4">
 
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-medium text-slate-300 hover:text-[#00F0FF] py-2.5 border-b border-white/[0.05] no-underline flex items-center justify-between"
+                  type="button"
+                  onClick={() => scrollToSection(link.targetId)}
+                  className="text-base font-medium text-slate-300 hover:text-[#00F0FF] py-2.5 border-b border-white/[0.05] flex items-center justify-between w-full text-left bg-transparent border-none cursor-pointer"
                 >
                   <span>{link.label}</span>
                   <ArrowRight className="w-4 h-4 text-slate-500" />
-                </a>
+                </button>
               ))}
 
               <div className="pt-4 flex flex-col gap-3">
-                <a
-                  href="#contact"
-                  onClick={() => setMobileMenuOpen(false)}
+                <button
+                  type="button"
+                  onClick={() => scrollToSection("contact")}
                   className="btn-primary w-full text-center justify-center text-sm !py-3.5"
                 >
                   Book a Demo
-                </a>
+                </button>
                 <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-mono">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#00F0FF]" />
                   <span>Zugee Systems Technologies Pvt. Ltd.</span>

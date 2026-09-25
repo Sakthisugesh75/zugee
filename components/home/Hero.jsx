@@ -4,6 +4,7 @@
 
 import { ArrowRight } from "lucide-react";
 import { PRODUCTS } from "@/lib/products";
+import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 
 // Industries shown as plain text under the CTAs — only products with code behind them.
 const FEATURED_INDUSTRIES = PRODUCTS.filter((p) => p.category === "industry" && p.status !== "coming_soon").map(
@@ -12,7 +13,7 @@ const FEATURED_INDUSTRIES = PRODUCTS.filter((p) => p.category === "industry" && 
 
 export default function Hero() {
   return (
-    <section className="relative pt-28 pb-16 md:pt-40 md:pb-20 overflow-hidden bg-[#06090F] bg-cyber-grid">
+    <section className="relative pt-28 pb-8 md:pt-40 md:pb-12 overflow-hidden bg-[#06090F] bg-cyber-grid">
       <div className="hero-glow-sphere top-10 left-1/2 -translate-x-1/2 opacity-70" />
 
       <div className="container relative z-10">
@@ -32,13 +33,13 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
-            <a href="#products" className="btn-primary w-full sm:w-auto text-sm !py-4 !px-8">
+            <SmoothScrollLink targetId="products" className="btn-primary w-full sm:w-auto text-sm !py-4 !px-8 inline-flex items-center justify-center gap-2">
               <span>Explore Products</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
-            <a href="#contact" className="btn-secondary w-full sm:w-auto text-sm !py-4 !px-6">
+            </SmoothScrollLink>
+            <SmoothScrollLink targetId="contact" className="btn-secondary w-full sm:w-auto text-sm !py-4 !px-6 inline-flex items-center justify-center">
               Book a Demo
-            </a>
+            </SmoothScrollLink>
           </div>
 
           {FEATURED_INDUSTRIES.length > 0 && (

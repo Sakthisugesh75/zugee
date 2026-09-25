@@ -5,7 +5,7 @@ import { HOW_WE_WORK } from "@/lib/site-content";
 
 export default function HowWeWork() {
   return (
-    <section id="how-it-works" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-20">
+    <section id="how-it-works" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-[80px]">
       <div className="container">
         <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight text-center mb-10">How it works</h2>
         <ol className="grid grid-cols-1 md:grid-cols-3 gap-5 max-w-5xl mx-auto">

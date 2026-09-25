@@ -7,7 +7,7 @@ import { ChevronDown } from "lucide-react";
 
 export default function FAQSection() {
   return (
-    <div id="faq" className="max-w-3xl mx-auto scroll-mt-28">
+    <div id="faq" className="max-w-3xl mx-auto scroll-mt-[80px]">
       <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight text-center mb-8">
         Common questions
       </h2>

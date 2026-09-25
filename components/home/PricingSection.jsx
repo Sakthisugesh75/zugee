@@ -82,7 +82,7 @@ export default function PricingSection() {
     .filter((p) => p.product && p.product.status === "available");
 
   return (
-    <section id="pricing" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-20">
+    <section id="pricing" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-[80px]">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Pricing</h2>

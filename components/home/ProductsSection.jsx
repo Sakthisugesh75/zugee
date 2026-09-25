@@ -62,7 +62,7 @@ export default function ProductsSection() {
   const comingSoon = PRODUCTS.filter((p) => p.status === "coming_soon");
 
   return (
-    <section id="products" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-20">
+    <section id="products" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] scroll-mt-[80px] md:scroll-mt-[80px]">
       <div className="container">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">ZUGEE products</h2>

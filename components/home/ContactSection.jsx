@@ -87,7 +87,7 @@ export default function ContactSection({ businessTypes }) {
   const busy = submitStatus === "loading";
 
   return (
-    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-20">
+    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-[80px]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container relative z-10">

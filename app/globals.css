@@ -57,9 +57,15 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 96px;
+  scroll-padding-top: 80px;
   color-scheme: dark;
   background-color: var(--bg-canvas);
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 70px;
+  }
 }
 
 body {
@@ -114,14 +120,14 @@ body {
 }
 
 .section-wrapper {
-  padding-top: 80px;
+  padding-top: 64px;
   padding-bottom: 80px;
   position: relative;
 }
 
 @media (max-width: 768px) {
   .section-wrapper {
-    padding-top: 56px;
+    padding-top: 48px;
     padding-bottom: 56px;
   }
 }
