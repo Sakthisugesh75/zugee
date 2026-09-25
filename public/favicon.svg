@@ -1,0 +1,35 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="64" height="64" rx="16" fill="#06090F" />
+  <rect x="0.5" y="0.5" width="63" height="63" rx="15.5" stroke="rgba(0, 240, 255, 0.2)" />
+  <g transform="translate(8, 8) scale(0.48)">
+    <defs>
+      <linearGradient id="favTop" x1="10" y1="15" x2="85" y2="35" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#071E4A" />
+        <stop offset="30%" stop-color="#0E46B8" />
+        <stop offset="100%" stop-color="#1B6FF8" />
+      </linearGradient>
+      <linearGradient id="favDiag" x1="15" y1="65" x2="85" y2="20" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#00D2FF" />
+        <stop offset="40%" stop-color="#147BFF" />
+        <stop offset="100%" stop-color="#0837A3" />
+      </linearGradient>
+      <linearGradient id="favBottom" x1="8" y1="58" x2="90" y2="88" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#00F0FF" />
+        <stop offset="50%" stop-color="#0B56E2" />
+        <stop offset="100%" stop-color="#072A80" />
+      </linearGradient>
+    </defs>
+    <path
+      d="M12 28 C12 24 16 22 22 22 L86 22 C92 22 95 27 91 32 L72 54 L38 54 L58 32 L20 32 C15 32 12 30 12 28 Z"
+      fill="url(#favTop)"
+    />
+    <path
+      d="M88 24 L34 78 L12 78 C8 78 6 73 10 68 L60 24 Z"
+      fill="url(#favDiag)"
+    />
+    <path
+      d="M12 78 C8 78 7 74 11 69 L32 46 L68 46 L46 70 L80 70 C86 70 90 73 90 78 C90 82 86 84 80 84 L18 84 C13 84 12 81 12 78 Z"
+      fill="url(#favBottom)"
+    />
+  </g>
+</svg>
