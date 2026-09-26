@@ -46,9 +46,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-[#06090F]/85 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.8)] py-3.5"
+          ? "bg-[#05070B]/90 backdrop-blur-2xl border-b border-white/[0.12] shadow-[0_8px_40px_rgba(0,0,0,0.9),0_0_80px_rgba(6,182,212,0.08)] py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -67,13 +67,17 @@ export default function Navbar() {
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1 px-2 xl:px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.06] backdrop-blur-md shrink-0">
+        <nav className={`hidden lg:flex items-center gap-0.5 xl:gap-1 px-2 xl:px-3 py-1.5 rounded-full border backdrop-blur-md shrink-0 transition-all duration-500 ${
+          scrolled 
+            ? "bg-white/[0.05] border-white/[0.12]" 
+            : "bg-white/[0.03] border-white/[0.06]"
+        }`}>
           {navLinks.map((link) => (
             <button
               key={link.label}
               type="button"
               onClick={() => scrollToSection(link.targetId)}
-              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all hover:bg-white/[0.06] whitespace-nowrap bg-transparent border-none cursor-pointer"
+              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
             >
               {link.label}
             </button>
@@ -116,7 +120,7 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
           <div
-            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto bg-[#0A0F1D]/95 backdrop-blur-2xl border-b border-white/[0.1] p-6 shadow-2xl text-white z-50"
+            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto bg-[#05070B]/95 backdrop-blur-2xl border-b border-white/[0.15] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_100px_rgba(6,182,212,0.1)] text-white z-50"
           >
             <div className="flex flex-col gap-4">
 

@@ -5,7 +5,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import InteractiveMascot from "@/components/animations/InteractiveMascot";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 
 // Keep in sync with the limits enforced in app/api/leads/route.js
@@ -104,14 +104,9 @@ export default function ContactSection({ businessTypes }) {
           {/* Mascot — desktop only, so the form stays first on phones. The webp has its black
               background converted to transparency, so it sits directly on the section glow. */}
           <div aria-hidden="true" className="hidden lg:flex justify-center relative">
-            <div className="absolute bottom-6 w-48 h-10 rounded-full bg-[#00F0FF]/20 blur-2xl" />
-            <Image
+            <InteractiveMascot 
               src="/zugee-mascot-cutout.webp"
-              alt=""
-              width={1024}
-              height={1536}
-              sizes="300px"
-              className="w-full max-w-[300px] h-auto animate-mascot-float"
+              size={300}
             />
           </div>
 

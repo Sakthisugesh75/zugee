@@ -5,11 +5,17 @@
 
 :root {
   /* Surfaces & Canvas */
-  --bg-canvas: #06090F;
+  --bg-canvas: #05070B;
   --bg-surface: #0B111E;
   --bg-card: rgba(13, 21, 39, 0.75);
   --bg-card-elevated: rgba(17, 28, 51, 0.85);
   --bg-card-hover: rgba(23, 37, 66, 0.9);
+  
+  /* Glassmorphism surfaces */
+  --glass-surface: rgba(255, 255, 255, 0.03);
+  --glass-surface-hover: rgba(255, 255, 255, 0.06);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-glow: rgba(0, 240, 255, 0.3);
 
   /* Brand Accents — Strictly Zugee Royal Blue (#1B6FF8) & Neon Cyan (#00F0FF) */
   --blue-primary: #1B6FF8;
@@ -21,6 +27,10 @@
   --cyan-secondary: #38BDF8;
   --cyan-gradient: linear-gradient(135deg, #00F0FF 0%, #1B6FF8 100%);
   --cyan-glow: rgba(0, 240, 255, 0.25);
+  
+  /* Accent colors */
+  --violet-accent: #8B5CF6;
+  --violet-glow: rgba(139, 92, 246, 0.2);
 
   /* Typography Colors */
   --text-primary: #FFFFFF;
@@ -29,7 +39,7 @@
   --text-dim: #475569;
 
   /* Borders & Dividers */
-  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-subtle: rgba(255, 255, 255, 0.06);
   --border-card: rgba(255, 255, 255, 0.12);
   --border-focus: #00F0FF;
 
@@ -38,6 +48,7 @@
   --radius-md: 12px;
   --radius-lg: 18px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-full: 9999px;
 }
 
@@ -163,6 +174,68 @@ body {
   box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 240, 255, 0.14), inset 0 1px 0 0 rgba(0, 240, 255, 0.4);
 }
 
+/* Premium Glass Card System */
+.glass-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card-hover:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(0, 240, 255, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 
+    0 20px 40px -10px rgba(0, 240, 255, 0.15),
+    0 0 25px rgba(0, 240, 255, 0.1),
+    inset 0 1px 0 0 rgba(0, 240, 255, 0.2);
+}
+
+/* Feature Card Variant */
+.glass-feature-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.02) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  backdrop-filter: blur(16px);
+  position: relative;
+  overflow: hidden;
+}
+
+.glass-feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.glass-feature-card:hover::before {
+  opacity: 1;
+}
+
+/* Glow Effects */
+.glow-cyan {
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+}
+
+.glow-cyan-soft {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+}
+
+.glow-blue {
+  box-shadow: 0 0 30px rgba(27, 111, 248, 0.3);
+}
+
+.glow-violet {
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.25);
+}
+
 /* Interactive Buttons */
 .btn-primary {
   display: inline-flex;
@@ -183,12 +256,34 @@ body {
   box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 4px 14px rgba(0, 0, 0, 0.6);
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease, filter 0.2s ease;
   will-change: transform;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px) scale(1.02);
   box-shadow: 0 0 42px rgba(0, 240, 255, 0.6), 0 8px 24px rgba(0, 0, 0, 0.7);
   filter: brightness(1.1);
+}
+
+.btn-primary:hover svg {
+  transform: translateX(2px);
+  transition: transform 0.2s ease;
 }
 
 .btn-primary:active {
@@ -240,6 +335,61 @@ body {
 
 .animate-mascot-float {
   animation: mascotFloat 5.5s ease-in-out infinite;
+}
+
+/* Premium Hero Entrance */
+@keyframes heroEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-hero-enter {
+  animation: heroEnter 600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Subtle background gradient animation */
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+/* Card hover lift */
+@keyframes cardLift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-4px);
+  }
+}
+
+/* Premium glow pulse */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-glow-pulse {
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
 /* Horizon Ambient Glow */
@@ -306,4 +456,31 @@ body {
 html, body {
   max-width: 100vw;
   overflow-x: clip;
+}
+
+
+/* Premium fade-in-up animation for product cards */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

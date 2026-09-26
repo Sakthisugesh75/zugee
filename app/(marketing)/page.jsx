@@ -1,12 +1,25 @@
 // app/(marketing)/page.jsx
-// Homepage: what ZUGEE makes, which products are ready (honestly), how buying works, how pricing is
-// decided, and a short form to talk to the team. Every claim must pass the rule in
-// docs/ZUGEE-PLATFORM-PLAN.md: "can the product actually do this today?"
+// Homepage — ZUGEE's complete narrative experience:
+//
+// Hero → "This is a business ecosystem"
+// Products → "These are the products inside it"
+// Comparison → "This is the problem ZUGEE solves"
+// Industries → "This is how it fits my business"
+// How It Works → "This is how I use it"
+// Pricing → "This is what it costs"
+// FAQ → "Common questions answered"
+// CTA → "I understand what I can do next"
+//
+// Every claim must pass the rule in docs/ZUGEE-PLATFORM-PLAN.md:
+// "can the product actually do this today?"
 
 import Hero from "@/components/home/Hero";
-import ProductsSection from "@/components/home/ProductsSection";
+import ProductShowcase from "@/components/home/ProductShowcase";
+import ComparisonSection from "@/components/home/ComparisonSection";
+import IndustryShowcase from "@/components/home/IndustryShowcase";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
+import FinalCTA from "@/components/home/FinalCTA";
 import ContactSection from "@/components/home/ContactSection";
 import { BUSINESS_TYPES } from "@/lib/products";
 import { FAQ_ITEMS } from "@/lib/site-content";
@@ -54,10 +67,27 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
       />
 
+      {/* 1. ECOSYSTEM — "This is a business ecosystem" */}
       <Hero />
-      <ProductsSection />
+
+      {/* 2. PRODUCTS — "These are the products inside it" */}
+      <ProductShowcase />
+
+      {/* 3. COMPARISON — "This is the problem ZUGEE solves" */}
+      <ComparisonSection />
+
+      {/* 4. INDUSTRIES — "This is how it fits my business" */}
+      <IndustryShowcase />
+
+      {/* 5. HOW IT WORKS — "This is how I use it" */}
       <HowWeWork />
+
+      {/* 6. PRICING — "This is what it costs" */}
       <PricingSection />
+
+      {/* 7. FAQ + CTA — "I understand what I can do next" */}
+      <FinalCTA />
+
       {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}
       <ContactSection businessTypes={BUSINESS_TYPES} />
     </>
