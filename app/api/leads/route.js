@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 import { insertLead } from "@/lib/supabase";
 import { BUSINESS_TYPES } from "@/lib/products";
 import { createRateLimiter, getClientIp, retryAfterMinutes } from "@/lib/rate-limit";
+import { sendLeadNotificationEmail, sendLeadConfirmationEmail } from "@/lib/email";
 
 const ALLOWED_INDUSTRIES = new Set(BUSINESS_TYPES.map((b) => b.id));
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -95,6 +96,17 @@ export async function POST(request) {
       message,
       source_page: "homepage-contact"
     });
+
+    // Send demo alert email to sugeshwebdevops@gmail.com and confirmation email to the lead
+    try {
+      await sendLeadNotificationEmail(savedLead);
+      if (savedLead.email) {
+        await sendLeadConfirmationEmail(savedLead);
+      }
+    } catch (emailErr) {
+      // Log without breaking lead submission
+      console.error("[Email Notification Error]:", emailErr);
+    }
 
     return NextResponse.json(
       {
