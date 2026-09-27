@@ -308,9 +308,9 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
         <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 mb-6">
           <span className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            White-glove data migration &amp; live setup within 14 days
+            White-glove data migration &amp; live setup — typically within 14 days
           </span>
-          <span className="font-bold">Guaranteed</span>
+          <span className="font-bold">Managed Setup</span>
         </div>
 
         {/* Action Button */}

@@ -51,7 +51,7 @@ const COMPARISON_CATEGORIES = [
       badge: "Connected Platform",
       points: [
         "Cloud-based GST invoicing with QR codes & instant E-Way bill generation",
-        "Automated WhatsApp payment reminders with integrated UPI & payment links",
+        "WhatsApp payment reminders with UPI & payment links (coming soon)",
         "Customer ledger updates automatically the moment payment is received",
       ],
       impact: "90% Faster Invoicing • Real-Time Debtor Balance",

@@ -20,7 +20,7 @@ const SHARE_TITLE = "ZUGEE — Business software built for the way your business
 const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://zugee.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in"),
   title: {
     default: "ZUGEE — Business Software for Indian Businesses",
     template: "%s | ZUGEE"
@@ -57,6 +57,12 @@ export default function RootLayout({ children }) {
       className={`dark ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased bg-[#06090F] text-white selection:bg-[#00F0FF]/30 selection:text-white">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#00F0FF] focus:text-black focus:rounded-lg focus:font-bold focus:text-sm"
+        >
+          Skip to content
+        </a>
         {children}
       </body>
     </html>

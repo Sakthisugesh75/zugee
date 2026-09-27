@@ -20,11 +20,12 @@ import IndustryShowcase from "@/components/home/IndustryShowcase";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
+import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 import { BUSINESS_TYPES } from "@/lib/products";
 import { FAQ_ITEMS } from "@/lib/site-content";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://zugee.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in";
 
 export const metadata = {
   title: { absolute: "ZUGEE — Business Software for Indian Businesses" },
@@ -85,7 +86,14 @@ export default function HomePage() {
       {/* 6. PRICING — "This is what it costs" */}
       <PricingSection />
 
-      {/* 7. FAQ + CTA — "I understand what I can do next" */}
+      {/* 7. FAQ — "Common questions answered" */}
+      <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">
+        <div className="container">
+          <FAQSection />
+        </div>
+      </section>
+
+      {/* 8. CTA — "I understand what I can do next" */}
       <FinalCTA />
 
       {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}

@@ -57,7 +57,7 @@ const PREVIEW_TABS = [
     sampleData: [
       { name: "INV-2026-0891 (Tax Invoice)", stage: "Paid via UPI / Bank", value: "₹1,84,500", time: "Instant Sync" },
       { name: "INV-2026-0892 (B2B Supply)", stage: "E-Invoice QR Generated", value: "₹4,20,000", time: "IRN Active" },
-      { name: "INV-2026-0893 (Service Bill)", stage: "Automated WhatsApp Sent", value: "₹65,000", time: "Viewed" },
+      { name: "INV-2026-0893 (Service Bill)", stage: "WhatsApp Notification (Coming Soon)", value: "₹65,000", time: "Queued" },
     ],
   },
   {

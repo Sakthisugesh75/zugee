@@ -246,10 +246,10 @@ export default function HowWeWork() {
             <ShieldCheck className="w-6 h-6 text-cyan-400 shrink-0" />
             <div>
               <p className="text-sm font-bold text-white">
-                Guaranteed 14-Day Implementation
+                Typical Setup: 14 Days, Start to Finish
               </p>
               <p className="text-xs text-slate-300">
-                If your system isn&apos;t live in 2 weeks, your first month subscription is on us.
+                Discovery, data migration, staff training and go-live — we handle it all so you don&apos;t have to.
               </p>
             </div>
           </div>
