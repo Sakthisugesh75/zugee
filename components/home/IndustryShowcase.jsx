@@ -34,8 +34,8 @@ const FOUNDATION_PILLARS = [
   },
   {
     icon: MessageSquare,
-    title: "Official WhatsApp Cloud API",
-    desc: "Automated payment links, booking vouchers, invoice PDFs, and dispatch alerts delivered straight to customer WhatsApp.",
+    title: "WhatsApp Cloud API (Coming Soon)",
+    desc: "Payment links, booking vouchers, invoice PDFs, and dispatch alerts delivered to customer WhatsApp — actively being built.",
     accent: "#06B6D4",
   },
   {
@@ -46,8 +46,8 @@ const FOUNDATION_PILLARS = [
   },
   {
     icon: ShieldCheck,
-    title: "100% Indian Data Sovereignty",
-    desc: "Local high-security cloud servers, strict data protection, zero foreign data leakage, and high-speed offline-resilient sync.",
+    title: "Indian Data Sovereignty",
+    desc: "Cloud servers located within India, role-based access controls, encrypted storage, and high-speed offline-resilient sync.",
     accent: "#8B5CF6",
   },
 ];
@@ -129,7 +129,7 @@ const INDUSTRY_WORKFLOWS = [
     steps: [
       { step: "01. Admissions & Enrollment", detail: "Digital student registration, roll number allocation, and parent portal profile creation." },
       { step: "02. Daily Attendance & Records", detail: "Teachers mark daily attendance on mobile; automated SMS sent to parents of absent students." },
-      { step: "03. Automated Fee Management", detail: "Term fee invoices sent via WhatsApp with integrated payment links; zero cash queues at the desk." },
+      { step: "03. Automated Fee Management", detail: "Term fee invoices with integrated payment links; digital collection reduces cash queues at the desk." },
     ],
   },
 ];

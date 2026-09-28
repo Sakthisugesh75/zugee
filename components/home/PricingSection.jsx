@@ -6,7 +6,6 @@
 "use client";
 
 import { useState } from "react";
-import FAQSection from "@/components/home/FAQSection";
 import PlanButton from "@/components/home/PlanButton";
 import { PLANS, PRODUCT_SETUP_FOCUS, newSubscriptionCharges, formatINR } from "@/lib/pricing";
 import { getProduct } from "@/lib/products";
@@ -38,7 +37,7 @@ const COMPARISON_MATRIX = [
     features: [
       { name: "GST & Tax Invoicing", starter: "Standard GST Bills", growth: "E-Invoicing & E-Way Bills", enterprise: "Multi-GSTIN & Consolidated" },
       { name: "Customer Ledgers", starter: "Standard", growth: "Real-time Multi-Branch Sync", enterprise: "Automated Bank Reconciliation" },
-      { name: "Automated Payment Links", starter: "UPI & Bank Transfer", growth: "Automated WhatsApp Links", enterprise: "Custom Payment Gateway / Escrow" },
+      { name: "Automated Payment Links", starter: "UPI & Bank Transfer", growth: "Automated Reminders", enterprise: "Custom Payment Gateway / Escrow" },
     ],
   },
   {
@@ -46,8 +45,8 @@ const COMPARISON_MATRIX = [
     features: [
       { name: "White-Glove Setup", starter: "₹4,999 (FREE on Annual)", growth: "₹9,999 (FREE on Annual)", enterprise: "Custom Architect Included" },
       { name: "Legacy Data Migration", starter: "Excel & Customer Lists", growth: "Full Tally & Ledger History", enterprise: "Custom ERP & Database Bridge" },
-      { name: "Implementation SLA", starter: "14-Day Guarantee", growth: "14-Day Guarantee", enterprise: "Dedicated Sprint Schedule" },
-      { name: "Support Channels", starter: "Email & Chat Support", growth: "Priority WhatsApp Line", enterprise: "24/7 Dedicated Account Manager" },
+      { name: "Implementation SLA", starter: "14-Day Target", growth: "14-Day Target", enterprise: "Dedicated Sprint Schedule" },
+      { name: "Support Channels", starter: "Email & Chat Support", growth: "Priority Support Line", enterprise: "Dedicated Account Manager" },
     ],
   },
 ];
@@ -501,12 +500,12 @@ export default function PricingSection() {
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
             <span className="text-2xl mb-1 block">🛡️</span>
             <p className="text-xs font-bold text-white mb-0.5">GST ITC Invoices</p>
-            <p className="text-[11px] text-slate-400">100% tax compliant billing</p>
+            <p className="text-[11px] text-slate-400">GST-compliant billing</p>
           </div>
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
             <span className="text-2xl mb-1 block">⏱️</span>
-            <p className="text-xs font-bold text-white mb-0.5">14-Day Guarantee</p>
-            <p className="text-[11px] text-slate-400">Live setup or first month free</p>
+            <p className="text-xs font-bold text-white mb-0.5">14-Day Setup Target</p>
+            <p className="text-[11px] text-slate-400">Typical white-glove setup timeline</p>
           </div>
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
             <span className="text-2xl mb-1 block">🔄</span>
@@ -545,8 +544,6 @@ export default function PricingSection() {
         )}
       </div>
 
-      {/* Embedded FAQ Section */}
-      <FAQSection />
     </section>
   );
 }

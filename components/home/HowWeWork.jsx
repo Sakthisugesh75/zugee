@@ -30,7 +30,7 @@ const STEPS = [
     number: "03",
     label: "MIGRATION",
     title: "White-Glove Data Migration",
-    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with zero data loss.",
+    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with backups and validation at every step.",
     tag: "Clean Ledgers · Role Permissions",
     icon: Database,
   },
@@ -94,7 +94,7 @@ export default function HowWeWork() {
             White-Glove Implementation
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white mb-4 leading-tight">
-            Zero Downtime. Zero Headaches.{" "}
+            No Disruption. No Headaches.{" "}
             <span
               style={{
                 backgroundImage: "linear-gradient(135deg, #06B6D4, #3B82F6)",

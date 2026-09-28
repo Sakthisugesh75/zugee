@@ -26,7 +26,7 @@ export default function FinalCTA() {
   const benefits = [
     { icon: Sparkles, text: "Setup in 2 weeks" },
     { icon: Shield, text: "Data stays in India" },
-    { icon: Zap, text: "Start for ₹1,999/month" }
+    { icon: Zap, text: "Plans from ₹1,999/mo + GST" }
   ];
 
   return (
@@ -116,7 +116,7 @@ export default function FinalCTA() {
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-cyan-400" />
-              <span>100% Secure</span>
+              <span>Enterprise-Grade Security</span>
             </div>
             <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
             <div className="flex items-center gap-2">

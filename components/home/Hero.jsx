@@ -52,7 +52,7 @@ const PREVIEW_TABS = [
     label: "GST Billing",
     icon: FileText,
     stat: "₹28.4L Billed Today",
-    trend: "100% Tax Compliant",
+    trend: "GST Compliant",
     accent: "#10B981",
     sampleData: [
       { name: "INV-2026-0891 (Tax Invoice)", stage: "Paid via UPI / Bank", value: "₹1,84,500", time: "Instant Sync" },
@@ -188,7 +188,7 @@ export default function Hero() {
               <div className="flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
                 <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
-                  LIVE ECOSYSTEM TELEMETRY
+                  PRODUCT PREVIEW — ILLUSTRATIVE DATA
                 </span>
                 <span className="text-white/20">|</span>
                 <span className="text-xs font-mono text-cyan-300">
@@ -258,7 +258,7 @@ export default function Hero() {
                 <span>Single Central Database: Updates in {activeTab.label} automatically reflect across Ledgers and Inventory.</span>
               </div>
               <span className="hidden sm:inline font-mono text-emerald-400 font-semibold">
-                ● 100% Synced
+                ● Real-Time Sync
               </span>
             </div>
           </div>
