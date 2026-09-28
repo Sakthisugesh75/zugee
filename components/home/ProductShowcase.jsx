@@ -74,18 +74,21 @@ function getAccent(slug) {
 function StatusChip({ status }) {
   const { label, tone } = PRODUCT_STATUS[status] || PRODUCT_STATUS.available;
   const map = {
-    available: { bg: "rgba(16,185,129,0.12)", color: "#34D399", border: "rgba(16,185,129,0.35)" },
-    progress:  { bg: "rgba(56,189,248,0.12)", color: "#38BDF8", border: "rgba(56,189,248,0.35)" },
-    soon:      { bg: "rgba(148,163,184,0.08)", color: "#94A3B8", border: "rgba(148,163,184,0.22)" },
+    available: { bg: "rgba(16,185,129,0.15)", color: "#34D399", border: "rgba(16,185,129,0.45)" },
+    progress:  { bg: "rgba(56,189,248,0.15)", color: "#38BDF8", border: "rgba(56,189,248,0.45)" },
+    soon:      { bg: "rgba(148,163,184,0.10)", color: "#94A3B8", border: "rgba(148,163,184,0.30)" },
   };
   const s = map[tone] || map.available;
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold tracking-wide"
-      style={{ background: s.bg, color: s.color, border: `1px solid ${s.border}` }}
+      className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide uppercase"
+      style={{ background: s.bg, color: s.color, border: `1.5px solid ${s.border}` }}
     >
       {tone === "available" && (
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+      )}
+      {tone === "soon" && (
+        <span className="text-sm">🔜</span>
       )}
       {label}
     </span>
@@ -466,9 +469,21 @@ export default function ProductShowcase() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
             Software built around your business
           </h2>
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto mb-4">
             From CRM and billing to fleet, travel, education and operations — ZUGEE connects the tools your business needs.
           </p>
+
+          {/* Availability Legend */}
+          <div className="flex items-center justify-center gap-6 flex-wrap">
+            <span className="inline-flex items-center gap-2 text-xs font-semibold">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-emerald-400">Available Now</span>
+            </span>
+            <span className="inline-flex items-center gap-2 text-xs font-semibold">
+              <span className="text-base">🔜</span>
+              <span className="text-slate-400">In Development / Coming Soon</span>
+            </span>
+          </div>
         </div>
 
         {/* ========================================================

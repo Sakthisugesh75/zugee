@@ -26,7 +26,7 @@ export default function FinalCTA() {
   const benefits = [
     { icon: Sparkles, text: "Setup in 2 weeks" },
     { icon: Shield, text: "Data stays in India" },
-    { icon: Zap, text: "Plans from ₹1,999/mo + GST" }
+    { icon: Zap, text: "Plans from ₹1,599/mo + GST" }
   ];
 
   return (
@@ -67,7 +67,7 @@ export default function FinalCTA() {
                 
                 {/* Subheading */}
                 <p className="text-base sm:text-lg text-slate-300 mb-8 max-w-2xl leading-relaxed">
-                  Join Indian businesses already using ZUGEE to streamline operations, boost productivity, and scale smarter.
+                  Built with input from Indian SME operators. Streamline operations, boost productivity, and scale smarter — with software designed around how Indian businesses actually work.
                 </p>
 
                 {/* Benefits Grid */}

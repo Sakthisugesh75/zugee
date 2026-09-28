@@ -44,6 +44,11 @@ export default function FAQSection() {
         ))}
       </div>
 
+      {/* Roadmap freshness note (item #10) */}
+      <p className="mt-8 text-center text-[11px] text-slate-600 font-mono tracking-wider uppercase">
+        Feature roadmap updated September 2026
+      </p>
+
       {/* Still have questions CTA */}
       <div className="mt-10 text-center">
         <p className="text-sm text-slate-400 mb-3">Still have questions?</p>

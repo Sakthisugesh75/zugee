@@ -177,6 +177,7 @@ export default function PricingSection() {
                   </span>
                   <span className="text-sm text-slate-400">/ month</span>
                 </div>
+                <p className="text-[11px] text-slate-500 mt-0.5">+ GST as applicable</p>
                 {billingCycle === "annual" ? (
                   <p className="mt-2 text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />
@@ -284,6 +285,7 @@ export default function PricingSection() {
                   </span>
                   <span className="text-sm text-slate-400">/ month</span>
                 </div>
+                <p className="text-[11px] text-slate-500 mt-0.5">+ GST as applicable</p>
                 {billingCycle === "annual" ? (
                   <p className="mt-2 text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5" />

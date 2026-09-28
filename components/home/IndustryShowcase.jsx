@@ -34,8 +34,9 @@ const FOUNDATION_PILLARS = [
   },
   {
     icon: MessageSquare,
-    title: "WhatsApp Cloud API (Coming Soon)",
-    desc: "Payment links, booking vouchers, invoice PDFs, and dispatch alerts delivered to customer WhatsApp — actively being built.",
+    title: "WhatsApp Cloud API",
+    badge: "Rolling Out",
+    desc: "Payment links, booking vouchers, invoice PDFs, and dispatch alerts delivered to customer WhatsApp — actively being built, not yet live.",
     accent: "#06B6D4",
   },
   {
@@ -201,8 +202,13 @@ export default function IndustryShowcase() {
                   >
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-sm font-bold text-white mb-2 leading-snug">
-                    {pillar.title}
+                  <h3 className="text-sm font-bold text-white mb-2 leading-snug flex items-center gap-2">
+                    <span>{pillar.title}</span>
+                    {pillar.badge && (
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30 whitespace-nowrap">
+                        {pillar.badge}
+                      </span>
+                    )}
                   </h3>
                   <p className="text-xs leading-relaxed text-slate-300">
                     {pillar.desc}

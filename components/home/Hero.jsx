@@ -125,8 +125,9 @@ export default function Hero() {
 
         {/* Subhead Value Proposition */}
         <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto text-center leading-relaxed mb-8">
-          CRM, ERP, Billing, and Industry-Specific Workflows engineered for Indian businesses. 
-          Stop re-entering data across spreadsheets, WhatsApp, and fragmented software.
+          Your staff re-enters the same customer into WhatsApp, Excel, and Tally.
+          Orders slip through cracks. Nobody knows job status without calling 3 people.
+          ZUGEE connects CRM, billing, inventory, and dispatch in one central database — built for Indian businesses.
         </p>
 
         {/* Action Buttons */}
@@ -151,7 +152,7 @@ export default function Hero() {
         </div>
 
         {/* Proof Checkpoints */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-12 text-xs sm:text-sm text-slate-300">
+        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-4 text-xs sm:text-sm text-slate-300">
           <span className="flex items-center gap-1.5 font-medium">
             <CheckCircle2 className="w-4 h-4 text-cyan-400" />
             Zero Double Data Entry
@@ -170,6 +171,12 @@ export default function Hero() {
           </span>
         </div>
 
+        {/* Unified account caveat (item #5) */}
+        <p className="text-center text-xs text-slate-500 mb-12 max-w-xl mx-auto">
+          Today, each ZUGEE product runs as its own connected system.
+          A single login across all products is coming soon.
+        </p>
+
         {/* ========================================================
             SIMULATED LIVE SAAS COMMAND CENTER PREVIEW
            ======================================================== */}
@@ -186,9 +193,9 @@ export default function Hero() {
             {/* Top Bar: Live Status & Tabs */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08] mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
-                  PRODUCT PREVIEW — ILLUSTRATIVE DATA
+                <div className="w-3 h-3 rounded-full bg-slate-500" />
+                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                  SAMPLE DASHBOARD VIEW — ILLUSTRATIVE DATA ONLY
                 </span>
                 <span className="text-white/20">|</span>
                 <span className="text-xs font-mono text-cyan-300">
@@ -257,8 +264,8 @@ export default function Hero() {
                 <Activity className="w-3.5 h-3.5 text-cyan-400" />
                 <span>Single Central Database: Updates in {activeTab.label} automatically reflect across Ledgers and Inventory.</span>
               </div>
-              <span className="hidden sm:inline font-mono text-emerald-400 font-semibold">
-                ● Real-Time Sync
+              <span className="hidden sm:inline font-mono text-slate-500 font-semibold">
+                Sample Data
               </span>
             </div>
           </div>
