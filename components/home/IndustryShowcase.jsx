@@ -115,7 +115,7 @@ const INDUSTRY_WORKFLOWS = [
     product: "Tours & Travels CRM",
     tagline: "Custom holiday packages, instant itineraries & client bookings",
     steps: [
-      { step: "01. Dynamic Quotation", detail: "Assemble hotels, flights, and sightseeing into branded PDF itineraries in under 2 minutes." },
+      { step: "01. Dynamic Quotation", detail: "Assemble hotels, flights, and sightseeing into branded PDF itineraries in minutes." },
       { step: "02. Confirmation & Vouchers", detail: "Advance payment received unlocks instant hotel vouchers and customer confirmation package." },
       { step: "03. Vendor & Tour Settlement", detail: "Track transport vendors, guide payments, and final balance collection without paperwork." },
     ],

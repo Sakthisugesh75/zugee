@@ -2,6 +2,7 @@
 // Visual transformation: "The Chaos of 5 Apps vs. Software Built for Your Trade"
 // Concrete business realities: eliminates manual double-entry, lost leads, and spreadsheet blind spots.
 // The comparison is scattered tools vs. ONE ZUGEE product; products do not share a login or data.
+// No statistics here unless we can source them.
 
 "use client";
 
@@ -21,7 +22,7 @@ const COMPARISON_CATEGORIES = [
         "Staff enters the same customer details into WhatsApp, Excel, and billing software",
         "Owner has no idea which jobs are delayed without physically asking supervisors",
       ],
-      impact: "14+ hours lost weekly per manager in manual status checks",
+      impact: "Managers spend their week chasing status updates by phone",
     },
     zugee: {
       title: "Your ZUGEE Product",
@@ -31,7 +32,7 @@ const COMPARISON_CATEGORIES = [
         "Role-based access: drivers and staff see only their tasks on mobile; owner sees entire P&L",
         "Live operational dashboard reveals bottlenecks, completed jobs, and pending deliverables",
       ],
-      impact: "100% Real-Time Visibility • Zero Phone Tag Between Departments",
+      impact: "Real-Time Visibility • No Phone Tag Between Departments",
     },
   },
   {
@@ -43,7 +44,7 @@ const COMPARISON_CATEGORIES = [
       points: [
         "Billing done in standalone desktop software; customer history is locked on one PC",
         "Outstanding payment reminders manually sent via WhatsApp one-by-one",
-        "Accountant spends 4 days every month reconciling bank statements with cash slips",
+        "Accountant spends days every month reconciling bank statements with cash slips",
       ],
       impact: "Delayed cash flow and frequent payment leakages",
     },
@@ -55,7 +56,7 @@ const COMPARISON_CATEGORIES = [
         "WhatsApp payment reminders with UPI & payment links (coming soon)",
         "Customer ledger updates automatically the moment payment is received",
       ],
-      impact: "90% Faster Invoicing • Real-Time Debtor Balance",
+      impact: "Faster Invoicing • Real-Time Debtor Balance",
     },
   },
   {
@@ -69,7 +70,7 @@ const COMPARISON_CATEGORIES = [
         "Sales reps forget follow-ups because there is no automated reminder system",
         "When a salesperson quits, all customer relationships and conversation history walk out the door",
       ],
-      impact: "Up to 35% of inbound inquiries lost to competitor delays",
+      impact: "Inbound inquiries lost to slow follow-up",
     },
     zugee: {
       title: "Your ZUGEE Product",
@@ -79,7 +80,7 @@ const COMPARISON_CATEGORIES = [
         "Automated follow-up reminders, quotation generator, and visit scheduling",
         "Complete customer timeline (inquiries, quotations, invoices, payments) in one view",
       ],
-      impact: "100% Customer History Owned by Company • 2x Follow-up Speed",
+      impact: "Customer History Owned by the Company • Faster Follow-ups",
     },
   },
   {
