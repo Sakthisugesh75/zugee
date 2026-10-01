@@ -7,6 +7,7 @@ import { insertLead } from "@/lib/supabase";
 import { BUSINESS_TYPES } from "@/lib/products";
 import { createRateLimiter, getClientIp, retryAfterMinutes } from "@/lib/rate-limit";
 import { sendLeadNotificationEmail, sendLeadConfirmationEmail } from "@/lib/email";
+import { DEFAULT_REQUEST_TYPE, isRequestType } from "@/lib/lead-request";
 
 const ALLOWED_INDUSTRIES = new Set(BUSINESS_TYPES.map((b) => b.id));
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -72,6 +73,12 @@ export async function POST(request) {
       return badRequest("Please choose your business type.");
     }
 
+    // Demo or pricing call. Absent means demo, so older clients keep working.
+    const requestType = body.request_type ?? DEFAULT_REQUEST_TYPE;
+    if (!isRequestType(requestType)) {
+      return badRequest("Please choose a product demo or a pricing call.");
+    }
+
     const email = optionalString(body.email, LIMITS.email);
     if (email === undefined || (email && !EMAIL_PATTERN.test(email))) {
       return badRequest("Please check your email address, or leave it blank.");
@@ -93,6 +100,7 @@ export async function POST(request) {
       email: email ? email.toLowerCase() : null,
       company_name: company,
       industry,
+      request_type: requestType,
       message,
       source_page: "homepage-contact"
     });
@@ -112,7 +120,10 @@ export async function POST(request) {
       {
         success: true,
         reference_id: savedLead.reference_id,
-        message: "Thanks. Our team will contact you on the number you gave to arrange a demo."
+        message:
+          requestType === "pricing_call"
+            ? "Thanks. Our team will contact you on the number you gave to arrange a pricing call."
+            : "Thanks. Our team will contact you on the number you gave to arrange a demo."
       },
       { status: 201 }
     );

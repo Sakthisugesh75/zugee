@@ -10,6 +10,9 @@ create extension if not exists pgcrypto;
 -- ---------------------------------------------------------------------------
 -- Sales leads ("Talk to our team" form)
 -- `industry` holds the business type: a product slug from lib/products.js, or 'other'.
+-- `request_type` is what the visitor asked for: 'demo' or 'pricing_call' (lib/lead-request.js).
+--   A database created before 2026-10-01 gets this column from
+--   supabase/migrations/0002_leads_request_type.sql.
 -- ---------------------------------------------------------------------------
 create table if not exists public.leads (
   id            uuid primary key default gen_random_uuid(),
@@ -20,6 +23,8 @@ create table if not exists public.leads (
   email         text check (email is null or char_length(email) <= 254),
   company_name  text check (company_name is null or char_length(company_name) <= 160),
   industry      text not null check (char_length(industry) <= 40),
+  request_type  text not null default 'demo'
+                constraint leads_request_type_check check (request_type in ('demo', 'pricing_call')),
   goal          text check (goal is null or char_length(goal) <= 300), -- legacy; no longer collected
   message       text check (message is null or char_length(message) <= 2000),
   source_page   text not null default 'homepage-contact'

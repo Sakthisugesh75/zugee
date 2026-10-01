@@ -1,5 +1,6 @@
 // components/home/ContactSection.jsx
-// Final CTA: a short demo-request form. The team calls back to arrange a demo meeting.
+// Final CTA: a short demo-request form. The team calls back to arrange a demo meeting or, when
+// the visitor picks "Pricing call", a call to share a quote.
 // Required: name, mobile/WhatsApp, business type. Everything else is
 // optional — most Indian SMB owners would rather be called or WhatsApped than emailed.
 "use client";
@@ -7,11 +8,12 @@
 import { useState, useEffect } from "react";
 import InteractiveMascot from "@/components/animations/InteractiveMascot";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
+import { DEFAULT_REQUEST_TYPE, REQUEST_TYPES } from "@/lib/lead-request";
 
 // Keep in sync with the limits enforced in app/api/leads/route.js
 const MAX_LENGTHS = { name: 120, phone: 25, email: 254, company: 160, message: 2000 };
 
-const EMPTY_FORM = { name: "", phone: "", industry: "", email: "", company: "", message: "" };
+const EMPTY_FORM = { name: "", phone: "", industry: "", requestType: DEFAULT_REQUEST_TYPE, email: "", company: "", message: "" };
 
 const inputClass =
   "w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors";
@@ -36,15 +38,19 @@ export default function ContactSection({ businessTypes }) {
     return () => window.removeEventListener("zugee:select-product", handleSelect);
   }, [businessTypes]);
 
-  // "Schedule a pricing call" buttons pre-fill a pricing note (only if the message is still empty,
-  // so we never overwrite what the visitor typed).
+  // "Schedule a pricing call" buttons switch the request to a pricing call and pre-fill a note
+  // (only if the message is still empty, so we never overwrite what the visitor typed).
   useEffect(() => {
     const handlePricingCall = (e) => {
       const planName = e.detail?.planName;
       const note = planName
         ? `I'd like a pricing call about the ${planName} plan.`
         : "I'd like a pricing call for my business.";
-      setFormData((prev) => (prev.message.trim() ? prev : { ...prev, message: note }));
+      setFormData((prev) => ({
+        ...prev,
+        requestType: "pricing_call",
+        message: prev.message.trim() ? prev.message : note
+      }));
     };
     window.addEventListener("zugee:pricing-call", handlePricingCall);
     return () => window.removeEventListener("zugee:pricing-call", handlePricingCall);
@@ -52,21 +58,34 @@ export default function ContactSection({ businessTypes }) {
 
   const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
+  const isPricingCall = formData.requestType === "pricing_call";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitStatus("loading");
     setErrorMessage("");
+    const { requestType, ...fields } = formData;
 
     try {
       const response = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...formData, source_page: "homepage-contact", company_website: honeypot })
+        body: JSON.stringify({
+          ...fields,
+          request_type: requestType,
+          source_page: "homepage-contact",
+          company_website: honeypot
+        })
       });
       const result = await response.json().catch(() => ({}));
 
       if (response.ok && result.success) {
-        setConfirmed({ name: formData.name, phone: formData.phone, referenceId: result.reference_id });
+        setConfirmed({
+          name: formData.name,
+          phone: formData.phone,
+          referenceId: result.reference_id,
+          isPricingCall: requestType === "pricing_call"
+        });
         setSubmitStatus("success");
       } else {
         setSubmitStatus("error");
@@ -123,7 +142,8 @@ export default function ContactSection({ businessTypes }) {
                 <h3 className="text-2xl font-bold text-white">Thanks, {confirmed.name}.</h3>
                 <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
                   We&apos;ll contact you on{" "}
-                  <strong className="text-white">{confirmed.phone}</strong> to arrange your demo.
+                  <strong className="text-white">{confirmed.phone}</strong> to arrange your{" "}
+                  {confirmed.isPricingCall ? "pricing call" : "demo"}.
                 </p>
                 {confirmed.referenceId && (
                   <p className="text-xs text-slate-400">
@@ -190,27 +210,48 @@ export default function ContactSection({ businessTypes }) {
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="contact-industry" className={labelClass}>
-                    Business type <span className="text-[#00F0FF]">*</span>
-                  </label>
-                  <select
-                    id="contact-industry"
-                    required
-                    value={formData.industry}
-                    onChange={updateField("industry")}
-                    className={`${inputClass} cursor-pointer`}
-                    disabled={busy}
-                  >
-                    <option value="" disabled className="bg-[#0A0F1D] text-slate-400">
-                      Choose your business type…
-                    </option>
-                    {businessTypes.map((b) => (
-                      <option key={b.id} value={b.id} className="bg-[#0A0F1D] text-white">
-                        {b.label}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label htmlFor="contact-industry" className={labelClass}>
+                      Business type <span className="text-[#00F0FF]">*</span>
+                    </label>
+                    <select
+                      id="contact-industry"
+                      required
+                      value={formData.industry}
+                      onChange={updateField("industry")}
+                      className={`${inputClass} cursor-pointer`}
+                      disabled={busy}
+                    >
+                      <option value="" disabled className="bg-[#0A0F1D] text-slate-400">
+                        Choose your business type…
                       </option>
-                    ))}
-                  </select>
+                      {businessTypes.map((b) => (
+                        <option key={b.id} value={b.id} className="bg-[#0A0F1D] text-white">
+                          {b.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="contact-request-type" className={labelClass}>
+                      What would you like? <span className="text-[#00F0FF]">*</span>
+                    </label>
+                    <select
+                      id="contact-request-type"
+                      required
+                      value={formData.requestType}
+                      onChange={updateField("requestType")}
+                      className={`${inputClass} cursor-pointer`}
+                      disabled={busy}
+                    >
+                      {REQUEST_TYPES.map((t) => (
+                        <option key={t.id} value={t.id} className="bg-[#0A0F1D] text-white">
+                          {t.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -281,7 +322,7 @@ export default function ContactSection({ businessTypes }) {
                     </span>
                   ) : (
                     <span className="flex items-center justify-center gap-2">
-                      <span>Book a Demo</span>
+                      <span>{isPricingCall ? "Schedule a Pricing Call" : "Book a Demo"}</span>
                       <Send className="w-4 h-4" aria-hidden="true" />
                     </span>
                   )}

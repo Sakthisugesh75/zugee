@@ -285,3 +285,53 @@ test("notification email links to the admin dashboard page", () => {
   if (origSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
   else process.env.NEXT_PUBLIC_SITE_URL = origSiteUrl;
 });
+
+test("a pricing-call lead is labelled as one in both emails", async () => {
+  const lead = {
+    reference_id: "ZUG-PRICE01",
+    name: "Anita Rao",
+    phone: "+91 98765 11111",
+    email: "anita@example.com",
+    industry: "transposs",
+    request_type: "pricing_call",
+    message: "12 users across 2 branches"
+  };
+
+  const notification = await withAdminEmail(TEAM_EMAIL, () => buildLeadNotificationPayload(lead));
+  assert.ok(notification.subject.includes("New Pricing Call Request"));
+  assert.ok(notification.html.includes("New Pricing Call Request Received"));
+  assert.ok(notification.html.includes(">Pricing call</td>"));
+  assert.ok(notification.html.includes("12 users across 2 branches"));
+  assert.ok(notification.text.includes("Request: Pricing call"));
+
+  const confirmation = buildLeadConfirmationPayload(lead);
+  assert.ok(confirmation.subject.includes("Your Pricing Call Request"));
+  assert.ok(confirmation.html.includes("Pricing Call Request Received"));
+  assert.ok(confirmation.html.includes("share a clear quote"));
+  assert.ok(!confirmation.html.includes("live demo"));
+});
+
+test("a demo lead keeps the demo wording in both emails", async () => {
+  const lead = {
+    reference_id: "ZUG-DEMO01",
+    name: "Vikram Shah",
+    phone: "+91 98765 22222",
+    email: "vikram@example.com",
+    industry: "aqua-erp",
+    request_type: "demo",
+    message: "Call after 5pm"
+  };
+
+  const notification = await withAdminEmail(TEAM_EMAIL, () => buildLeadNotificationPayload(lead));
+  assert.ok(notification.subject.includes("New Demo Request"));
+  assert.ok(notification.html.includes(">Product demo</td>"));
+  assert.ok(notification.html.includes("Call after 5pm"));
+
+  const confirmation = buildLeadConfirmationPayload(lead);
+  assert.ok(confirmation.subject.includes("Your Demo Request"));
+  assert.ok(confirmation.html.includes("requesting a live demo of"));
+
+  // A lead saved before the request_type column existed is treated as a demo.
+  const legacy = buildLeadConfirmationPayload({ ...lead, request_type: undefined });
+  assert.ok(legacy.subject.includes("Your Demo Request"));
+});

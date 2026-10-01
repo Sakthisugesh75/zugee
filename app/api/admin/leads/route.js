@@ -5,6 +5,7 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/auth";
 import { LEAD_STATUSES, getLeadsList, getLeadsStats, updateLeadStatus } from "@/lib/supabase";
+import { isRequestType } from "@/lib/lead-request";
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -24,15 +25,19 @@ export async function GET(request) {
     const limit = Number.parseInt(searchParams.get("limit") || "25", 10);
     const status = searchParams.get("status") || "all";
     const industry = searchParams.get("industry") || "all";
+    const requestType = searchParams.get("request") || "all";
     const search = searchParams.get("search") || "";
     const includeStats = searchParams.get("stats") !== "0";
 
     if (status !== "all" && !LEAD_STATUSES.includes(status)) {
       return NextResponse.json({ success: false, error: "Invalid status filter." }, { status: 400 });
     }
+    if (requestType !== "all" && !isRequestType(requestType)) {
+      return NextResponse.json({ success: false, error: "Invalid request filter." }, { status: 400 });
+    }
 
     const [listResult, statsResult] = await Promise.all([
-      getLeadsList({ page, limit, status, industry, search }),
+      getLeadsList({ page, limit, status, industry, request: requestType, search }),
       includeStats ? getLeadsStats() : null
     ]);
 
