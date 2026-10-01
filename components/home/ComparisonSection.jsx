@@ -1,6 +1,7 @@
 // components/home/ComparisonSection.jsx
-// Visual transformation: "The Chaos of 5 Apps vs. The Unified ZUGEE Engine"
+// Visual transformation: "The Chaos of 5 Apps vs. Software Built for Your Trade"
 // Concrete business realities: eliminates manual double-entry, lost leads, and spreadsheet blind spots.
+// The comparison is scattered tools vs. ONE ZUGEE product; products do not share a login or data.
 
 "use client";
 
@@ -23,8 +24,8 @@ const COMPARISON_CATEGORIES = [
       impact: "14+ hours lost weekly per manager in manual status checks",
     },
     zugee: {
-      title: "The ZUGEE Unified Engine",
-      badge: "Connected Platform",
+      title: "Your ZUGEE Product",
+      badge: "Built for Your Trade",
       points: [
         "Order created once → instantly updates warehouse, dispatch, and accounting ledgers",
         "Role-based access: drivers and staff see only their tasks on mobile; owner sees entire P&L",
@@ -47,8 +48,8 @@ const COMPARISON_CATEGORIES = [
       impact: "Delayed cash flow and frequent payment leakages",
     },
     zugee: {
-      title: "The ZUGEE Unified Engine",
-      badge: "Connected Platform",
+      title: "Your ZUGEE Product",
+      badge: "Built for Your Trade",
       points: [
         "Cloud-based GST invoicing with QR codes & instant E-Way bill generation",
         "WhatsApp payment reminders with UPI & payment links (coming soon)",
@@ -71,8 +72,8 @@ const COMPARISON_CATEGORIES = [
       impact: "Up to 35% of inbound inquiries lost to competitor delays",
     },
     zugee: {
-      title: "The ZUGEE Unified Engine",
-      badge: "Connected Platform",
+      title: "Your ZUGEE Product",
+      badge: "Built for Your Trade",
       points: [
         "Centralized lead pipeline captures every inquiry into one company-owned database",
         "Automated follow-up reminders, quotation generator, and visit scheduling",
@@ -95,8 +96,8 @@ const COMPARISON_CATEGORIES = [
       impact: "Dead capital tied in stock + frequent customer order cancellations",
     },
     zugee: {
-      title: "The ZUGEE Unified Engine",
-      badge: "Connected Platform",
+      title: "Your ZUGEE Product",
+      badge: "Built for Your Trade",
       points: [
         "Live stock deduction the moment a sales bill or production work order is confirmed",
         "Automated low-stock alerts before items run out with re-order level triggers",
@@ -134,7 +135,7 @@ export default function ComparisonSection() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              The ZUGEE Single Engine
+              Software Built for Your Trade
             </span>
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
@@ -215,7 +216,7 @@ export default function ComparisonSection() {
             </div>
           </div>
 
-          {/* RIGHT: The ZUGEE Unified Engine */}
+          {/* RIGHT: One ZUGEE product */}
           <div
             className="rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden"
             style={{
@@ -238,7 +239,7 @@ export default function ComparisonSection() {
                   {activeCategory.zugee.badge}
                 </span>
                 <span className="text-[11px] font-mono text-emerald-400 uppercase font-semibold">
-                  ● 1 Central Database
+                  ● Modules Work Together
                 </span>
               </div>
 
@@ -271,7 +272,7 @@ export default function ComparisonSection() {
         <div className="mt-12 text-center">
           <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-4 sm:px-8 sm:py-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
             <span className="text-xs sm:text-sm text-slate-300">
-              Ready to unify your business workflows without disrupting daily operations?
+              Ready to move off scattered apps without disrupting daily operations?
             </span>
             <SmoothScrollLink
               targetId="contact"

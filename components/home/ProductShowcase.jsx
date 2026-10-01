@@ -212,7 +212,7 @@ function ZenXProductHero({ product, direction, onExplore }) {
 
           <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center gap-2 text-xs" style={{ color: accent.accent }}>
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Integrated with unified ZUGEE Core database</span>
+            <span>Runs as its own system, with its own login and data</span>
           </div>
         </div>
       </div>
@@ -464,13 +464,13 @@ export default function ProductShowcase() {
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-12 sm:mb-16">
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
-            Product Ecosystem
+            Our Products
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
             Software built around your business
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto mb-4">
-            From CRM and billing to fleet, travel, education and operations — ZUGEE connects the tools your business needs.
+            From CRM and billing to fleet, travel, education and operations — pick the ZUGEE product built for your kind of business.
           </p>
 
           {/* Availability Legend */}

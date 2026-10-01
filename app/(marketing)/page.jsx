@@ -1,8 +1,8 @@
 // app/(marketing)/page.jsx
 // Homepage — ZUGEE's complete narrative experience:
 //
-// Hero → "This is a business ecosystem"
-// Products → "These are the products inside it"
+// Hero → "Specialised software for each industry"
+// Products → "These are the products"
 // Comparison → "This is the problem ZUGEE solves"
 // Industries → "This is how it fits my business"
 // How It Works → "This is how I use it"
@@ -68,10 +68,10 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
       />
 
-      {/* 1. ECOSYSTEM — "This is a business ecosystem" */}
+      {/* 1. HERO — "Specialised software for each industry" */}
       <Hero />
 
-      {/* 2. PRODUCTS — "These are the products inside it" */}
+      {/* 2. PRODUCTS — "These are the products" */}
       <ProductShowcase />
 
       {/* 3. COMPARISON — "This is the problem ZUGEE solves" */}

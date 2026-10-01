@@ -1,7 +1,7 @@
 // components/home/IndustryShowcase.jsx
 // Operational Industry Workflows & Enterprise Foundation Pillars.
 // Answers: "How does ZUGEE actually operate in my business every day?"
-// Differentiates clearly from the Product Ecosystem catalog.
+// Differentiates clearly from the product catalog.
 
 "use client";
 
