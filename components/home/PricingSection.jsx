@@ -56,7 +56,6 @@ const ENTERPRISE_FEATURES = [
   "Custom module development & API webhooks",
   "On-site staff & management training",
   "24/7 Dedicated SLA & direct founder hotline",
-  "Sovereign data hosting with custom compliance",
 ];
 
 export default function PricingSection({ plans, productSetups }) {
@@ -374,12 +373,7 @@ export default function PricingSection({ plans, productSetups }) {
         {/* ========================================================
             TRUST & SECURITY GUARANTEE BADGES
            ======================================================== */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-16">
-          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
-            <span className="text-2xl mb-1 block">🇮🇳</span>
-            <p className="text-xs font-bold text-white mb-0.5">Indian Data Sovereignty</p>
-            <p className="text-[11px] text-slate-400">Data never leaves Indian soil</p>
-          </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-16">
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
             <span className="text-2xl mb-1 block">🛡️</span>
             <p className="text-xs font-bold text-white mb-0.5">GST ITC Invoices</p>

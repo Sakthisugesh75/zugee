@@ -47,8 +47,8 @@ const FOUNDATION_PILLARS = [
   },
   {
     icon: ShieldCheck,
-    title: "Indian Data Sovereignty",
-    desc: "Cloud servers located within India, role-based access controls, encrypted storage, and high-speed offline-resilient sync.",
+    title: "Secure, Role-Based Access",
+    desc: "Every user signs in with their own account and sees only what their role allows, with encrypted storage and high-speed offline-resilient sync.",
     accent: "#8B5CF6",
   },
 ];

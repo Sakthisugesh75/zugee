@@ -168,7 +168,7 @@ export default function Hero() {
           </span>
           <span className="flex items-center gap-1.5 font-medium">
             <CheckCircle2 className="w-4 h-4 text-violet-400" />
-            Data Stored in India
+            Dedicated Setup Support
           </span>
         </div>
 
