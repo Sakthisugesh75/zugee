@@ -61,7 +61,6 @@ ADMIN_JWT_SECRET=$jwtSecret
 # Get these from: https://supabase.com/dashboard/project/_/settings/api
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
 # ============================================
 # OAUTH ENCRYPTION - Required for ad integrations

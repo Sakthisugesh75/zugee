@@ -1,8 +1,10 @@
-# ZUGEE — Website, Lead Queue & Platform (in progress)
+# ZUGEE — Website & Admin Portal
 
-The ZUGEE marketing site (product catalog + "Talk to our team" form), an internal admin portal for incoming leads, and the start of the ZUGEE platform under `/app`.
+The ZUGEE marketing site (product catalog + "Book a demo" form) and an internal admin portal for incoming leads and subscriptions.
 
-**Where this is going:** [`docs/ZUGEE-PLATFORM-PLAN.md`](docs/ZUGEE-PLATFORM-PLAN.md): one ZUGEE account, organizations with branches, users and roles, and the industry products (Transposs, Tours & Travels, Aqua, …) connected by SSO. Phase 0 (truth & cleanup) is done; Phase 1 (authentication) is next.
+**This repo is not a product.** Every ZUGEE product (ZUGEE ERP / CRM, Transposs, Tours & Travels, Aqua, …) has its own separate codebase, login and database. The customer app that used to live here under `/app` and `/api/app/*` was removed on 2026-10-01.
+
+**Background:** [`docs/ZUGEE-PLATFORM-PLAN.md`](docs/ZUGEE-PLATFORM-PLAN.md). Its sections on a customer app and single sign-on in this repo were written before that decision.
 
 **Stack:** Next.js 16 (App Router, Turbopack) · React 19 · Tailwind CSS 4 · Supabase
 
@@ -20,8 +22,6 @@ Without Supabase credentials, the marketing site and admin portal still run in d
 
 `npm run build` succeeds with no environment variables set: no module creates a Supabase client when it's imported.
 
-The signed-in product under `/app/*` needs `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`, plus the tables in `supabase/app-schema.sql`. **Customer login doesn't work yet.** It's rebuilt in Phase 1. Modules that aren't built show a "Coming Soon" screen rather than sample numbers.
-
 ## Environment variables
 
 See [`.env.example`](.env.example).
@@ -30,8 +30,7 @@ See [`.env.example`](.env.example).
 | --- | --- | --- |
 | `NEXT_PUBLIC_SITE_URL` | recommended | Canonical URL for metadata, robots and sitemap |
 | `SUPABASE_URL` | yes | Supabase project URL |
-| `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-only key for writing leads |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | for `/app` | Client-safe key (respects RLS) |
+| `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-only key for leads and subscriptions |
 | `ADMIN_PASSWORD` | yes (≥ 12 chars) | Admin portal password |
 | `ADMIN_JWT_SECRET` | yes (≥ 32 chars) | Signs admin session cookies |
 | `ADMIN_NOTIFICATION_EMAIL` | yes, a company mailbox | Receives new-lead emails. No default: when unset, the team email is skipped and a warning is logged |
@@ -40,7 +39,9 @@ See [`.env.example`](.env.example).
 
 Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It creates `leads`: the "Talk to our team" form (name and mobile required; email, company and requirement optional). RLS is enabled with no policies, so only the server's service-role key can access it. The bottom of the file has the SQL to migrate a database created from the previous version.
 
-[`supabase/app-schema.sql`](supabase/app-schema.sql) is the interim schema for `/app`. Then run [`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql). It creates `subscriptions` and `subscription_payments` (the setup fee can be recorded only once, and customers can only read their own rows), and backfills existing customers with the setup fee waived. Phase 2 replaces it with numbered migrations and the organization model.
+[`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql) creates `subscriptions` and `subscription_payments` for the admin portal (the setup fee can be recorded only once).
+
+> **`supabase/app-schema.sql` is unused.** It was the schema for the removed customer app, and no code in this repo reads or writes its tables. The file is kept for reference only. One dependency remains: the `0001` migration still references `public.customer_profiles` and the `update_updated_at_column()` function that `app-schema.sql` defines, so on a fresh database `0001` fails unless `app-schema.sql` is run first. Remove those references from the migration before dropping the file.
 
 ## Project structure
 
@@ -48,18 +49,15 @@ Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It 
 app/
   (marketing)/        public site: layout (navbar + footer) and homepage
   admin/              admin login, lead dashboard, subscriptions (server-gated by session cookie)
-  app/                signed-in product (CRM works; other modules show Coming Soon)
   api/
     leads/            POST  public lead submission (rate limited, validated)
     admin/auth/       POST login · GET session · DELETE logout
     admin/leads/      GET list + stats · PATCH status (admin only)
     admin/subscriptions/  GET list · POST create · PATCH setup payment / waiver / monthly payment / status (admin only)
-    app/              product APIs (auth, dashboard, CRM leads)
 components/
   home/               homepage sections (hero, products, how it works, pricing + FAQ, contact)
   layout/             navbar, footer
   admin/              admin client components
-  app/                product UI kit (KPICard, EmptyState, ComingSoon, …)
   ui/                 shared primitives (MascotLogo, StatusBadge)
 lib/
   products.js         product catalog + statuses (single source for site, form, admin, JSON-LD)
@@ -67,7 +65,6 @@ lib/
   subscriptions.js    subscription + setup-fee data layer (server-only)
   site-content.js     how-it-works steps and FAQ (also emitted as FAQPage JSON-LD)
   auth.js             admin password check + signed httpOnly session cookie
-  app-auth.js         product auth helpers (rebuilt in Phase 1)
   rate-limit.js       in-memory rate limiter
   supabase.js         lead data access (Supabase, dev-only in-memory fallback)
 supabase/             database schemas

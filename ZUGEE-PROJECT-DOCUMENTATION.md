@@ -93,7 +93,7 @@ Plus Jakarta Sans (`--font-sans`) for everything. JetBrains Mono (`--font-mono`)
 The brief asks for a **professional, trustworthy, modern, Indian-SMB-friendly** look: premium but approachable.
 
 - **Now (after Phase 0):** the dark theme is kept, but the terminal feel is gone: no monospace uppercase labels or CTAs, no fake status indicators, no newsletter, no marquee or "laser" effects.
-- **Phase 3 redesign:** move the marketing site to a **light theme**, add real product screenshots once products are verified, and use restrained blue/cyan accents. The in-app UI (`/app`) already uses the light slate theme described in `docs/UI_IMPROVEMENTS.md`.
+- **Phase 3 redesign:** move the marketing site to a **light theme**, add real product screenshots once products are verified, and use restrained blue/cyan accents.
 
 Avoid: neon glows as decoration, cyber grids, monospace everywhere, technical language, anything that looks like a crypto or developer tool.
 
@@ -157,7 +157,6 @@ All prices exclude GST. The single source is `lib/pricing.js`; never type a pric
 | Website pricing section | Monthly price, "+ ₹X one-time setup", "Starting today" total, "Then ₹X/month", what setup includes | `components/home/PricingSection.jsx` |
 | FAQ | What the setup fee covers; that it is never charged again | `lib/site-content.js` (numbers read from `lib/pricing.js`) |
 | Admin: `/admin/subscriptions` | Customer, product, plan, monthly fee, setup fee, setup status, subscription status, start and renewal dates. Actions: record setup payment, waive setup (with reason), record monthly payment, change status | `components/admin/SubscriptionsManager.jsx`, `app/api/admin/subscriptions/*` |
-| Customer: `/app/back-office/billing` | Plan and monthly price; setup shown as Pending, ✓ Completed or Waived; initial payment only while setup is pending; next renewal | `components/app/SubscriptionSummary.jsx` |
 
 **Sales flow today (demo-led):**
 1. A lead books a demo.

@@ -10,6 +10,21 @@ After switching branches, run `npm install`, because the two branches have diffe
 
 ---
 
+## [Lead email fixes & customer app removal] — 2026-10-01 · branch `fix/today`
+
+Follows the findings in `docs/ZUGEE-ANALYSIS-REPORT.md`.
+
+### Fixed
+- **H1:** both lead emails now HTML-escape everything the visitor typed (name, phone, email, business type, company, message). Tests cover each field.
+- **H2:** the "View in Admin Portal" link goes to `/admin/dashboard` (it pointed at `/admin/leads`, a 404).
+- **H3:** the hardcoded personal Gmail fallback is gone. With `ADMIN_NOTIFICATION_EMAIL` unset, the team email is skipped and a warning is logged.
+
+### Removed
+- **The customer app.** Every ZUGEE product has its own codebase, login and database, so this repo's `/app` area was not a product. Deleted: `app/app/`, `app/api/app/` (7 routes), `components/app/`, `lib/app-auth.js`, `getCustomerSubscriptions` in `lib/subscriptions.js`, the `/app` entry in `robots.txt` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- `supabase/app-schema.sql` is kept but unused; see the note in the README.
+
+---
+
 ## [Pricing & one-time setup fee] — 2026-09-25 · branch `phase-0-truth` · not committed yet
 
 > **Pay once to get your business set up. Pay monthly to keep using ZUGEE.**
