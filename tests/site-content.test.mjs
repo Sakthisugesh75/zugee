@@ -47,10 +47,25 @@ test("no India data-hosting claim appears anywhere in the site source", () => {
   }
 });
 
+// Backups have not been verified either, so the site must not claim them in any form
+// ("backup", "backups", "backed up", "back-up").
+const BACKUP_CLAIM = /\bback(ed)?[\s-]?ups?\b/i;
+
+test("no backup claim appears anywhere in the site source", () => {
+  const files = ["app", "components", "lib"].flatMap((dir) => siteSourceFiles(path.join(REPO_ROOT, dir)));
+  assert.ok(files.length > 20, "expected to scan the site source");
+
+  for (const file of files) {
+    const source = fs.readFileSync(file, "utf8");
+    assert.ok(!BACKUP_CLAIM.test(source), `${path.relative(REPO_ROOT, file)} contains a backup claim`);
+  }
+});
+
 test("the data-storage FAQ makes no location claim and offers hosting details on request", () => {
   const storage = FAQ_ITEMS.find((f) => f.question === "Where is my business data stored?");
   assert.ok(storage);
   assert.ok(!/India|country/i.test(storage.answer));
+  assert.ok(!BACKUP_CLAIM.test(storage.answer));
   assert.match(storage.answer, /stored securely/i);
   assert.match(storage.answer, /authorised users/i);
   assert.match(storage.answer, /hosting details on request/i);

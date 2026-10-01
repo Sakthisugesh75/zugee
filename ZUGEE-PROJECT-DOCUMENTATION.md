@@ -16,7 +16,7 @@ ZUGEE makes industry-focused business software for Indian SMBs, enterprises and 
 
 **Each product is separate.** Every ZUGEE product has its own login, its own database and its own codebase, and no shared login is planned (founder, 2026-10-01). The website must never claim a shared login, a shared database or "one operating system" across products. A business can use several products side by side.
 
-**No hosting-location claims.** Until hosting is verified, the website must not say where data is stored (for example "Data Stored in India"). "Built for Indian businesses" is fine.
+**No hosting-location claims.** Until hosting is verified, the website must not say where data is stored (for example "Data Stored in India"). "Built for Indian businesses" is fine. The same goes for backups: no backup claim until backups are verified.
 
 The product list and each product's status: `lib/products.js`.
 

@@ -52,7 +52,7 @@ const COMPARISON_MATRIX = [
 
 const ENTERPRISE_FEATURES = [
   "Unlimited branches & staff accounts",
-  "Dedicated cloud database & high-speed backup",
+  "Dedicated cloud database",
   "Custom module development & API webhooks",
   "On-site staff & management training",
   "24/7 Dedicated SLA & direct founder hotline",
