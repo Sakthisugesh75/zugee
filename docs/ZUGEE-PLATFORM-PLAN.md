@@ -461,3 +461,20 @@ New verticals (School, PG, Resort, …) are built **as modules on Core ERP** whe
 4. **What is `ridexo`?**
 5. **Trust details:** founder/team names, registered address, phone, WhatsApp, support email, CIN/GSTIN (only real ones).
 6. **Pricing per product.** The ₹1,999/₹4,099 tiers were designed for the GST billing product.
+
+
+1.multi-product company with "one login for all products" 
+
+here i want to clear onthing about each software has separte login id and crediantials ,separte db
+2.Your products are in different codebases on different stacks. Transposs is a Node/Express server with its own database and its own logins, while ZUGEE is Next.js with Supabase. Merging everything into one giant app would take months and stall sales. Don't do that.
+i am not going based on this
+3.Is "ZUGEE ERP/CRM" this repo's /app, or a separate codebase? If it's this repo, it's only lead tracking today, so it isn't ready to be called Available. 
+All the project has separate code base ,database,login all the sofware are ready to production
+4.Where is the data hosted, and have you restored a backup? If you can't say "Supabase Mumbai region, backups tested on [date]," remove the India-hosting and backup claims until you can.
+can you clear me what are asking ,i cant abe to understand
+5.Is annual billing real? If yes, add it to the database. If not, remove it from the page.
+
+still i need to figure it out 
+
+6.What's your registered address, phone and support email? These go in the footer and the policies.
+yah i will added
