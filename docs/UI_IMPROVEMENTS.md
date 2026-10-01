@@ -1,5 +1,9 @@
 # UI Improvements Applied
 
+> **Historical (2026-10-01):** this log describes the customer app under `/app` and
+> `components/app/`, which were removed from this repo. Each ZUGEE product has its own codebase.
+> None of the files named below exist any more.
+
 This document outlines the UI/UX improvements made to create a cleaner, more professional interface.
 
 ## Key Changes

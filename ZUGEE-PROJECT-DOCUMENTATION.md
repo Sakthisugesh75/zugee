@@ -14,7 +14,9 @@ ZUGEE makes industry-focused business software for Indian SMBs, enterprises and 
 - **ZUGEE ERP/CRM** for general businesses.
 - **Industry products:** Transposs (fleet), Tours & Travels CRM, Aqua ERP, Real Estate ERP, ManuFlow (manufacturing), and more coming.
 
-**Where it's heading:** one ZUGEE account → one business workspace → multiple products, branches and users with role-based permissions. That shared account is being built, so the website must not claim it yet.
+**Each product is separate.** Every ZUGEE product has its own login, its own database and its own codebase, and no shared login is planned (founder, 2026-10-01). The website must never claim a shared login, a shared database or "one operating system" across products. A business can use several products side by side.
+
+**No hosting-location claims.** Until hosting is verified, the website must not say where data is stored (for example "Data Stored in India"). "Built for Indian businesses" is fine. The same goes for backups: no backup claim until backups are verified.
 
 The product list and each product's status: `lib/products.js`.
 
@@ -53,7 +55,7 @@ Write for a shop owner, fleet operator, school administrator or manufacturer, no
 | Say "Coming Soon" plainly | Imply a date, a beta or a waitlist that doesn't exist |
 | Ask for mobile/WhatsApp first; email optional | Require a "corporate" email |
 
-**Primary CTA:** Explore Products. **Conversion CTA:** Book a Demo. Sales run through a live demo meeting the team arranges after the form is submitted. **Pricing CTA:** Get Started (pre-fills the chosen plan in the demo form).
+**Primary CTA:** Explore Products. **Conversion CTA:** Book a Demo. Sales run through a live demo meeting the team arranges after the form is submitted. **Pricing CTA:** Schedule a pricing call (switches the demo form to "Pricing call" and pre-fills a note).
 
 ---
 
@@ -93,7 +95,7 @@ Plus Jakarta Sans (`--font-sans`) for everything. JetBrains Mono (`--font-mono`)
 The brief asks for a **professional, trustworthy, modern, Indian-SMB-friendly** look: premium but approachable.
 
 - **Now (after Phase 0):** the dark theme is kept, but the terminal feel is gone: no monospace uppercase labels or CTAs, no fake status indicators, no newsletter, no marquee or "laser" effects.
-- **Phase 3 redesign:** move the marketing site to a **light theme**, add real product screenshots once products are verified, and use restrained blue/cyan accents. The in-app UI (`/app`) already uses the light slate theme described in `docs/UI_IMPROVEMENTS.md`.
+- **Phase 3 redesign:** move the marketing site to a **light theme**, add real product screenshots once products are verified, and use restrained blue/cyan accents.
 
 Avoid: neon glows as decoration, cyber grids, monospace everywhere, technical language, anything that looks like a crypto or developer tool.
 
@@ -113,8 +115,8 @@ Single page, `app/(marketing)/page.jsx`:
 | 1 | Hero: H1 "Business software built for the way your business operates." + Explore Products / Book a Demo | `Hero.jsx` | inline copy |
 | 2 | Products: cards by category with honest status badges; Coming Soon list | `ProductsSection.jsx` | `lib/products.js` |
 | 3 | How it works: 3 steps | `HowWeWork.jsx` | `lib/site-content.js` |
-| 4 | Pricing: Starter and Growth cards (monthly + one-time setup shown separately, "Starting today" and "Then ₹X/month"), product-specific setup examples, FAQ | `PricingSection.jsx`, `PlanButton.jsx`, `FAQSection.jsx` | `lib/pricing.js`, `lib/site-content.js` |
-| 5 | Book a demo: short form + mascot | `ContactSection.jsx` | `BUSINESS_TYPES` from `lib/products.js` |
+| 4 | Pricing: "Get the best price for your business". No prices shown; what each plan includes, product-specific setup examples, "Schedule a pricing call", FAQ | `PricingSection.jsx`, `PricingCallButton.jsx`, `FAQSection.jsx` | plan names and inclusions from `lib/pricing.js` (prices stripped in `page.jsx`), `lib/site-content.js` |
+| 5 | Book a demo: short form + mascot. "What would you like?" is a product demo or a pricing call | `ContactSection.jsx` | `BUSINESS_TYPES` from `lib/products.js`, `REQUEST_TYPES` from `lib/lead-request.js` |
 
 **Navigation:** Products · How it works · Pricing · FAQ · [Book a Demo].
 
@@ -142,7 +144,7 @@ Single page, `app/(marketing)/page.jsx`:
 All prices exclude GST. The single source is `lib/pricing.js`; never type a price anywhere else.
 
 **Rules**
-- **Show both prices together, always.** The setup fee sits directly under the monthly price on every card, never hidden until checkout.
+- **Prices are not published on the website (since 2026-10-01).** No amount may appear on the page, in metadata or in the FAQ structured data. Pricing depends on the product, users, branches and setup needs, and the team shares a quote on a pricing call. The table above is for the team and the admin subscriptions tool.
 - **Never present the setup fee as monthly.** It is charged once per product, never on renewals.
 - **Always call it "One-time Setup & Onboarding".** Never "activation", "registration" or "platform" fee.
 - **Setup lists only real services.** WhatsApp configuration is left out until an integration exists.
@@ -154,10 +156,9 @@ All prices exclude GST. The single source is `lib/pricing.js`; never type a pric
 
 | Place | What it shows | Code |
 |---|---|---|
-| Website pricing section | Monthly price, "+ ₹X one-time setup", "Starting today" total, "Then ₹X/month", what setup includes | `components/home/PricingSection.jsx` |
-| FAQ | What the setup fee covers; that it is never charged again | `lib/site-content.js` (numbers read from `lib/pricing.js`) |
+| Website pricing section | No amounts. What a quote depends on, what each plan and its setup include, and "Schedule a pricing call" | `components/home/PricingSection.jsx` |
+| FAQ | What the setup fee covers; that it is never charged again; that exact pricing is shared on the call. No amounts | `lib/site-content.js` |
 | Admin: `/admin/subscriptions` | Customer, product, plan, monthly fee, setup fee, setup status, subscription status, start and renewal dates. Actions: record setup payment, waive setup (with reason), record monthly payment, change status | `components/admin/SubscriptionsManager.jsx`, `app/api/admin/subscriptions/*` |
-| Customer: `/app/back-office/billing` | Plan and monthly price; setup shown as Pending, ✓ Completed or Waived; initial payment only while setup is pending; next renewal | `components/app/SubscriptionSummary.jsx` |
 
 **Sales flow today (demo-led):**
 1. A lead books a demo.

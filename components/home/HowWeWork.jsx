@@ -30,7 +30,7 @@ const STEPS = [
     number: "03",
     label: "MIGRATION",
     title: "White-Glove Data Migration",
-    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with backups and validation at every step.",
+    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with validation at every step.",
     tag: "Clean Ledgers · Role Permissions",
     icon: Database,
   },

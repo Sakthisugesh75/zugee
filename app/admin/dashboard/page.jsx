@@ -8,6 +8,7 @@ import MascotLogo from "@/components/ui/MascotLogo";
 import StatusBadge from "@/components/ui/StatusBadge";
 import AdminNav from "@/components/admin/AdminNav";
 import { BUSINESS_TYPES, PRODUCTS, businessTypeLabel } from "@/lib/products";
+import { REQUEST_TYPES, leadRequestType, requestTypeLabel } from "@/lib/lead-request";
 import {
   Search,
   Download,
@@ -27,12 +28,13 @@ const EXPORT_PAGE_SIZE = 100;
 const STATUS_OPTIONS = ["new", "contacted", "qualified", "archived"];
 const EMPTY_STATS = { total: 0, new: 0, contacted: 0, qualified: 0, archived: 0 };
 
-function buildQuery({ page, limit, status, industry, search, stats = true }) {
+function buildQuery({ page, limit, status, industry, request, search, stats = true }) {
   const params = new URLSearchParams({
     page: String(page),
     limit: String(limit),
     status,
     industry,
+    request,
     search
   });
   if (!stats) params.set("stats", "0");
@@ -61,6 +63,7 @@ export default function AdminDashboardPage() {
   // Filters & Pagination
   const [statusFilter, setStatusFilter] = useState("all");
   const [industryFilter, setIndustryFilter] = useState("all");
+  const [requestFilter, setRequestFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -75,7 +78,7 @@ export default function AdminDashboardPage() {
   const [patchingId, setPatchingId] = useState(null);
   const [exporting, setExporting] = useState(false);
 
-  const queryKey = JSON.stringify([page, statusFilter, industryFilter, debouncedSearch, refreshKey]);
+  const queryKey = JSON.stringify([page, statusFilter, industryFilter, requestFilter, debouncedSearch, refreshKey]);
   const loading = result.key !== queryKey;
   const { leads, total: totalCount, error } = result;
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
@@ -103,6 +106,7 @@ export default function AdminDashboardPage() {
             limit: PAGE_SIZE,
             status: statusFilter,
             industry: industryFilter,
+            request: requestFilter,
             search: debouncedSearch
           })}`,
           { signal: controller.signal, cache: "no-store" }
@@ -134,7 +138,7 @@ export default function AdminDashboardPage() {
     })();
 
     return () => controller.abort();
-  }, [queryKey, page, statusFilter, industryFilter, debouncedSearch, router]);
+  }, [queryKey, page, statusFilter, industryFilter, requestFilter, debouncedSearch, router]);
 
   // Close the drawer with Escape
   useEffect(() => {
@@ -194,6 +198,7 @@ export default function AdminDashboardPage() {
             limit: EXPORT_PAGE_SIZE,
             status: statusFilter,
             industry: industryFilter,
+            request: requestFilter,
             search: debouncedSearch,
             stats: false
           })}`,
@@ -224,6 +229,7 @@ export default function AdminDashboardPage() {
         "Email",
         "Company",
         "Business type",
+        "Request",
         "Status",
         "Goal (older form)",
         "Message",
@@ -239,6 +245,7 @@ export default function AdminDashboardPage() {
           l.email,
           l.company_name,
           businessTypeLabel(l.industry),
+          requestTypeLabel(leadRequestType(l)),
           l.status,
           l.goal,
           l.message,
@@ -428,6 +435,23 @@ export default function AdminDashboardPage() {
                 </option>
               ))}
             </select>
+
+            <select
+              value={requestFilter}
+              aria-label="Filter by request type"
+              onChange={(e) => {
+                setRequestFilter(e.target.value);
+                setPage(1);
+              }}
+              className="bg-[#06090F] border border-white/[0.1] focus:border-[#00F0FF] rounded-xl px-3 py-2 text-xs text-white font-mono outline-none cursor-pointer w-auto"
+            >
+              <option value="all">All requests</option>
+              {REQUEST_TYPES.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -499,6 +523,11 @@ export default function AdminDashboardPage() {
                         <span className="px-2.5 py-1 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/25 text-[10px] font-semibold">
                           {businessTypeLabel(lead.industry)}
                         </span>
+                        {leadRequestType(lead) === "pricing_call" && (
+                          <span className="ml-1.5 px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-semibold">
+                            Pricing call
+                          </span>
+                        )}
                       </td>
 
                       {/* Status Dropdown */}
@@ -640,6 +669,12 @@ export default function AdminDashboardPage() {
                   <div>
                     <span className="text-slate-400 uppercase block mb-1 font-semibold">Business type</span>
                     <span className="text-[#00F0FF] font-medium">{businessTypeLabel(selectedLead.industry)}</span>
+                  </div>
+                  <div>
+                    <span className="text-slate-400 uppercase block mb-1 font-semibold">Request</span>
+                    <span className={leadRequestType(selectedLead) === "pricing_call" ? "text-amber-400 font-medium" : "text-slate-300"}>
+                      {requestTypeLabel(leadRequestType(selectedLead))}
+                    </span>
                   </div>
                   <div>
                     <span className="text-slate-400 uppercase block mb-1 font-semibold">Company</span>

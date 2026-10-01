@@ -10,6 +10,55 @@ After switching branches, run `npm install`, because the two branches have diffe
 
 ---
 
+## [Homepage: separate products, no statistics, pricing on a call] — 2026-10-01 · branch `fix/today`
+
+The founder confirmed the listed product features are ready, so feature claims are unchanged apart from the points below.
+
+> **Before deploying:** run `supabase/migrations/0002_leads_request_type.sql` in the Supabase SQL editor. Without it the demo form cannot save leads.
+
+### Changed
+- **No shared login or shared database claims.** Each product has its own login, database and codebase, and no shared login is planned.
+  - Hero: new badge, headline ("Specialised software for your industry, set up for you in 14 days"), subhead and note; the "single login coming soon" note is gone.
+  - Comparison section: "The ZUGEE Unified Engine", "Connected Platform", "1 Central Database" and "unify your business workflows" reworded to describe one product.
+  - Product showcase: "Integrated with unified ZUGEE Core database" and "Product Ecosystem" reworded.
+  - FAQ 2 rewritten: each product is separate and can be used alongside the others.
+- **Unsourced statistics removed** from the comparison section ("14+ hours", "35%", "90%", "2x", "100%", "4 days") and the travel workflow ("under 2 minutes"). The pain points and features stay.
+- **Pricing is hidden.** The pricing section is now "Get the best price for your business": what a quote depends on, what Starter, Growth and Enterprise include, and "Schedule a pricing call". The price cards, annual/monthly toggle, matrix prices, "Plans from ₹1,599/mo" and the "Most Popular Choice" badge are gone. FAQ 3 and 4 explain the setup fee and subscription without amounts. `lib/pricing.js` is unchanged and still drives the admin subscriptions tool; `page.jsx` strips the price fields before anything reaches the page.
+- **India data-hosting claims removed** until hosting is verified: the hero badge (now "Dedicated Setup Support"), the "Indian Data Sovereignty" trust badge and industry pillar (the pillar is now "Secure, Role-Based Access"), "Data stays in India", "Sovereign data hosting" on the Enterprise card, and FAQ 7. "Built for Indian businesses" and similar wording stays.
+- **Backup claims removed** until backups are verified: "high-speed backup" on the Enterprise card and "with backups" in the data-migration step.
+
+### Added
+- **"Pricing call" in the demo form** ("What would you like?": Product demo or Pricing call). Pricing buttons select it and pre-fill a note. The admin dashboard shows a "Pricing call" badge, a request filter and a CSV column, and both lead emails say which it was.
+  - Stored in the new `leads.request_type` column (migration `0002`).
+- Tests: `tests/lead-request.test.mjs`, `tests/site-content.test.mjs` (no price, no shared-login wording, no India hosting claim and no backup claim), and pricing-call cases in `tests/email.test.mjs`.
+
+### Removed
+- `components/home/PlanButton.jsx` (replaced by `PricingCallButton.jsx`).
+
+---
+
+## [Lead email fixes & customer app removal] — 2026-10-01 · branch `fix/today`
+
+Follows the findings in `docs/ZUGEE-ANALYSIS-REPORT.md`.
+
+### Fixed
+- **H1:** both lead emails now HTML-escape everything the visitor typed (name, phone, email, business type, company, message). Tests cover each field.
+- **H2:** the "View in Admin Portal" link goes to `/admin/dashboard` (it pointed at `/admin/leads`, a 404).
+- **H3:** the hardcoded personal Gmail fallback is gone. With `ADMIN_NOTIFICATION_EMAIL` unset, the team email is skipped and a warning is logged.
+
+### Removed
+- **The customer app.** Every ZUGEE product has its own codebase, login and database, so this repo's `/app` area was not a product. Deleted: `app/app/`, `app/api/app/` (7 routes), `components/app/`, `lib/app-auth.js`, `getCustomerSubscriptions` in `lib/subscriptions.js`, the `/app` entry in `robots.txt` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+- `supabase/app-schema.sql` is kept but unused; see the note in the README.
+- **Dead code** (no importers): `lib/oauth-encryption.js`, `lib/industries.js`, `components/animations/AnimatedCard.jsx`, `AnimatedSection.jsx`, `StaggeredGroup.jsx`, and `components/home/IndustrySection.jsx`, `IndustryProductsSection.jsx`, `ProductsSection.jsx`, `PremiumProductCard.jsx`, `ProductInterestButton.jsx`.
+- **Stale docs:** `docs/OAUTH_SETUP.md` and `docs/AI_INSIGHTS_SETUP.md` (both described removed features).
+- **Unused variables** in `.env.example` and `setup-admin.ps1`: `OAUTH_ENCRYPTION_SECRET`, `META_APP_ID`, `META_APP_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_ADS_DEVELOPER_TOKEN`, `INSIGHTS_COMPUTE_SECRET`.
+
+### Changed
+- `next` and `eslint-config-next` 16.3.5 → 16.3.8 (clears the `next/og` advisory).
+- `InteractiveMascot.jsx` reads reduced-motion and screen width with `useSyncExternalStore` instead of setting state in an effect. `npm run lint` now reports no errors or warnings.
+
+---
+
 ## [Pricing & one-time setup fee] — 2026-09-25 · branch `phase-0-truth` · not committed yet
 
 > **Pay once to get your business set up. Pay monthly to keep using ZUGEE.**

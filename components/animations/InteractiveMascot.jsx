@@ -1,8 +1,25 @@
 // components/animations/InteractiveMascot.jsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
+
+// Subscribes to a CSS media query. Returns false on the server and during hydration.
+function useMediaQuery(query) {
+  const subscribe = useCallback(
+    (onChange) => {
+      const mediaQuery = window.matchMedia(query);
+      mediaQuery.addEventListener("change", onChange);
+      return () => mediaQuery.removeEventListener("change", onChange);
+    },
+    [query]
+  );
+  return useSyncExternalStore(
+    subscribe,
+    () => window.matchMedia(query).matches,
+    () => false
+  );
+}
 
 /**
  * Premium interactive mascot with:
@@ -27,27 +44,9 @@ export default function InteractiveMascot({
   const animationFrameRef = useRef(null);
 
   // Check if reduced motion is preferred
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    // Check for reduced motion preference
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    // Check if mobile
-    setIsMobile(window.innerWidth < 1024);
-
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 1024);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const prefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
+  // Check if mobile
+  const isMobile = useMediaQuery("(max-width: 1023px)");
 
   // Random blink animation
   useEffect(() => {

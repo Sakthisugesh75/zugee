@@ -1,6 +1,7 @@
 // components/home/Hero.jsx
-// ZenXAI-inspired high-impact Hero with simulated interactive SaaS Command Center.
-// Replaces static spiderweb with tangible proof of product, real-time metrics, and clear value prop.
+// ZenXAI-inspired high-impact Hero with a simulated, clearly labelled sample dashboard.
+// Message: specialised software for each industry, set up for you in 14 days. Each ZUGEE product
+// is separate (own login, own database), so nothing here may claim a shared login or shared data.
 
 "use client";
 
@@ -101,7 +102,7 @@ export default function Hero() {
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-cyan-400/30 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)]">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             <span className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-[0.2em] text-cyan-300">
-              UNIFIED BUSINESS OPERATING SYSTEM
+              INDUSTRY-SPECIFIC BUSINESS SOFTWARE
             </span>
           </div>
         </div>
@@ -109,7 +110,7 @@ export default function Hero() {
         {/* Hero Headline */}
         <div className="max-w-4xl mx-auto text-center mb-6">
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-white leading-[1.08] uppercase">
-            Replace 5 Disconnected Tools with{" "}
+            Specialised Software for Your Industry,{" "}
             <span
               className="inline-block"
               style={{
@@ -118,16 +119,16 @@ export default function Hero() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              One Operating System.
+              Set Up for You in 14 Days.
             </span>
           </h1>
         </div>
 
         {/* Subhead Value Proposition */}
         <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl mx-auto text-center leading-relaxed mb-8">
-          Your staff re-enters the same customer into WhatsApp, Excel, and Tally.
-          Orders slip through cracks. Nobody knows job status without calling 3 people.
-          ZUGEE connects CRM, billing, inventory, and dispatch in one central database — built for Indian businesses.
+          Running your business on WhatsApp, Excel and Tally means re-entering the same details and chasing staff for updates.
+          ZUGEE makes a separate product for each industry — fleet, travel, water supply, real estate, manufacturing, schools and more.
+          Our team sets yours up, moves your data across and trains your staff.
         </p>
 
         {/* Action Buttons */}
@@ -167,18 +168,18 @@ export default function Hero() {
           </span>
           <span className="flex items-center gap-1.5 font-medium">
             <CheckCircle2 className="w-4 h-4 text-violet-400" />
-            Data Stored in India
+            Dedicated Setup Support
           </span>
         </div>
 
-        {/* Unified account caveat (item #5) */}
+        {/* Each product is separate: own login, own database */}
         <p className="text-center text-xs text-slate-500 mb-12 max-w-xl mx-auto">
-          Today, each ZUGEE product runs as its own connected system.
-          A single login across all products is coming soon.
+          Each ZUGEE product is separate software with its own login and its own data.
+          Choose the one built for your business.
         </p>
 
         {/* ========================================================
-            SIMULATED LIVE SAAS COMMAND CENTER PREVIEW
+            SAMPLE DASHBOARD PREVIEW (ILLUSTRATIVE DATA)
            ======================================================== */}
         <div className="max-w-4xl mx-auto">
           <div
@@ -262,7 +263,7 @@ export default function Hero() {
             <div className="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
               <div className="flex items-center gap-2">
                 <Activity className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Single Central Database: Updates in {activeTab.label} automatically reflect across Ledgers and Inventory.</span>
+                <span>Inside each product, an update in one module shows up in the others — no re-entry.</span>
               </div>
               <span className="hidden sm:inline font-mono text-slate-500 font-semibold">
                 Sample Data

@@ -9,17 +9,6 @@
   - Pricing plans
   - Contact form
 
-### 👤 Customer Portal
-- **Sign In/Up**: http://localhost:3000/app/auth
-- **Dashboard**: http://localhost:3000/app/dashboard
-- **CRM (Leads)**: http://localhost:3000/app/crm
-- **Ad Integrations**: http://localhost:3000/app/ads
-- **GST Management**: http://localhost:3000/app/gst
-- **Reports**: http://localhost:3000/app/reports
-- **Billing**: http://localhost:3000/app/back-office/billing
-- **ERP**: http://localhost:3000/app/back-office/erp
-- **HR**: http://localhost:3000/app/back-office/hr
-
 ### 🔧 Admin Portal
 - **Admin Login**: http://localhost:3000/admin
 - **Admin Dashboard**: http://localhost:3000/admin/dashboard
@@ -27,25 +16,15 @@
 
 ## Navigation Components
 
-### Customer Portal Sidebar (AppSidebar)
-Located in: `components/app/AppSidebar.jsx`
-
-Navigation items:
-- Dashboard
-- CRM (Leads)
-- Ads
-- GST
-- Reports
-- Back Office (Billing, ERP, HR)
-
 ### Marketing Site Navbar
 Located in: `components/layout/Navbar.jsx`
 
-Navigation items:
+Navigation items (all scroll within the homepage):
 - Products
+- How it works
 - Pricing
-- Contact
-- Sign In (→ `/app/auth`)
+- FAQ
+- Book a Demo
 
 ### Admin Portal Nav
 Located in: `components/admin/AdminNav.jsx`
@@ -56,17 +35,12 @@ Navigation items:
 
 ## User Flows
 
-### New Customer Sign Up
-1. Visit homepage → Click "Get Started" or "Sign In"
-2. Redirected to `/app/auth`
-3. Sign up with email/password or magic link
-4. Redirected to `/app/dashboard`
-5. Can navigate to any feature using sidebar
+### Visitor Books a Demo
+1. Visit homepage → Click "Book a Demo" or a plan's "Get Started"
+2. Fill in the contact form
+3. The team follows up by phone or WhatsApp; the lead appears in `/admin/dashboard`
 
-### Returning Customer Sign In
-1. Visit `/app/auth` directly or from homepage
-2. Sign in with credentials or magic link
-3. Redirected to `/app/dashboard`
+There is no customer sign-in on this site. Each ZUGEE product has its own login.
 
 ### Admin Access
 1. Visit `/admin`
@@ -75,10 +49,6 @@ Navigation items:
 
 ## Protected Route Behavior
 
-### Customer Routes (`/app/*`)
-- **Unauthenticated**: Redirect to `/app/auth`
-- **Authenticated**: Show sidebar + topbar + page content
-
 ### Admin Routes (`/admin/dashboard/*`)
 - **No admin session**: Redirect to `/admin` (login)
 - **Valid session**: Show admin interface
@@ -86,18 +56,15 @@ Navigation items:
 ## Deep Linking
 
 All routes support direct URL access:
-- ✅ Authenticated users can bookmark any dashboard page
-- ✅ Unauthenticated users are redirected to auth, then back to their intended destination
+- ✅ A signed-in admin can bookmark any admin page
+- ✅ Without an admin session, admin pages redirect to `/admin`
 - ✅ Auth state is checked server-side (no flash of wrong content)
 
 ## Development Tips
 
 ### Testing Routes
 1. **Marketing site**: Just visit http://localhost:3000
-2. **Customer portal**: 
-   - Need Supabase configured in `.env.local`
-   - Or temporarily comment out auth checks in `app/app/(dashboard)/layout.jsx`
-3. **Admin portal**:
+2. **Admin portal**:
    - Need `ADMIN_PASSWORD` and `ADMIN_JWT_SECRET` in `.env.local`
 
 ### Route Changes

@@ -1,7 +1,7 @@
 // components/home/IndustryShowcase.jsx
 // Operational Industry Workflows & Enterprise Foundation Pillars.
 // Answers: "How does ZUGEE actually operate in my business every day?"
-// Differentiates clearly from the Product Ecosystem catalog.
+// Differentiates clearly from the product catalog.
 
 "use client";
 
@@ -47,8 +47,8 @@ const FOUNDATION_PILLARS = [
   },
   {
     icon: ShieldCheck,
-    title: "Indian Data Sovereignty",
-    desc: "Cloud servers located within India, role-based access controls, encrypted storage, and high-speed offline-resilient sync.",
+    title: "Secure, Role-Based Access",
+    desc: "Every user signs in with their own account and sees only what their role allows, with encrypted storage and high-speed offline-resilient sync.",
     accent: "#8B5CF6",
   },
 ];
@@ -115,7 +115,7 @@ const INDUSTRY_WORKFLOWS = [
     product: "Tours & Travels CRM",
     tagline: "Custom holiday packages, instant itineraries & client bookings",
     steps: [
-      { step: "01. Dynamic Quotation", detail: "Assemble hotels, flights, and sightseeing into branded PDF itineraries in under 2 minutes." },
+      { step: "01. Dynamic Quotation", detail: "Assemble hotels, flights, and sightseeing into branded PDF itineraries in minutes." },
       { step: "02. Confirmation & Vouchers", detail: "Advance payment received unlocks instant hotel vouchers and customer confirmation package." },
       { step: "03. Vendor & Tour Settlement", detail: "Track transport vendors, guide payments, and final balance collection without paperwork." },
     ],

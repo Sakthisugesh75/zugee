@@ -154,16 +154,6 @@ test("status changes never touch prices or the setup fee", async () => {
   await assert.rejects(() => subs.recordMonthlyPayment(sub.id, PAYMENT), { code: "conflict" });
 });
 
-test("customer view only returns that customer's rows", async () => {
-  const customerId = "0f8b2c1e-6a1d-4c7b-9e2f-1a2b3c4d5e6f";
-  await newSub({ customer_id: customerId });
-  await newSub({ business_name: "Someone Else" });
-  const mine = await subs.getCustomerSubscriptions(customerId);
-  assert.equal(mine.length, 1);
-  assert.equal(mine[0].customer_id, customerId);
-  assert.deepEqual(await subs.getCustomerSubscriptions("not-a-uuid"), []);
-});
-
 test("addMonths clamps to month end without drifting", () => {
   assert.equal(subs.addMonths("2026-01-31", 1), "2026-02-28");
   assert.equal(subs.addMonths("2026-01-31", 2), "2026-03-31");

@@ -25,8 +25,7 @@ export default function FinalCTA() {
 
   const benefits = [
     { icon: Sparkles, text: "Setup in 2 weeks" },
-    { icon: Shield, text: "Data stays in India" },
-    { icon: Zap, text: "Plans from ₹1,599/mo + GST" }
+    { icon: Zap, text: "Clear quote on a short call" }
   ];
 
   return (
@@ -71,7 +70,7 @@ export default function FinalCTA() {
                 </p>
 
                 {/* Benefits Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                   {benefits.map((benefit) => {
                     const Icon = benefit.icon;
                     return (

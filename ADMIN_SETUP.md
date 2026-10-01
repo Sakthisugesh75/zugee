@@ -72,7 +72,7 @@ Use the password you set in `ADMIN_PASSWORD`
 - ✅ Minimum 12 characters for admin password
 - ✅ Minimum 32 characters for JWT secret
 - ✅ Rotating JWT secret logs out all admin sessions
-- ⚠️ Admin portal is separate from customer authentication
+- ⚠️ The admin portal is the only login on this site; each ZUGEE product has its own
 
 ## 🔧 Troubleshooting
 
@@ -89,7 +89,6 @@ The admin portal works without Supabase, but for lead management you'll need:
 ```env
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
 ## 🎯 Current Status

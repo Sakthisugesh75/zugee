@@ -61,34 +61,7 @@ ADMIN_JWT_SECRET=$jwtSecret
 # Get these from: https://supabase.com/dashboard/project/_/settings/api
 SUPABASE_URL=https://your-project.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
-# ============================================
-# OAUTH ENCRYPTION - Required for ad integrations
-# ============================================
-# Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-OAUTH_ENCRYPTION_SECRET=
-
-# ============================================
-# META ADS OAUTH - Required for Meta/Facebook Ads
-# ============================================
-# Get these from: https://developers.facebook.com/apps/
-META_APP_ID=
-META_APP_SECRET=
-
-# ============================================
-# GOOGLE ADS OAUTH - Required for Google Ads
-# ============================================
-# Get these from: https://console.cloud.google.com/apis/credentials
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_ADS_DEVELOPER_TOKEN=
-
-# ============================================
-# AI INSIGHTS COMPUTATION
-# ============================================
-# Generate with: node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
-INSIGHTS_COMPUTE_SECRET=
 "@
 
 Set-Content -Path ".env.local" -Value $envContent
