@@ -34,6 +34,7 @@ See [`.env.example`](.env.example).
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | for `/app` | Client-safe key (respects RLS) |
 | `ADMIN_PASSWORD` | yes (≥ 12 chars) | Admin portal password |
 | `ADMIN_JWT_SECRET` | yes (≥ 32 chars) | Signs admin session cookies |
+| `ADMIN_NOTIFICATION_EMAIL` | yes, a company mailbox | Receives new-lead emails. No default: when unset, the team email is skipped and a warning is logged |
 
 ## Database
 

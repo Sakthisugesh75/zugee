@@ -9,11 +9,28 @@ import {
   buildLeadConfirmationPayload,
   cleanPhoneForWhatsApp,
   escapeHtml,
-  DEFAULT_ADMIN_EMAIL
+  getAdminNotificationEmail
 } from "../lib/email.js";
 
-test("DEFAULT_ADMIN_EMAIL is sugeshwebdevops@gmail.com", () => {
-  assert.equal(DEFAULT_ADMIN_EMAIL, "sugeshwebdevops@gmail.com");
+const TEAM_EMAIL = "leads@example.test";
+
+// Runs fn with ADMIN_NOTIFICATION_EMAIL set to `value` (or unset when undefined), then restores it.
+async function withAdminEmail(value, fn) {
+  const orig = process.env.ADMIN_NOTIFICATION_EMAIL;
+  if (value === undefined) delete process.env.ADMIN_NOTIFICATION_EMAIL;
+  else process.env.ADMIN_NOTIFICATION_EMAIL = value;
+  try {
+    return await fn();
+  } finally {
+    if (orig === undefined) delete process.env.ADMIN_NOTIFICATION_EMAIL;
+    else process.env.ADMIN_NOTIFICATION_EMAIL = orig;
+  }
+}
+
+test("getAdminNotificationEmail has no built-in fallback address", async () => {
+  await withAdminEmail(undefined, () => assert.equal(getAdminNotificationEmail(), null));
+  await withAdminEmail("   ", () => assert.equal(getAdminNotificationEmail(), null));
+  await withAdminEmail(` ${TEAM_EMAIL} `, () => assert.equal(getAdminNotificationEmail(), TEAM_EMAIL));
 });
 
 test("cleanPhoneForWhatsApp handles standard formats", () => {
@@ -23,7 +40,7 @@ test("cleanPhoneForWhatsApp handles standard formats", () => {
   assert.equal(cleanPhoneForWhatsApp(""), "");
 });
 
-test("buildLeadNotificationPayload formats email correctly to sugeshwebdevops@gmail.com", () => {
+test("buildLeadNotificationPayload addresses the email to ADMIN_NOTIFICATION_EMAIL", async () => {
   const sampleLead = {
     reference_id: "ZUG-PAYLOAD01",
     name: "Rajesh Kumar",
@@ -34,8 +51,8 @@ test("buildLeadNotificationPayload formats email correctly to sugeshwebdevops@gm
     message: "Interested in the Growth plan"
   };
 
-  const payload = buildLeadNotificationPayload(sampleLead);
-  assert.equal(payload.to, "sugeshwebdevops@gmail.com");
+  const payload = await withAdminEmail(TEAM_EMAIL, () => buildLeadNotificationPayload(sampleLead));
+  assert.equal(payload.to, TEAM_EMAIL);
   assert.ok(payload.subject.includes("Rajesh Kumar"));
   assert.ok(payload.subject.includes("ZUG-PAYLOAD01"));
   assert.ok(payload.html.includes("Rajesh Kumar"));
@@ -78,11 +95,33 @@ test("sendLeadNotificationEmail with mock transporter succeeds", async () => {
     industry: "school-erp"
   };
 
-  const result = await sendLeadNotificationEmail(sampleLead, mockTransporter);
+  const result = await withAdminEmail(TEAM_EMAIL, () => sendLeadNotificationEmail(sampleLead, mockTransporter));
   assert.equal(result.sent, true);
   assert.equal(result.messageId, "mock-message-id-123");
   assert.equal(sentMails.length, 1);
-  assert.equal(sentMails[0].to, "sugeshwebdevops@gmail.com");
+  assert.equal(sentMails[0].to, TEAM_EMAIL);
+});
+
+test("sendLeadNotificationEmail warns and sends nothing when ADMIN_NOTIFICATION_EMAIL is unset", async (t) => {
+  const sentMails = [];
+  const mockTransporter = {
+    sendMail: async (payload) => {
+      sentMails.push(payload);
+      return { messageId: "should-not-be-sent" };
+    }
+  };
+  const warn = t.mock.method(console, "warn", () => {});
+
+  const lead = { reference_id: "ZUG-NOADMN", name: "No Recipient", phone: "9876543210", industry: "transposs" };
+  const result = await withAdminEmail(undefined, () => sendLeadNotificationEmail(lead, mockTransporter));
+
+  assert.deepEqual(result, { sent: false, reason: "ADMIN_NOTIFICATION_EMAIL not set" });
+  assert.equal(sentMails.length, 0);
+  assert.equal(warn.mock.callCount(), 1);
+  const warning = warn.mock.calls[0].arguments[0];
+  assert.ok(warning.includes("ADMIN_NOTIFICATION_EMAIL"));
+  assert.ok(warning.includes("ZUG-NOADMN"));
+  assert.ok(!warning.includes("gmail.com"));
 });
 
 test("getEmailTransporter returns null when environment variables are not set", () => {
@@ -120,7 +159,7 @@ test("sendLeadNotificationEmail safely returns status when SMTP is unconfigured"
     message: "Interested in the Growth plan"
   };
 
-  const result = await sendLeadNotificationEmail(sampleLead);
+  const result = await withAdminEmail(TEAM_EMAIL, () => sendLeadNotificationEmail(sampleLead));
   assert.equal(typeof result, "object");
   assert.equal(result.sent, false);
   assert.equal(result.reason, "SMTP not configured");

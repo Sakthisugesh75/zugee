@@ -97,7 +97,7 @@ export async function POST(request) {
       source_page: "homepage-contact"
     });
 
-    // Send demo alert email to sugeshwebdevops@gmail.com and confirmation email to the lead
+    // Send demo alert email to ADMIN_NOTIFICATION_EMAIL and confirmation email to the lead
     try {
       await sendLeadNotificationEmail(savedLead);
       if (savedLead.email) {
