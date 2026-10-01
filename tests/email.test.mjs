@@ -8,6 +8,7 @@ import {
   buildLeadNotificationPayload,
   buildLeadConfirmationPayload,
   cleanPhoneForWhatsApp,
+  escapeHtml,
   DEFAULT_ADMIN_EMAIL
 } from "../lib/email.js";
 
@@ -137,4 +138,92 @@ test("sendLeadConfirmationEmail skips sending when lead has no email", async () 
   const result = await sendLeadConfirmationEmail(leadWithoutEmail);
   assert.equal(result.sent, false);
   assert.equal(result.reason, "No email provided by lead");
+});
+
+// A lead whose every visitor-supplied field carries markup. `industry` is not in the catalog, so
+// it reaches the email as typed (the API rejects such values, but the email must not rely on that).
+const HOSTILE_LEAD = {
+  reference_id: "ZUG-XSS001",
+  name: '<img src=x onerror="alert(1)">',
+  phone: '"><script>alert("phone")</script>',
+  email: 'a"onmouseover="alert(2)"@example.com',
+  industry: "<b>fleet</b>",
+  company_name: "<a href='https://evil.example'>Click & win</a>",
+  message: "<script>alert('message')</script>"
+};
+
+// Every tag the templates themselves use. Anything else in the output came from the lead.
+const TEMPLATE_TAGS = new Set([
+  "!doctype", "html", "head", "meta", "title", "style", "body", "div", "span", "h1", "p",
+  "table", "tr", "td", "a", "strong"
+]);
+
+function tagNames(html) {
+  return [...html.matchAll(/<\/?([!a-zA-Z][a-zA-Z0-9]*)/g)].map((m) => m[1].toLowerCase());
+}
+
+test("escapeHtml escapes the five HTML-significant characters", () => {
+  assert.equal(escapeHtml(`<a href="x" title='y'>Tom & Jerry</a>`),
+    "&lt;a href=&quot;x&quot; title=&#39;y&#39;&gt;Tom &amp; Jerry&lt;/a&gt;");
+  assert.equal(escapeHtml("Rajesh Kumar"), "Rajesh Kumar");
+  assert.equal(escapeHtml(null), "");
+  assert.equal(escapeHtml(undefined), "");
+});
+
+test("notification email escapes HTML in every visitor-supplied field", () => {
+  const { html, text } = buildLeadNotificationPayload(HOSTILE_LEAD);
+
+  assert.ok(html.includes("&lt;img src=x onerror=&quot;alert(1)&quot;&gt;"), "name");
+  assert.ok(html.includes("&quot;&gt;&lt;script&gt;alert(&quot;phone&quot;)&lt;/script&gt;"), "phone");
+  assert.ok(html.includes("a&quot;onmouseover=&quot;alert(2)&quot;@example.com"), "email");
+  assert.ok(html.includes("&lt;b&gt;fleet&lt;/b&gt;"), "business type");
+  assert.ok(html.includes("&lt;a href=&#39;https://evil.example&#39;&gt;Click &amp; win&lt;/a&gt;"), "company");
+  assert.ok(html.includes("&lt;script&gt;alert(&#39;message&#39;)&lt;/script&gt;"), "message");
+
+  // None of the raw values survive, and no tag outside the template's own set appears.
+  for (const field of ["name", "phone", "email", "industry", "company_name", "message"]) {
+    assert.ok(!html.includes(HOSTILE_LEAD[field]), `raw ${field} must not appear in the HTML`);
+  }
+  for (const tag of tagNames(html)) {
+    assert.ok(TEMPLATE_TAGS.has(tag), `unexpected <${tag}> in notification HTML`);
+  }
+  // The phone and email sit inside href="…"; a quote must not be able to close the attribute.
+  assert.ok(!/href="(tel|mailto):[^"]*"[^ >]/.test(html));
+
+  // The plain-text part is not HTML and keeps what the visitor typed.
+  assert.ok(text.includes(HOSTILE_LEAD.message));
+});
+
+test("confirmation email escapes HTML in every visitor-supplied field", () => {
+  const { html, text, to } = buildLeadConfirmationPayload(HOSTILE_LEAD);
+
+  assert.equal(to, HOSTILE_LEAD.email);
+  assert.ok(html.includes("&lt;img src=x onerror=&quot;alert(1)&quot;&gt;"), "name");
+  assert.ok(html.includes("&quot;&gt;&lt;script&gt;alert(&quot;phone&quot;)&lt;/script&gt;"), "phone");
+  assert.ok(html.includes("&lt;b&gt;fleet&lt;/b&gt;"), "business type");
+
+  for (const field of ["name", "phone", "industry"]) {
+    assert.ok(!html.includes(HOSTILE_LEAD[field]), `raw ${field} must not appear in the HTML`);
+  }
+  for (const tag of tagNames(html)) {
+    assert.ok(TEMPLATE_TAGS.has(tag), `unexpected <${tag}> in confirmation HTML`);
+  }
+  assert.ok(text.includes(HOSTILE_LEAD.name));
+});
+
+test("ordinary lead values pass through the HTML unchanged", () => {
+  const lead = {
+    reference_id: "ZUG-PLAIN01",
+    name: "Priya Sharma",
+    phone: "+91 98765 00000",
+    email: "priya@example.com",
+    industry: "aqua-erp",
+    company_name: "Sharma Aqua",
+    message: "Need a demo next week."
+  };
+  const { html } = buildLeadNotificationPayload(lead);
+  for (const value of [lead.name, lead.phone, lead.email, lead.company_name, lead.message]) {
+    assert.ok(html.includes(value));
+  }
+  assert.ok(html.includes('href="mailto:priya@example.com"'));
 });
