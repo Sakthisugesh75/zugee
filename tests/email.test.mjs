@@ -227,3 +227,22 @@ test("ordinary lead values pass through the HTML unchanged", () => {
   }
   assert.ok(html.includes('href="mailto:priya@example.com"'));
 });
+
+test("notification email links to the admin dashboard page", () => {
+  const origSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  process.env.NEXT_PUBLIC_SITE_URL = "https://example.test";
+
+  const { html, text } = buildLeadNotificationPayload({
+    reference_id: "ZUG-LINK01",
+    name: "Link Check",
+    phone: "9876543210",
+    industry: "transposs"
+  });
+  assert.ok(html.includes('href="https://example.test/admin/dashboard"'));
+  assert.ok(text.includes("Admin Portal: https://example.test/admin/dashboard"));
+  assert.ok(!html.includes("/admin/leads"));
+  assert.ok(!text.includes("/admin/leads"));
+
+  if (origSiteUrl === undefined) delete process.env.NEXT_PUBLIC_SITE_URL;
+  else process.env.NEXT_PUBLIC_SITE_URL = origSiteUrl;
+});
