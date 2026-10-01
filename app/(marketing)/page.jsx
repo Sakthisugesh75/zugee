@@ -6,7 +6,7 @@
 // Comparison → "This is the problem ZUGEE solves"
 // Industries → "This is how it fits my business"
 // How It Works → "This is how I use it"
-// Pricing → "This is what it costs"
+// Pricing → "How to get a quote" (no prices are published; see below)
 // FAQ → "Common questions answered"
 // CTA → "I understand what I can do next"
 //
@@ -22,7 +22,8 @@ import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
-import { BUSINESS_TYPES } from "@/lib/products";
+import { BUSINESS_TYPES, getProduct } from "@/lib/products";
+import { PLANS, PRODUCT_SETUP_FOCUS } from "@/lib/pricing";
 import { FAQ_ITEMS } from "@/lib/site-content";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in";
@@ -35,6 +36,15 @@ export const metadata = {
     canonical: "/"
   }
 };
+
+// No prices are published on the site: pricing is quoted on a call. Only the plan names and what
+// each plan includes are passed to the page, so the amounts in lib/pricing.js (still used by the
+// admin subscriptions tool) never reach the HTML or the client bundle.
+const PLAN_SUMMARIES = PLANS.map(({ key, name, features, setupIncludes }) => ({ key, name, features, setupIncludes }));
+
+const PRODUCT_SETUPS = Object.entries(PRODUCT_SETUP_FOCUS)
+  .map(([slug, items]) => ({ slug, name: getProduct(slug)?.name, items }))
+  .filter((entry) => Boolean(entry.name));
 
 // Structured data is generated from the same arrays that render the page, so what search engines
 // are told can never drift from what visitors see.
@@ -83,8 +93,8 @@ export default function HomePage() {
       {/* 5. HOW IT WORKS — "This is how I use it" */}
       <HowWeWork />
 
-      {/* 6. PRICING — "This is what it costs" */}
-      <PricingSection />
+      {/* 6. PRICING — "How to get a quote" */}
+      <PricingSection plans={PLAN_SUMMARIES} productSetups={PRODUCT_SETUPS} />
 
       {/* 7. FAQ — "Common questions answered" */}
       <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">

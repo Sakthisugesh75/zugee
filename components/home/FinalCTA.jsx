@@ -26,7 +26,7 @@ export default function FinalCTA() {
   const benefits = [
     { icon: Sparkles, text: "Setup in 2 weeks" },
     { icon: Shield, text: "Data stays in India" },
-    { icon: Zap, text: "Plans from ₹1,599/mo + GST" }
+    { icon: Zap, text: "Clear quote on a short call" }
   ];
 
   return (

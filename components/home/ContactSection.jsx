@@ -36,18 +36,18 @@ export default function ContactSection({ businessTypes }) {
     return () => window.removeEventListener("zugee:select-product", handleSelect);
   }, [businessTypes]);
 
-  // Pricing cards' "Get Started" notes the chosen plan in the message (only if it's still empty,
+  // "Schedule a pricing call" buttons pre-fill a pricing note (only if the message is still empty,
   // so we never overwrite what the visitor typed).
   useEffect(() => {
-    const handlePlan = (e) => {
+    const handlePricingCall = (e) => {
       const planName = e.detail?.planName;
-      if (!planName) return;
-      setFormData((prev) =>
-        prev.message.trim() ? prev : { ...prev, message: `I'm interested in the ${planName} plan.` }
-      );
+      const note = planName
+        ? `I'd like a pricing call about the ${planName} plan.`
+        : "I'd like a pricing call for my business.";
+      setFormData((prev) => (prev.message.trim() ? prev : { ...prev, message: note }));
     };
-    window.addEventListener("zugee:select-plan", handlePlan);
-    return () => window.removeEventListener("zugee:select-plan", handlePlan);
+    window.addEventListener("zugee:pricing-call", handlePricingCall);
+    return () => window.removeEventListener("zugee:pricing-call", handlePricingCall);
   }, []);
 
   const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
