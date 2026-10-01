@@ -10,6 +10,32 @@ After switching branches, run `npm install`, because the two branches have diffe
 
 ---
 
+## [Homepage: separate products, no statistics, pricing on a call] — 2026-10-01 · branch `fix/today`
+
+The founder confirmed the listed product features are ready, so feature claims are unchanged apart from the points below.
+
+> **Before deploying:** run `supabase/migrations/0002_leads_request_type.sql` in the Supabase SQL editor. Without it the demo form cannot save leads.
+
+### Changed
+- **No shared login or shared database claims.** Each product has its own login, database and codebase, and no shared login is planned.
+  - Hero: new badge, headline ("Specialised software for your industry, set up for you in 14 days"), subhead and note; the "single login coming soon" note is gone.
+  - Comparison section: "The ZUGEE Unified Engine", "Connected Platform", "1 Central Database" and "unify your business workflows" reworded to describe one product.
+  - Product showcase: "Integrated with unified ZUGEE Core database" and "Product Ecosystem" reworded.
+  - FAQ 2 rewritten: each product is separate and can be used alongside the others.
+- **Unsourced statistics removed** from the comparison section ("14+ hours", "35%", "90%", "2x", "100%", "4 days") and the travel workflow ("under 2 minutes"). The pain points and features stay.
+- **Pricing is hidden.** The pricing section is now "Get the best price for your business": what a quote depends on, what Starter, Growth and Enterprise include, and "Schedule a pricing call". The price cards, annual/monthly toggle, matrix prices, "Plans from ₹1,599/mo" and the "Most Popular Choice" badge are gone. FAQ 3 and 4 explain the setup fee and subscription without amounts. `lib/pricing.js` is unchanged and still drives the admin subscriptions tool; `page.jsx` strips the price fields before anything reaches the page.
+- **India data-hosting claims removed** until hosting is verified: the hero badge (now "Dedicated Setup Support"), the "Indian Data Sovereignty" trust badge and industry pillar (the pillar is now "Secure, Role-Based Access"), "Data stays in India", "Sovereign data hosting" on the Enterprise card, and FAQ 7. "Built for Indian businesses" and similar wording stays.
+
+### Added
+- **"Pricing call" in the demo form** ("What would you like?": Product demo or Pricing call). Pricing buttons select it and pre-fill a note. The admin dashboard shows a "Pricing call" badge, a request filter and a CSV column, and both lead emails say which it was.
+  - Stored in the new `leads.request_type` column (migration `0002`).
+- Tests: `tests/lead-request.test.mjs`, `tests/site-content.test.mjs` (no price, no shared-login wording and no India hosting claim), and pricing-call cases in `tests/email.test.mjs`.
+
+### Removed
+- `components/home/PlanButton.jsx` (replaced by `PricingCallButton.jsx`).
+
+---
+
 ## [Lead email fixes & customer app removal] — 2026-10-01 · branch `fix/today`
 
 Follows the findings in `docs/ZUGEE-ANALYSIS-REPORT.md`.

@@ -39,6 +39,8 @@ See [`.env.example`](.env.example).
 
 Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It creates `leads`: the "Talk to our team" form (name and mobile required; email, company and requirement optional). RLS is enabled with no policies, so only the server's service-role key can access it. The bottom of the file has the SQL to migrate a database created from the previous version.
 
+[`supabase/migrations/0002_leads_request_type.sql`](supabase/migrations/0002_leads_request_type.sql) adds `leads.request_type` (`demo` or `pricing_call`). **Run it before deploying**: without the column the demo form cannot save leads. A database created from the current `schema.sql` already has the column, and the migration is safe to re-run.
+
 [`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql) creates `subscriptions` and `subscription_payments` for the admin portal (the setup fee can be recorded only once).
 
 > **`supabase/app-schema.sql` is unused.** It was the schema for the removed customer app, and no code in this repo reads or writes its tables. The file is kept for reference only. One dependency remains: the `0001` migration still references `public.customer_profiles` and the `update_updated_at_column()` function that `app-schema.sql` defines, so on a fresh database `0001` fails unless `app-schema.sql` is run first. Remove those references from the migration before dropping the file.
@@ -61,7 +63,8 @@ components/
   ui/                 shared primitives (MascotLogo, StatusBadge)
 lib/
   products.js         product catalog + statuses (single source for site, form, admin, JSON-LD)
-  pricing.js          plans: monthly price + one-time setup fee (the ONLY place prices live)
+  pricing.js          plans: monthly price + one-time setup fee (the ONLY place prices live; not shown on the site)
+  lead-request.js     demo vs pricing-call requests from the lead form
   subscriptions.js    subscription + setup-fee data layer (server-only)
   site-content.js     how-it-works steps and FAQ (also emitted as FAQPage JSON-LD)
   auth.js             admin password check + signed httpOnly session cookie
@@ -91,4 +94,4 @@ Every sentence on the site must pass: **"Can the product (or our team) actually 
 | `npm run build` | Production build |
 | `npm run start` | Serve the production build |
 | `npm run lint` | Run ESLint |
-| `npm test` | Pricing and subscription tests (Node test runner) |
+| `npm test` | Pricing, subscription, email, lead-request and site-content tests (Node test runner) |
