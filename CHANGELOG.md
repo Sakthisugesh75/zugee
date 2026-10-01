@@ -22,6 +22,13 @@ Follows the findings in `docs/ZUGEE-ANALYSIS-REPORT.md`.
 ### Removed
 - **The customer app.** Every ZUGEE product has its own codebase, login and database, so this repo's `/app` area was not a product. Deleted: `app/app/`, `app/api/app/` (7 routes), `components/app/`, `lib/app-auth.js`, `getCustomerSubscriptions` in `lib/subscriptions.js`, the `/app` entry in `robots.txt` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - `supabase/app-schema.sql` is kept but unused; see the note in the README.
+- **Dead code** (no importers): `lib/oauth-encryption.js`, `lib/industries.js`, `components/animations/AnimatedCard.jsx`, `AnimatedSection.jsx`, `StaggeredGroup.jsx`, and `components/home/IndustrySection.jsx`, `IndustryProductsSection.jsx`, `ProductsSection.jsx`, `PremiumProductCard.jsx`, `ProductInterestButton.jsx`.
+- **Stale docs:** `docs/OAUTH_SETUP.md` and `docs/AI_INSIGHTS_SETUP.md` (both described removed features).
+- **Unused variables** in `.env.example` and `setup-admin.ps1`: `OAUTH_ENCRYPTION_SECRET`, `META_APP_ID`, `META_APP_SECRET`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_ADS_DEVELOPER_TOKEN`, `INSIGHTS_COMPUTE_SECRET`.
+
+### Changed
+- `next` and `eslint-config-next` 16.3.5 → 16.3.8 (clears the `next/og` advisory).
+- `InteractiveMascot.jsx` reads reduced-motion and screen width with `useSyncExternalStore` instead of setting state in an effect. `npm run lint` now reports no errors or warnings.
 
 ---
 

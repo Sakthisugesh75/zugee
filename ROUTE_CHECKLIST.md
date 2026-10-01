@@ -83,15 +83,6 @@
 - [ ] ADMIN_PASSWORD (min 12 chars)
 - [ ] ADMIN_JWT_SECRET (min 32 chars)
 
-### Optional for Full Features
-- [ ] OAUTH_ENCRYPTION_SECRET
-- [ ] META_APP_ID
-- [ ] META_APP_SECRET
-- [ ] GOOGLE_CLIENT_ID
-- [ ] GOOGLE_CLIENT_SECRET
-- [ ] GOOGLE_ADS_DEVELOPER_TOKEN
-- [ ] INSIGHTS_COMPUTE_SECRET
-
 ## 🐛 Known Issues
 None - All routes are properly configured!
 
@@ -101,7 +92,6 @@ None - All routes are properly configured!
    - Copy .env.example to .env.local
    - Fill in Supabase credentials
    - Generate and add admin credentials
-   - Generate encryption secrets
 
 2. **Database Setup**
    - Create Supabase tables
@@ -131,6 +121,6 @@ None - All routes are properly configured!
 - All routes use server-side authentication checks
 - Route groups (parentheses) don't affect URLs
 - Layouts are properly nested without duplicate HTML
-- Next.js 16.3.5 with Turbopack for fast development
+- Next.js 16.3.8 with Turbopack for fast development
 - All protected routes redirect unauthenticated users
 - API routes are organized by access level (public/admin)
