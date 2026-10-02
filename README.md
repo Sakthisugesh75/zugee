@@ -37,7 +37,7 @@ See [`.env.example`](.env.example).
 
 ## Database
 
-**Empty database:** run [`supabase/fresh-install.sql`](supabase/fresh-install.sql) once in the Supabase SQL editor, then [`supabase/verify.sql`](supabase/verify.sql), whose first row must say "0 problems". `fresh-install.sql` is the three files below combined; nothing else needs running. There is no migration runner: every schema change is pasted by hand, so a later migration must be run in the SQL editor **before** the code that needs it is deployed, and `fresh-install.sql` and `verify.sql` updated to match. Every new table needs its own `grant select, insert, update, delete … to service_role`: the project's default privileges do not give the server's role access, and without the grant every API call on that table fails with "permission denied".
+**Empty database:** run [`supabase/fresh-install.sql`](supabase/fresh-install.sql) once in the Supabase SQL editor, then [`supabase/verify.sql`](supabase/verify.sql), whose first row must say "0 problems". `fresh-install.sql` is the four files below combined; nothing else needs running. There is no migration runner: every schema change is pasted by hand, so a later migration must be run in the SQL editor **before** the code that needs it is deployed, and `fresh-install.sql` and `verify.sql` updated to match. Every new table needs its own `grant select, insert, update, delete … to service_role`: the project's default privileges do not give the server's role access, and without the grant every API call on that table fails with "permission denied".
 
 The individual files, for a database that already has some of the tables:
 
@@ -46,6 +46,8 @@ Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It 
 [`supabase/migrations/0002_leads_request_type.sql`](supabase/migrations/0002_leads_request_type.sql) adds `leads.request_type` (`demo` or `pricing_call`). **Run it before deploying**: without the column the demo form cannot save leads. A database created from the current `schema.sql` already has the column, and the migration is safe to re-run.
 
 [`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql) creates `subscriptions` and `subscription_payments` for the admin portal (the setup fee can be recorded only once). **Run it before using `/admin/subscriptions`**: without these tables the page cannot load. It needs only the `leads` table from `schema.sql`, is safe to re-run, and gives both tables the same access rule as `leads` (RLS with no policies).
+
+[`supabase/migrations/0003_prepaid_months.sql`](supabase/migrations/0003_prepaid_months.sql) lets a monthly payment be recorded before go-live, without dates. The subscription period starts on the day the customer starts using the product ("Mark as live" in `/admin/subscriptions`), not on the day they pay; a month paid earlier gets its dates at go-live. **Run it on any database created before 2026-10-02**: without it, recording a monthly payment before go-live is refused with a message naming this file. Safe to re-run.
 
 > **`supabase/app-schema.sql` is unused.** It was the schema for the removed customer app, and no code or migration in this repo depends on it. Do not run it; the file is kept for reference only.
 

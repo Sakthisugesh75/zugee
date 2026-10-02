@@ -2,13 +2,16 @@
 // Footer with smooth scroll navigation (no URL hash changes)
 //
 // TODO(founder): add real trust details here once confirmed — registered address, phone,
-// WhatsApp, support email, founder/team names, and links to /privacy, /terms and /refund
-// (Phase 3). Never add a CIN, GSTIN, address or number that isn't real.
+// WhatsApp, support email and founder/team names (Phase 3). Never add a CIN, GSTIN, address or
+// number that isn't real.
 
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { PRODUCTS, PRODUCT_STATUS } from "@/lib/products";
+import { LEGAL_PAGES } from "@/lib/legal";
 import { ArrowUp } from "lucide-react";
 
 const SITE_LINKS = [
@@ -22,11 +25,16 @@ const SITE_LINKS = [
 const linkClass = "text-slate-400 hover:text-[#00F0FF] transition-colors cursor-pointer bg-transparent border-none text-left p-0";
 
 export default function Footer() {
+  const router = useRouter();
   const listedProducts = PRODUCTS.filter((p) => p.status !== "coming_soon");
 
   const scrollToSection = (targetId) => {
     const section = document.getElementById(targetId);
-    if (!section) return;
+    // The sections live on the homepage. From any other page (the legal pages), go there.
+    if (!section) {
+      router.push(`/#${targetId}`);
+      return;
+    }
 
     const navbar = document.querySelector("header");
     const navbarHeight = navbar?.getBoundingClientRect().height || 0;
@@ -115,6 +123,17 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
           <div className="flex flex-col sm:flex-row items-center gap-4 text-slate-400">
             <p>© {new Date().getFullYear()} Zugee Systems Technologies Pvt. Ltd. All rights reserved.</p>
+            <nav aria-label="Legal">
+              <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 list-none p-0 m-0">
+                {LEGAL_PAGES.map((page) => (
+                  <li key={page.href}>
+                    <Link href={page.href} className="text-slate-400 hover:text-[#00F0FF] transition-colors">
+                      {page.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
           <button
             type="button"

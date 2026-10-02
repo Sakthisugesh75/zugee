@@ -110,7 +110,9 @@ with expected (kind, name, expected) as (
     ('constraint', 'subscription_payments.subscription_payments_amount_check', 'check'),
     ('constraint', 'subscription_payments.subscription_payments_kind_check', 'check'),
     ('constraint', 'subscription_payments.subscription_payments_method_check', 'check'),
-    ('constraint', 'subscription_payments.subscription_payments_period_shape', 'check'),
+    -- Named _period_rule by migrations/0003_prepaid_months.sql. If this is MISSING and
+    -- subscription_payments_period_shape is UNEXPECTED, that migration has not been run.
+    ('constraint', 'subscription_payments.subscription_payments_period_rule', 'check'),
     ('constraint', 'subscription_payments.subscription_payments_pkey', 'primary key'),
     ('constraint', 'subscription_payments.subscription_payments_recorded_by_check', 'check'),
     ('constraint', 'subscription_payments.subscription_payments_reference_check', 'check'),

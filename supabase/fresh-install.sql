@@ -1,10 +1,11 @@
 -- supabase/fresh-install.sql
 -- The whole ZUGEE database, built from scratch on an EMPTY database, in one transaction.
 --
--- It is these three files combined, in this order:
+-- It is these four files combined, in this order:
 --   1. supabase/schema.sql                              leads
 --   2. supabase/migrations/0002_leads_request_type.sql  leads.request_type (folded into the table)
 --   3. supabase/migrations/0001_subscriptions_setup_fee.sql  subscriptions, subscription_payments
+--   4. supabase/migrations/0003_prepaid_months.sql      monthly payments before go-live (folded in)
 --
 -- HOW TO RUN
 --   Paste the whole file into the Supabase SQL editor and run it once, then run
@@ -158,10 +159,13 @@ create table public.subscription_payments (
   recorded_by      text check (recorded_by is null or char_length(recorded_by) <= 100),
   paid_at          timestamptz not null default now(),
 
-  -- Setup payments are not tied to a billing period; subscription payments always are.
-  constraint subscription_payments_period_shape
+  -- The subscription period starts at go-live (subscriptions.started_at), not when money arrives.
+  -- A month paid before go-live is "prepaid": it has no dates until the server fills them in.
+  constraint subscription_payments_period_rule
     check (
-      (kind = 'setup' and period_start is null and period_end is null)
+      -- Setup payments never have a period. A monthly payment has none while it is prepaid.
+      (period_start is null and period_end is null)
+      -- Only monthly payments have a period, and it must be complete.
       or (kind = 'subscription' and period_start is not null and period_end is not null
           and period_end >= period_start)
     )

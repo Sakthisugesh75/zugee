@@ -45,7 +45,7 @@ const COMPARISON_MATRIX = [
       { name: "White-Glove Setup", starter: "One-time, quoted on your call", growth: "One-time, quoted on your call", enterprise: "Custom Architect Included" },
       { name: "Legacy Data Migration", starter: "Excel & Customer Lists", growth: "Full Tally & Ledger History", enterprise: "Custom ERP & Database Bridge" },
       { name: "Implementation SLA", starter: "14-Day Target", growth: "14-Day Target", enterprise: "Dedicated Sprint Schedule" },
-      { name: "Support Channels", starter: "Email & Chat Support", growth: "Priority Support Line", enterprise: "Dedicated Account Manager" },
+      { name: "Support Channels", starter: "Phone, Email & WhatsApp", growth: "Priority Support Line", enterprise: "Dedicated Account Manager" },
     ],
   },
 ];
@@ -55,7 +55,7 @@ const ENTERPRISE_FEATURES = [
   "Dedicated cloud database",
   "Custom module development & API webhooks",
   "On-site staff & management training",
-  "24/7 Dedicated SLA & direct founder hotline",
+  "Priority support — direct founder line, business hours",
 ];
 
 export default function PricingSection({ plans, productSetups }) {

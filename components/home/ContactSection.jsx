@@ -6,6 +6,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import InteractiveMascot from "@/components/animations/InteractiveMascot";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { DEFAULT_REQUEST_TYPE, REQUEST_TYPES } from "@/lib/lead-request";
@@ -328,9 +329,12 @@ export default function ContactSection({ businessTypes }) {
                   )}
                 </button>
 
-                {/* TODO(founder): link a real /privacy page here once it exists (Phase 3). */}
                 <p className="text-xs text-slate-400 text-center">
-                  We only use these details to contact you about ZUGEE.
+                  We only use these details to contact you about ZUGEE. See our{" "}
+                  <Link href="/privacy" className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">
+                    Privacy Policy
+                  </Link>
+                  .
                 </p>
               </form>
             )}

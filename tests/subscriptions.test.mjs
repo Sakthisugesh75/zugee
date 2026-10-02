@@ -91,27 +91,113 @@ test("waive rejects unknown reasons", async () => {
   await assert.rejects(() => subs.waiveSetupFee(sub.id, { reason: "because" }), { code: "invalid" });
 });
 
-test("recordMonthlyPayment x2: monthly price only, never setup, renewal advances each time", async () => {
+const GO_LIVE = "2026-09-16";
+const monthlyPayments = (sub) =>
+  sub.payments.filter((p) => p.kind === "subscription").sort((a, b) => String(a.period_start).localeCompare(String(b.period_start)));
+
+test("a month paid before go-live is prepaid: it starts nothing and has no dates", async () => {
   const sub = await newSub();
   await subs.recordSetupPayment(sub.id, PAYMENT);
 
-  const first = await subs.recordMonthlyPayment(sub.id, PAYMENT);
-  assert.equal(first.subscription_status, "active");
-  assert.ok(first.started_at);
-  assert.equal(first.renewal_date, subs.addMonths(first.started_at, 1));
+  const prepaid = await subs.recordMonthlyPayment(sub.id, PAYMENT);
+  assert.equal(prepaid.started_at, null, "paying must not start the subscription period");
+  assert.equal(prepaid.renewal_date, null);
+  assert.equal(prepaid.subscription_status, "pending");
+
+  const [month] = monthlyPayments(prepaid);
+  assert.equal(month.amount, sub.monthly_price);
+  assert.equal(month.period_start, null);
+  assert.equal(month.period_end, null);
+});
+
+test("go-live starts the subscription period and dates the prepaid month from that day", async () => {
+  const sub = await newSub();
+  await subs.recordSetupPayment(sub.id, PAYMENT);
+  await subs.recordMonthlyPayment(sub.id, PAYMENT);
+
+  const live = await subs.markGoLive(sub.id, { date: GO_LIVE });
+  assert.equal(live.started_at, GO_LIVE);
+  assert.equal(live.subscription_status, "active");
+  assert.equal(live.renewal_date, "2026-10-16", "the prepaid month runs from go-live, not from the payment date");
+
+  const [month] = monthlyPayments(live);
+  assert.equal(month.period_start, GO_LIVE);
+  assert.equal(month.period_end, "2026-10-15");
+});
+
+test("after go-live each payment covers the next month: monthly price only, never setup", async () => {
+  const sub = await newSub();
+  await subs.recordSetupPayment(sub.id, PAYMENT);
+  await subs.recordMonthlyPayment(sub.id, PAYMENT);
+  await subs.markGoLive(sub.id, { date: GO_LIVE });
 
   const second = await subs.recordMonthlyPayment(sub.id, PAYMENT);
-  assert.equal(second.started_at, first.started_at);
-  assert.equal(second.renewal_date, subs.addMonths(first.started_at, 2));
+  assert.equal(second.started_at, GO_LIVE);
+  assert.equal(second.renewal_date, "2026-11-16");
+  assert.equal(second.subscription_status, "active");
 
-  const monthly = second.payments.filter((p) => p.kind === "subscription");
+  const monthly = monthlyPayments(second);
   const setup = second.payments.filter((p) => p.kind === "setup");
   assert.equal(monthly.length, 2);
   assert.equal(setup.length, 1, "no extra setup payments from renewals");
   for (const p of monthly) assert.equal(p.amount, sub.monthly_price);
-  assert.deepEqual(monthly.map((p) => p.period_start).sort(), [first.started_at, subs.addMonths(first.started_at, 1)]);
+  assert.deepEqual(monthly.map((p) => [p.period_start, p.period_end]), [
+    [GO_LIVE, "2026-10-15"],
+    ["2026-10-16", "2026-11-15"]
+  ]);
   assert.equal(second.charges.recurringPayment, sub.monthly_price);
   assert.equal(second.charges.setupPayable, 0);
+});
+
+test("go-live with nothing prepaid makes the first month due that day", async () => {
+  const sub = await newSub({ waive: { reason: "partner_referral", waivedBy: "admin" } });
+  const live = await subs.markGoLive(sub.id, { date: GO_LIVE });
+  assert.equal(live.started_at, GO_LIVE);
+  assert.equal(live.renewal_date, GO_LIVE);
+  assert.equal(monthlyPayments(live).length, 0);
+
+  const paid = await subs.recordMonthlyPayment(sub.id, PAYMENT);
+  assert.equal(paid.renewal_date, "2026-10-16");
+  assert.equal(monthlyPayments(paid)[0].period_start, GO_LIVE);
+});
+
+test("two months prepaid before go-live are both counted from the go-live date", async () => {
+  const sub = await newSub({ waive: { reason: "partner_referral", waivedBy: "admin" } });
+  await subs.recordMonthlyPayment(sub.id, PAYMENT);
+  await subs.recordMonthlyPayment(sub.id, PAYMENT);
+
+  const live = await subs.markGoLive(sub.id, { date: GO_LIVE });
+  assert.equal(live.renewal_date, "2026-11-16");
+  assert.deepEqual(monthlyPayments(live).map((p) => p.period_start), [GO_LIVE, "2026-10-16"]);
+});
+
+test("go-live defaults to today, happens once, and needs the setup fee settled", async () => {
+  const pending = await newSub();
+  await assert.rejects(() => subs.markGoLive(pending.id, { date: GO_LIVE }), { code: "conflict" });
+
+  const sub = await newSub({ waive: { reason: "partner_referral", waivedBy: "admin" } });
+  await assert.rejects(() => subs.markGoLive(sub.id, { date: "2999-01-01" }), { code: "invalid" });
+  await assert.rejects(() => subs.markGoLive(sub.id, { date: "2026-02-30" }), { code: "invalid" });
+  await assert.rejects(() => subs.markGoLive(sub.id, { date: "16/09/2026" }), { code: "invalid" });
+
+  const live = await subs.markGoLive(sub.id);
+  const todayInIndia = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata" }).format(new Date());
+  assert.equal(live.started_at, todayInIndia);
+  await assert.rejects(() => subs.markGoLive(sub.id, { date: GO_LIVE }), { code: "conflict" });
+  assert.equal((await subs.getSubscription(sub.id)).started_at, todayInIndia, "go-live date cannot be moved");
+
+  const cancelled = await newSub({ waive: { reason: "partner_referral", waivedBy: "admin" } });
+  await subs.setSubscriptionStatus(cancelled.id, "cancelled");
+  await assert.rejects(() => subs.markGoLive(cancelled.id, { date: GO_LIVE }), { code: "conflict" });
+});
+
+test("migration 0003 allows a monthly payment without dates, and fresh-install matches it", () => {
+  const strip = (file) => fs.readFileSync(new URL(file, import.meta.url), "utf8").replace(/--.*$/gm, "").replace(/\s+/g, " ");
+  const rule = /constraint subscription_payments_period_rule check \( \(period_start is null and period_end is null\) or \(kind = 'subscription' and period_start is not null and period_end is not null and period_end >= period_start\) \)/;
+  assert.match(strip("../supabase/migrations/0003_prepaid_months.sql"), rule);
+  assert.match(strip("../supabase/fresh-install.sql"), rule);
+  assert.ok(!strip("../supabase/fresh-install.sql").includes("subscription_payments_period_shape"));
+  assert.ok(fs.readFileSync(new URL("../supabase/verify.sql", import.meta.url), "utf8").includes("subscription_payments.subscription_payments_period_rule"));
 });
 
 test("recordMonthlyPayment is refused while the setup fee is pending", async () => {

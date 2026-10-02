@@ -60,6 +60,13 @@ function formatDate(isoDate) {
   });
 }
 
+/** Today's calendar date in India ("2026-10-16"), the same clock the server uses for go-live. */
+function todayIST() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit" }).format(
+    new Date()
+  );
+}
+
 function SetupFeeCell({ sub }) {
   if (sub.setup_fee_status === "waived") {
     return (
@@ -104,7 +111,9 @@ function ChargesBreakdown({ charges, waived }) {
         <span className="text-slate-300 font-semibold">First payment</span>
         <span className="text-[#00F0FF] font-bold">{formatINR(charges.firstPayment)}</span>
       </div>
-      <div className="text-slate-400">Then {formatINR(charges.recurringPayment)}/month. Amounts exclude GST.</div>
+      <div className="text-slate-400">
+        Then {formatINR(charges.recurringPayment)}/month. The first month starts on go-live day. Amounts exclude GST.
+      </div>
     </div>
   );
 }
@@ -351,6 +360,7 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
   const [setupPayment, setSetupPayment] = useState({ method: "upi", reference: "" });
   const [monthlyPayment, setMonthlyPayment] = useState({ method: "upi", reference: "" });
   const [waiveReason, setWaiveReason] = useState("");
+  const [goLiveDate, setGoLiveDate] = useState(todayIST);
   const [nextStatus, setNextStatus] = useState("");
   const [pending, setPending] = useState(null); // { body, text }
   const [busy, setBusy] = useState(false);
@@ -413,6 +423,10 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
   const sub = detail.sub;
   const setupPending = sub?.setup_fee_status === "pending";
   const canRecordMonthly = sub && !setupPending && sub.subscription_status !== "cancelled";
+  // The subscription period starts at go-live (started_at). Months paid before that are prepaid.
+  const isLive = Boolean(sub?.started_at);
+  const prepaidMonths = sub?.payments?.filter((p) => p.kind === "subscription" && !p.period_start).length || 0;
+  const canGoLive = sub && !isLive && !setupPending && sub.subscription_status !== "cancelled";
   const methodLabel = (m) => PAYMENT_METHODS[m] || m;
 
   return (
@@ -460,7 +474,9 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
                 <span className={LABEL}>Subscription</span>
                 <Badge tone={STATUS_TONES[sub.subscription_status]}>{SUBSCRIPTION_STATUS_LABELS[sub.subscription_status]}</Badge>
                 <span className="block text-slate-400 mt-1">
-                  Started {formatDate(sub.started_at)} · Renews {formatDate(sub.renewal_date)}
+                  {isLive
+                    ? `Live since ${formatDate(sub.started_at)} · Next payment due ${formatDate(sub.renewal_date)}`
+                    : `Not live yet · ${prepaidMonths} month${prepaidMonths === 1 ? "" : "s"} prepaid`}
                 </span>
               </div>
             </div>
@@ -553,14 +569,23 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
                         onClick={() =>
                           ask(
                             { action: "record_monthly_payment", ...monthlyPayment },
-                            `Record ${formatINR(sub.monthly_price)} for the ${
-                              sub.renewal_date ? `month starting ${formatDate(sub.renewal_date)}` : "first month (starting today)"
-                            }, received by ${methodLabel(monthlyPayment.method)}?`
+                            isLive
+                              ? `Record ${formatINR(sub.monthly_price)} for the month starting ${formatDate(
+                                  sub.renewal_date
+                                )}, received by ${methodLabel(monthlyPayment.method)}?`
+                              : `Record ${formatINR(sub.monthly_price)} received by ${methodLabel(
+                                  monthlyPayment.method
+                                )} as a prepaid month? This customer is not live yet, so the month starts on go-live day, not today.`
                           )
                         }
                       >
                         Record monthly payment
                       </button>
+                      {!isLive && (
+                        <p className="text-[11px] text-slate-400 font-sans leading-relaxed">
+                          Not live yet: a payment recorded now is a prepaid month. It starts counting on go-live day.
+                        </p>
+                      )}
                     </>
                   ) : (
                     <p className="text-xs font-mono text-slate-500">
@@ -570,6 +595,52 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
                     </p>
                   )}
                 </section>
+
+                {!isLive && (
+                  <section className="space-y-2">
+                    <span className={LABEL}>Go-live: start the subscription period</span>
+                    {canGoLive ? (
+                      <>
+                        <div className="flex gap-2">
+                          <input
+                            type="date"
+                            className={INPUT}
+                            value={goLiveDate}
+                            max={todayIST()}
+                            onChange={(e) => setGoLiveDate(e.target.value)}
+                            aria-label="Go-live date"
+                          />
+                          <button
+                            type="button"
+                            className={`${BTN_PRIMARY} whitespace-nowrap`}
+                            disabled={!goLiveDate}
+                            onClick={() =>
+                              ask(
+                                { action: "go_live", date: goLiveDate },
+                                `Mark ${sub.business_name} as live on ${formatDate(goLiveDate)}? The subscription period starts that day. ${
+                                  prepaidMonths
+                                    ? `The ${prepaidMonths} prepaid month${prepaidMonths === 1 ? "" : "s"} will be counted from it.`
+                                    : "No month has been prepaid, so the first month is due on that day."
+                                } The go-live date cannot be changed afterwards.`
+                              )
+                            }
+                          >
+                            Mark as live
+                          </button>
+                        </div>
+                        <p className="text-[11px] text-slate-400 font-sans leading-relaxed">
+                          Use the day the customer starts using the product. Setup time is not billed.
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-xs font-mono text-slate-500">
+                        {setupPending
+                          ? "Record or waive the setup fee first."
+                          : "Reactivate the subscription before go-live."}
+                      </p>
+                    )}
+                  </section>
+                )}
 
                 <section className="space-y-2">
                   <span className={LABEL}>Change subscription status</span>
@@ -607,7 +678,11 @@ function SubscriptionDrawer({ subscriptionId, onClose, onChanged, onUnauthorized
                   {sub.payments.map((p) => (
                     <li key={p.id} className="py-2 flex justify-between gap-3">
                       <span className="text-slate-300">
-                        {p.kind === "setup" ? "Setup & Onboarding" : `Month ${formatDate(p.period_start)} – ${formatDate(p.period_end)}`}
+                        {p.kind === "setup"
+                          ? "Setup & Onboarding"
+                          : p.period_start
+                            ? `Month ${formatDate(p.period_start)} – ${formatDate(p.period_end)}`
+                            : "Prepaid month (starts at go-live)"}
                         <span className="block text-slate-500">
                           {methodLabel(p.method)}
                           {p.reference ? ` · ${p.reference}` : ""} · {formatDate(p.paid_at)}
@@ -799,8 +874,8 @@ export default function SubscriptionsManager({ prefill }) {
                   <th className="py-3 px-4 font-semibold">Setup fee</th>
                   <th className="py-3 px-4 font-semibold">Setup status</th>
                   <th className="py-3 px-4 font-semibold">Subscription</th>
-                  <th className="py-3 px-4 font-semibold">Start date</th>
-                  <th className="py-3 px-4 font-semibold">Renewal date</th>
+                  <th className="py-3 px-4 font-semibold">Go-live date</th>
+                  <th className="py-3 px-4 font-semibold">Next payment due</th>
                   <th className="py-3 px-4 text-right font-semibold">Actions</th>
                 </tr>
               </thead>
@@ -847,7 +922,9 @@ export default function SubscriptionsManager({ prefill }) {
                         <td className="py-3.5 px-4">
                           <Badge tone={STATUS_TONES[sub.subscription_status]}>{SUBSCRIPTION_STATUS_LABELS[sub.subscription_status]}</Badge>
                         </td>
-                        <td className="py-3.5 px-4 whitespace-nowrap text-slate-400">{formatDate(sub.started_at)}</td>
+                        <td className="py-3.5 px-4 whitespace-nowrap text-slate-400">
+                          {sub.started_at ? formatDate(sub.started_at) : <span className="text-amber-300/80">Not live yet</span>}
+                        </td>
                         <td className="py-3.5 px-4 whitespace-nowrap text-slate-400">{formatDate(sub.renewal_date)}</td>
                         <td className="py-3.5 px-4 text-right">
                           <button

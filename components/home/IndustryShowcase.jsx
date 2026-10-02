@@ -48,7 +48,7 @@ const FOUNDATION_PILLARS = [
   {
     icon: ShieldCheck,
     title: "Secure, Role-Based Access",
-    desc: "Every user signs in with their own account and sees only what their role allows, with encrypted storage and high-speed offline-resilient sync.",
+    desc: "Every user signs in with their own account and sees only what their role allows.",
     accent: "#8B5CF6",
   },
 ];

@@ -6,7 +6,10 @@
 // PATCH body: { action, ... }
 //   record_setup_payment   { method, reference? }  one-time setup fee, only while pending
 //   waive_setup_fee        { reason }              only while pending
-//   record_monthly_payment { method, reference? }  monthly price only, never the setup fee
+//   record_monthly_payment { method, reference? }  monthly price only, never the setup fee;
+//                                                   before go-live it is a prepaid month
+//   go_live                { date? }               the day the customer starts using the product
+//                                                   (default today); starts the subscription period
 //   set_status             { status }
 
 import { NextResponse } from "next/server";
@@ -19,6 +22,7 @@ import {
   SubscriptionError,
   getSubscription,
   isUuid,
+  markGoLive,
   recordMonthlyPayment,
   recordSetupPayment,
   setSubscriptionStatus,
@@ -26,7 +30,7 @@ import {
 } from "@/lib/subscriptions";
 
 const writeLimiter = createRateLimiter({ windowMs: 60 * 1000, max: 60 });
-const ACTIONS = ["record_setup_payment", "waive_setup_fee", "record_monthly_payment", "set_status"];
+const ACTIONS = ["record_setup_payment", "waive_setup_fee", "record_monthly_payment", "go_live", "set_status"];
 // The admin portal has a single shared password, so there is no individual identity to record yet.
 const RECORDED_BY = "admin";
 
@@ -104,6 +108,14 @@ export async function PATCH(request, ctx) {
           return badRequest("Choose a valid reason for waiving the setup fee.");
         }
         subscription = await waiveSetupFee(id, { reason, waivedBy: RECORDED_BY });
+        break;
+      }
+      case "go_live": {
+        const date = body.date;
+        if (date !== undefined && date !== null && date !== "" && (typeof date !== "string" || date.length > 10)) {
+          return badRequest("Enter a valid go-live date.");
+        }
+        subscription = await markGoLive(id, { date });
         break;
       }
       case "set_status": {

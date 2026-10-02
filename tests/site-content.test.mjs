@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { FAQ_ITEMS, HOW_WE_WORK } from "../lib/site-content.js";
 import { PLANS, formatINR, newSubscriptionCharges } from "../lib/pricing.js";
+import { LEGAL_DRAFT, LEGAL_PAGES, legalMetadata } from "../lib/legal.js";
 
 const allCopy = [
   ...FAQ_ITEMS.flatMap((f) => [f.question, f.answer]),
@@ -51,13 +52,49 @@ test("no India data-hosting claim appears anywhere in the site source", () => {
 // ("backup", "backups", "backed up", "back-up").
 const BACKUP_CLAIM = /\bback(ed)?[\s-]?ups?\b/i;
 
+// The single exception (founder, 2026-10-02): the Privacy Policy discloses that deleted data can
+// linger in the database provider's backups. It is a retention disclosure, not a promise that a
+// customer's data can be restored, and it must appear with exactly this wording and nowhere else.
+const PRIVACY_PAGE = path.join("app", "(marketing)", "privacy", "page.jsx");
+const APPROVED_BACKUP_DISCLOSURE =
+  "Our database provider keeps automated backups. Deleted data may persist in those backups for a short period before being overwritten.";
+
 test("no backup claim appears anywhere in the site source", () => {
   const files = ["app", "components", "lib"].flatMap((dir) => siteSourceFiles(path.join(REPO_ROOT, dir)));
   assert.ok(files.length > 20, "expected to scan the site source");
 
   for (const file of files) {
+    const relative = path.relative(REPO_ROOT, file);
+    let source = fs.readFileSync(file, "utf8");
+    if (relative === PRIVACY_PAGE) {
+      source = source.replace(/\{\/\*[\s\S]*?\*\/\}/g, "").replace(/\s+/g, " ");
+      assert.ok(source.includes(APPROVED_BACKUP_DISCLOSURE), "the Privacy Policy must keep the approved backup disclosure");
+      source = source.replace(APPROVED_BACKUP_DISCLOSURE, "");
+    }
+    assert.ok(!BACKUP_CLAIM.test(source), `${relative} contains a backup claim`);
+  }
+});
+
+// Claims removed from the marketing copy on 2026-10-02 because nothing backs them: the company
+// holds no security certification, and no ZUGEE product is known to work offline.
+const UNBACKED_CLAIMS = [
+  /enterprise[\s-]grade security/i,
+  /(bank|military)[\s-]grade/i,
+  /encrypted storage/i,
+  /offline[\s-]resilient/i,
+  /offline (sync|mode|access)/i,
+  /works? offline/i
+];
+
+test("no unbacked security or offline claim appears anywhere in the site source", () => {
+  const files = ["app", "components", "lib"].flatMap((dir) => siteSourceFiles(path.join(REPO_ROOT, dir)));
+  assert.ok(files.length > 20, "expected to scan the site source");
+
+  for (const file of files) {
     const source = fs.readFileSync(file, "utf8");
-    assert.ok(!BACKUP_CLAIM.test(source), `${path.relative(REPO_ROOT, file)} contains a backup claim`);
+    for (const claim of UNBACKED_CLAIMS) {
+      assert.ok(!claim.test(source), `${path.relative(REPO_ROOT, file)} contains an unbacked claim matching ${claim}`);
+    }
   }
 });
 
@@ -111,4 +148,47 @@ test("the FAQ never claims a shared login or shared database across products", (
   assert.match(multi.answer, /own login/i);
   assert.match(multi.answer, /side by side/i);
   assert.ok(!/coming soon/i.test(multi.answer));
+});
+
+// ---------------------------------------------------------------------------
+// Legal pages (/privacy, /terms, /refund)
+// ---------------------------------------------------------------------------
+const legalSources = LEGAL_PAGES.map((page) => {
+  const file = path.join(REPO_ROOT, "app", "(marketing)", page.href.slice(1), "page.jsx");
+  return { ...page, file, source: fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null };
+});
+
+test("every legal page linked from the footer exists", () => {
+  assert.deepEqual(LEGAL_PAGES.map((p) => p.href), ["/privacy", "/terms", "/refund"]);
+  for (const page of legalSources) {
+    assert.ok(page.source, `${page.href} has no page file`);
+    assert.match(page.source, /legalMetadata\(/, `${page.href} must use legalMetadata`);
+  }
+});
+
+test("legal pages stay unindexed while any [CONFIRM] placeholder is left", () => {
+  const placeholders = legalSources.reduce((n, page) => n + (page.source.match(/<Confirm[\s>]/g) || []).length, 0);
+  if (placeholders > 0) {
+    assert.equal(LEGAL_DRAFT, true, `${placeholders} unconfirmed placeholders remain: LEGAL_DRAFT must stay true`);
+  }
+
+  const metadata = legalMetadata({ path: "/privacy", title: "Privacy Policy", description: "x" });
+  if (LEGAL_DRAFT) assert.equal(metadata.robots.index, false);
+  else assert.ok(!("robots" in metadata));
+});
+
+test("legal pages publish no price and no promise the company cannot keep", () => {
+  for (const page of legalSources) {
+    assert.ok(!/₹|\bRs\.?\s?\d|\bINR\b/.test(page.source), `${page.href} contains a price`);
+    assert.ok(!/99(\.\d+)?\s?%/.test(page.source), `${page.href} contains an uptime percentage`);
+    assert.ok(!/money[\s-]back/i.test(page.source), `${page.href} promises money back`);
+  }
+  // The honest limits must stay stated.
+  const terms = legalSources.find((p) => p.href === "/terms").source;
+  assert.match(terms, /No uptime guarantee/);
+  assert.match(terms, /No 24\/7 support on standard plans/);
+  assert.match(terms, /Coimbatore, Tamil Nadu/);
+  const privacy = legalSources.find((p) => p.href === "/privacy").source;
+  assert.match(privacy, /We do not promise that your data never leaves India/);
+  assert.match(privacy, /sets no cookies for visitors/);
 });

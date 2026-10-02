@@ -3,10 +3,12 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -28,7 +30,12 @@ export default function Navbar() {
 
   const scrollToSection = (targetId) => {
     const section = document.getElementById(targetId);
-    if (!section) return;
+    // The sections live on the homepage. From any other page (the legal pages), go there.
+    if (!section) {
+      setMobileMenuOpen(false);
+      router.push(`/#${targetId}`);
+      return;
+    }
 
     const navbar = document.querySelector("header");
     const navbarHeight = navbar?.getBoundingClientRect().height || 0;
