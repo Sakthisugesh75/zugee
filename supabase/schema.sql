@@ -38,6 +38,10 @@ create index if not exists leads_status_idx on public.leads (status);
 create index if not exists leads_industry_idx on public.leads (industry);
 
 alter table public.leads enable row level security;
+revoke all on public.leads from anon, authenticated;
+-- Never rely on the project's default privileges: the server's role is granted what it uses,
+-- explicitly. Without this the API fails with "permission denied".
+grant select, insert, update, delete on public.leads to service_role;
 
 -- ---------------------------------------------------------------------------
 -- Migrating an existing database (Phase 0, 2026-09-25)

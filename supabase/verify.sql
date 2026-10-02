@@ -15,9 +15,13 @@
 --   Problems are listed first. For indexes, constraints and triggers the "actual" column shows the
 --   definition in the database.
 --
--- Expected objects (108): 3 tables, 45 columns, 16 indexes, 37 constraints, 2 triggers,
--- 2 functions, and row level security on each of the 3 tables.
+-- Expected checks (120): 3 tables, 45 columns, 16 indexes, 37 constraints, 2 triggers,
+-- 2 functions, row level security on each of the 3 tables, and 12 grants: service_role can
+-- select, insert, update and delete on each table.
 -- Plus: no policies, and no privileges for the anon / authenticated roles.
+--
+-- This checks that the schema is right. It does not prove the app works: after it passes, submit
+-- one lead on the live form and open /admin/dashboard and /admin/subscriptions.
 --
 -- Columns are compared on type, nullability and default. If a column shows DIFFERENT but the
 -- expected and actual text mean the same thing, that is the Postgres version formatting it
@@ -134,7 +138,20 @@ with expected (kind, name, expected) as (
     ('function', 'update_updated_at_column', ''),
     ('rls', 'leads', 'enabled'),
     ('rls', 'subscriptions', 'enabled'),
-    ('rls', 'subscription_payments', 'enabled')
+    ('rls', 'subscription_payments', 'enabled'),
+    -- What the server (service_role key) must be able to do. Without these every API call fails.
+    ('grant', 'leads: service_role SELECT', 'granted'),
+    ('grant', 'leads: service_role INSERT', 'granted'),
+    ('grant', 'leads: service_role UPDATE', 'granted'),
+    ('grant', 'leads: service_role DELETE', 'granted'),
+    ('grant', 'subscriptions: service_role SELECT', 'granted'),
+    ('grant', 'subscriptions: service_role INSERT', 'granted'),
+    ('grant', 'subscriptions: service_role UPDATE', 'granted'),
+    ('grant', 'subscriptions: service_role DELETE', 'granted'),
+    ('grant', 'subscription_payments: service_role SELECT', 'granted'),
+    ('grant', 'subscription_payments: service_role INSERT', 'granted'),
+    ('grant', 'subscription_payments: service_role UPDATE', 'granted'),
+    ('grant', 'subscription_payments: service_role DELETE', 'granted')
 ),
 actual (kind, name, actual, compare) as (
   select 'table', c.relname::text, '', ''
@@ -173,6 +190,15 @@ actual (kind, name, actual, compare) as (
     from pg_class c
    where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
      and c.relname in ('leads', 'subscriptions', 'subscription_payments')
+  union all
+  -- has_table_privilege answers "can this role actually do it", whether the privilege was granted
+  -- directly, through PUBLIC or through a role it belongs to.
+  select 'grant', c.relname::text || ': service_role ' || p.privilege, '',
+         case when has_table_privilege('service_role', c.oid, p.privilege) then 'granted' else 'NOT GRANTED' end
+    from pg_class c
+   cross join (values ('SELECT'), ('INSERT'), ('UPDATE'), ('DELETE')) as p (privilege)
+   where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
+     and c.relname in ('leads', 'subscriptions', 'subscription_payments')
 ),
 objects as (
   select coalesce(e.kind, a.kind) as kind,
@@ -209,7 +235,7 @@ checks as (
 select 0 as "#", 'SUMMARY' as kind,
        count(*) filter (where status <> 'OK') || ' problems' as name,
        case when count(*) filter (where status <> 'OK') = 0 then 'OK' else 'FAILED' end as status,
-       '108 objects expected' as expected,
+       '120 checks expected' as expected,
        count(*) filter (where status = 'OK') || ' OK' as actual
   from checks
 union all

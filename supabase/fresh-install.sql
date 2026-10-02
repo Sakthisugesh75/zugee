@@ -15,7 +15,8 @@
 -- SECURITY MODEL
 --   The Next.js server talks to Supabase with the service_role key only. RLS is enabled with NO
 --   policies and the anon / authenticated roles have no privileges, so the public keys cannot
---   read or write any of these tables.
+--   read or write any of these tables. service_role is granted select, insert, update and delete
+--   on each table explicitly; a new table added later needs the same grant.
 
 begin;
 
@@ -52,6 +53,9 @@ create index leads_request_type_idx on public.leads (request_type);
 
 alter table public.leads enable row level security;
 revoke all on public.leads from anon, authenticated;
+-- Never rely on the project's default privileges: the server's role is granted what it uses,
+-- explicitly, on every table. Without this the API fails with "permission denied".
+grant select, insert, update, delete on public.leads to service_role;
 
 -- ===========================================================================
 -- 2. updated_at trigger function
@@ -214,7 +218,10 @@ alter table public.subscriptions enable row level security;
 alter table public.subscription_payments enable row level security;
 
 revoke all on public.subscriptions from anon, authenticated;
+grant select, insert, update, delete on public.subscriptions to service_role;
+
 revoke all on public.subscription_payments from anon, authenticated;
+grant select, insert, update, delete on public.subscription_payments to service_role;
 
 -- Make the API see the new tables straight away (delivered when the transaction commits).
 notify pgrst, 'reload schema';

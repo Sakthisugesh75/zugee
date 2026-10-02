@@ -186,6 +186,11 @@ alter table public.subscription_payments enable row level security;
 revoke all on public.subscriptions from anon, authenticated;
 revoke all on public.subscription_payments from anon, authenticated;
 
+-- Never rely on the project's default privileges: the server's role is granted what it uses,
+-- explicitly. Without this the API fails with "permission denied".
+grant select, insert, update, delete on public.subscriptions to service_role;
+grant select, insert, update, delete on public.subscription_payments to service_role;
+
 -- ---------------------------------------------------------------------------
 -- Databases that ran the earlier version of this file
 -- ---------------------------------------------------------------------------

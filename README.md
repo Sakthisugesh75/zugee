@@ -37,7 +37,7 @@ See [`.env.example`](.env.example).
 
 ## Database
 
-**Empty database:** run [`supabase/fresh-install.sql`](supabase/fresh-install.sql) once in the Supabase SQL editor, then [`supabase/verify.sql`](supabase/verify.sql), whose first row must say "0 problems". `fresh-install.sql` is the three files below combined; nothing else needs running. There is no migration runner: every schema change is pasted by hand, so a later migration must be run in the SQL editor **before** the code that needs it is deployed, and `fresh-install.sql` and `verify.sql` updated to match.
+**Empty database:** run [`supabase/fresh-install.sql`](supabase/fresh-install.sql) once in the Supabase SQL editor, then [`supabase/verify.sql`](supabase/verify.sql), whose first row must say "0 problems". `fresh-install.sql` is the three files below combined; nothing else needs running. There is no migration runner: every schema change is pasted by hand, so a later migration must be run in the SQL editor **before** the code that needs it is deployed, and `fresh-install.sql` and `verify.sql` updated to match. Every new table needs its own `grant select, insert, update, delete … to service_role`: the project's default privileges do not give the server's role access, and without the grant every API call on that table fails with "permission denied".
 
 The individual files, for a database that already has some of the tables:
 
