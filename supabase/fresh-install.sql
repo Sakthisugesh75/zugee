@@ -1,38 +1,63 @@
--- supabase/migrations/0001_subscriptions_setup_fee.sql
--- ZUGEE subscriptions with a one-time "Setup & Onboarding" fee.
--- Creates everything the admin subscriptions page (/admin/subscriptions) needs, and nothing else.
+-- supabase/fresh-install.sql
+-- The whole ZUGEE database, built from scratch on an EMPTY database, in one transaction.
+--
+-- It is these three files combined, in this order:
+--   1. supabase/schema.sql                              leads
+--   2. supabase/migrations/0002_leads_request_type.sql  leads.request_type (folded into the table)
+--   3. supabase/migrations/0001_subscriptions_setup_fee.sql  subscriptions, subscription_payments
 --
 -- HOW TO RUN
---   Paste the whole file into the Supabase SQL editor and run it. The only thing it needs to exist
---   already is public.leads (supabase/schema.sql). It does NOT need supabase/app-schema.sql.
---   Safe to re-run: every statement is idempotent, and the whole file is one transaction, so a
---   failure leaves nothing half-created.
+--   Paste the whole file into the Supabase SQL editor and run it once, then run
+--   supabase/verify.sql. It is NOT re-runnable: it fails with "already exists" if a table is
+--   there, and because it is one transaction a failure leaves nothing behind.
+--   To change a database that already has these tables, write a new numbered migration instead.
 --
--- BUSINESS RULES (lib/pricing.js is the source of every price)
---   * The monthly price RECURS. The setup fee is ONE-TIME per business per product; renewals never
---     include it.
---   * Prices are SNAPSHOTTED onto the subscription row when it is created, so a later change in
---     lib/pricing.js never affects an existing subscription. A trigger below makes the snapshot
---     immutable.
---   * setup_fee_status: pending -> paid | waived, and paid -> refunded. Never back to pending.
---     The setup fee can be recorded as paid only once (unique partial index on payments).
---
--- SECURITY MODEL (same as public.leads)
---   RLS is enabled with NO policies, so the anon and authenticated keys cannot read or write these
---   tables. Every read and write goes through the Next.js server with the service-role key.
---
--- NO customer_id
---   An earlier version of this file had subscriptions.customer_id, a foreign key to
---   customer_profiles from the removed customer app. Nothing read it. A subscription is tied to a
---   business through lead_id; Phase 2 adds organization_id (docs/ZUGEE-PLATFORM-PLAN.md).
+-- SECURITY MODEL
+--   The Next.js server talks to Supabase with the service_role key only. RLS is enabled with NO
+--   policies and the anon / authenticated roles have no privileges, so the public keys cannot
+--   read or write any of these tables.
 
 begin;
 
 create extension if not exists pgcrypto;
 
--- ---------------------------------------------------------------------------
--- updated_at trigger function
--- ---------------------------------------------------------------------------
+-- ===========================================================================
+-- 1. leads: the "Talk to our team" form
+-- ===========================================================================
+-- `industry` holds the business type: a product slug from lib/products.js, or 'other'.
+-- `request_type` is what the visitor asked for: 'demo' or 'pricing_call' (lib/lead-request.js).
+create table public.leads (
+  id            uuid primary key default gen_random_uuid(),
+  created_at    timestamptz not null default now(),
+  reference_id  text not null unique,
+  name          text not null check (char_length(name) between 2 and 120),
+  phone         text not null check (char_length(phone) between 7 and 25),
+  email         text check (email is null or char_length(email) <= 254),
+  company_name  text check (company_name is null or char_length(company_name) <= 160),
+  industry      text not null check (char_length(industry) <= 40),
+  request_type  text not null default 'demo'
+                constraint leads_request_type_check check (request_type in ('demo', 'pricing_call')),
+  goal          text check (goal is null or char_length(goal) <= 300), -- legacy; no longer collected
+  message       text check (message is null or char_length(message) <= 2000),
+  source_page   text not null default 'homepage-contact'
+                check (source_page in ('homepage-contact')),
+  status        text not null default 'new'
+                check (status in ('new', 'contacted', 'qualified', 'archived'))
+);
+
+create index leads_created_at_idx on public.leads (created_at desc);
+create index leads_status_idx on public.leads (status);
+create index leads_industry_idx on public.leads (industry);
+create index leads_request_type_idx on public.leads (request_type);
+
+alter table public.leads enable row level security;
+revoke all on public.leads from anon, authenticated;
+
+-- ===========================================================================
+-- 2. updated_at trigger function
+-- ===========================================================================
+-- "or replace" on the two functions in this file: dropping a table does not drop the functions
+-- its triggers used, so they may still exist in a database whose tables were dropped.
 create or replace function public.update_updated_at_column()
 returns trigger
 language plpgsql
@@ -44,10 +69,17 @@ begin
 end;
 $$;
 
--- ---------------------------------------------------------------------------
--- subscriptions
--- ---------------------------------------------------------------------------
-create table if not exists public.subscriptions (
+-- ===========================================================================
+-- 3. subscriptions: one row per business per product
+-- ===========================================================================
+-- Business rules (lib/pricing.js is the source of every price):
+--   * The monthly price RECURS. The setup fee is ONE-TIME per business per product; renewals never
+--     include it.
+--   * Prices are SNAPSHOTTED onto the row when it is created, so a later change in lib/pricing.js
+--     never affects an existing subscription. The guard trigger below makes the snapshot immutable.
+--   * setup_fee_status: pending -> paid | waived, and paid -> refunded. Never back to pending.
+--   * A subscription is tied to a business through lead_id. Phase 2 adds organization_id.
+create table public.subscriptions (
   id                   uuid primary key default gen_random_uuid(),
   created_at           timestamptz not null default now(),
   updated_at           timestamptz not null default now(),
@@ -98,19 +130,19 @@ create table if not exists public.subscriptions (
 );
 
 -- One subscription per lead per product: the setup fee is charged once per business per product.
-create unique index if not exists subscriptions_lead_product_key
+create unique index subscriptions_lead_product_key
   on public.subscriptions (lead_id, product_slug) where lead_id is not null;
 
 -- Admin listing
-create index if not exists subscriptions_created_at_idx on public.subscriptions (created_at desc);
-create index if not exists subscriptions_status_idx on public.subscriptions (subscription_status, created_at desc);
-create index if not exists subscriptions_setup_status_idx on public.subscriptions (setup_fee_status);
-create index if not exists subscriptions_renewal_date_idx on public.subscriptions (renewal_date);
+create index subscriptions_created_at_idx on public.subscriptions (created_at desc);
+create index subscriptions_status_idx on public.subscriptions (subscription_status, created_at desc);
+create index subscriptions_setup_status_idx on public.subscriptions (setup_fee_status);
+create index subscriptions_renewal_date_idx on public.subscriptions (renewal_date);
 
--- ---------------------------------------------------------------------------
--- subscription_payments: payments the team collected (UPI / bank transfer today, Razorpay in Phase 6)
--- ---------------------------------------------------------------------------
-create table if not exists public.subscription_payments (
+-- ===========================================================================
+-- 4. subscription_payments: payments the team collected (UPI / bank transfer today)
+-- ===========================================================================
+create table public.subscription_payments (
   id               uuid primary key default gen_random_uuid(),
   subscription_id  uuid not null references public.subscriptions(id) on delete cascade,
   kind             text not null check (kind in ('setup', 'subscription')),
@@ -132,18 +164,18 @@ create table if not exists public.subscription_payments (
 );
 
 -- The setup fee can physically be recorded only once per subscription.
-create unique index if not exists subscription_payments_one_setup_key
+create unique index subscription_payments_one_setup_key
   on public.subscription_payments (subscription_id) where kind = 'setup';
 -- Each monthly period can be paid only once.
-create unique index if not exists subscription_payments_period_key
+create unique index subscription_payments_period_key
   on public.subscription_payments (subscription_id, period_start) where kind = 'subscription';
 
-create index if not exists subscription_payments_subscription_idx
+create index subscription_payments_subscription_idx
   on public.subscription_payments (subscription_id, paid_at desc);
 
--- ---------------------------------------------------------------------------
--- Guard rails on updates
--- ---------------------------------------------------------------------------
+-- ===========================================================================
+-- 5. Triggers on subscriptions
+-- ===========================================================================
 create or replace function public.subscriptions_guard_update()
 returns trigger
 language plpgsql
@@ -169,34 +201,22 @@ begin
 end;
 $$;
 
-drop trigger if exists subscriptions_guard_update on public.subscriptions;
 create trigger subscriptions_guard_update before update on public.subscriptions
   for each row execute function public.subscriptions_guard_update();
 
-drop trigger if exists update_subscriptions_updated_at on public.subscriptions;
 create trigger update_subscriptions_updated_at before update on public.subscriptions
   for each row execute function public.update_updated_at_column();
 
--- ---------------------------------------------------------------------------
--- Row level security: no policies, so only the service role can read or write.
--- ---------------------------------------------------------------------------
+-- ===========================================================================
+-- 6. Row level security: no policies, so only the service role can read or write.
+-- ===========================================================================
 alter table public.subscriptions enable row level security;
 alter table public.subscription_payments enable row level security;
 
 revoke all on public.subscriptions from anon, authenticated;
 revoke all on public.subscription_payments from anon, authenticated;
 
--- ---------------------------------------------------------------------------
--- Databases that ran the earlier version of this file
--- ---------------------------------------------------------------------------
--- That version had customer_id and two "customers can view own rows" policies built on it.
--- These statements remove them, and do nothing on a database that never had them.
--- NOTE: this deletes whatever is stored in subscriptions.customer_id.
-drop policy if exists "Customers can view own subscriptions" on public.subscriptions;
-drop policy if exists "Customers can view own subscription payments" on public.subscription_payments;
-alter table public.subscriptions drop column if exists customer_id;
-
--- Make the API see the new tables straight away.
+-- Make the API see the new tables straight away (delivered when the transaction commits).
 notify pgrst, 'reload schema';
 
 commit;

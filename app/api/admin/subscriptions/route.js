@@ -77,11 +77,10 @@ export async function POST(request) {
       return badRequest("Business name, product and plan are required.");
     }
 
-    for (const field of ["lead_id", "customer_id"]) {
-      const value = body[field];
-      if (value === undefined || value === null || value === "") continue;
-      if (typeof value !== "string" || !UUID_PATTERN.test(value)) return badRequest(`Invalid ${field.replace(/_/g, " ")}.`);
-      input[field] = value;
+    const leadId = body.lead_id;
+    if (leadId !== undefined && leadId !== null && leadId !== "") {
+      if (typeof leadId !== "string" || !UUID_PATTERN.test(leadId)) return badRequest("Invalid lead id.");
+      input.lead_id = leadId;
     }
 
     const waiveReason = body.waive_reason;

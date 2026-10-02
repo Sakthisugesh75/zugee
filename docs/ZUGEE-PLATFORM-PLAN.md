@@ -424,7 +424,7 @@ New verticals (School, PG, Resort, …) are built **as modules on Core ERP** whe
 - **Database:** `supabase/migrations/0001_subscriptions_setup_fee.sql` creates `subscriptions` + `subscription_payments`. Prices are snapshotted, the setup fee can be recorded only once, and it can be waived only by an admin.
 - **Admin:** `/admin/subscriptions` records payments the team has collected, waives setup, and changes status.
 - **Customer:** `/app/back-office/billing` shows the subscription once login works (Phase 1).
-- **Still to build here:** payment gateway checkout, invoices with separate setup and subscription line items, and moving subscriptions from `customer_id` to `organization_id` (Phase 2).
+- **Still to build here:** payment gateway checkout, invoices with separate setup and subscription line items, and adding `organization_id` to subscriptions (Phase 2). Until then a subscription is tied to a business through `lead_id`; the old `customer_id` column was removed on 2026-10-02.
 
 - Razorpay subscriptions (Transposs already has Razorpay code to learn from).
 - Webhooks as the only writer of `subscriptions`.

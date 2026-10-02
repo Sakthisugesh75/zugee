@@ -37,13 +37,17 @@ See [`.env.example`](.env.example).
 
 ## Database
 
+**Empty database:** run [`supabase/fresh-install.sql`](supabase/fresh-install.sql) once in the Supabase SQL editor, then [`supabase/verify.sql`](supabase/verify.sql), whose first row must say "0 problems". `fresh-install.sql` is the three files below combined; nothing else needs running. There is no migration runner: every schema change is pasted by hand, so a later migration must be run in the SQL editor **before** the code that needs it is deployed, and `fresh-install.sql` and `verify.sql` updated to match.
+
+The individual files, for a database that already has some of the tables:
+
 Run [`supabase/schema.sql`](supabase/schema.sql) in the Supabase SQL editor. It creates `leads`: the "Talk to our team" form (name and mobile required; email, company and requirement optional). RLS is enabled with no policies, so only the server's service-role key can access it. The bottom of the file has the SQL to migrate a database created from the previous version.
 
 [`supabase/migrations/0002_leads_request_type.sql`](supabase/migrations/0002_leads_request_type.sql) adds `leads.request_type` (`demo` or `pricing_call`). **Run it before deploying**: without the column the demo form cannot save leads. A database created from the current `schema.sql` already has the column, and the migration is safe to re-run.
 
-[`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql) creates `subscriptions` and `subscription_payments` for the admin portal (the setup fee can be recorded only once).
+[`supabase/migrations/0001_subscriptions_setup_fee.sql`](supabase/migrations/0001_subscriptions_setup_fee.sql) creates `subscriptions` and `subscription_payments` for the admin portal (the setup fee can be recorded only once). **Run it before using `/admin/subscriptions`**: without these tables the page cannot load. It needs only the `leads` table from `schema.sql`, is safe to re-run, and gives both tables the same access rule as `leads` (RLS with no policies).
 
-> **`supabase/app-schema.sql` is unused.** It was the schema for the removed customer app, and no code in this repo reads or writes its tables. The file is kept for reference only. One dependency remains: the `0001` migration still references `public.customer_profiles` and the `update_updated_at_column()` function that `app-schema.sql` defines, so on a fresh database `0001` fails unless `app-schema.sql` is run first. Remove those references from the migration before dropping the file.
+> **`supabase/app-schema.sql` is unused.** It was the schema for the removed customer app, and no code or migration in this repo depends on it. Do not run it; the file is kept for reference only.
 
 ## Project structure
 

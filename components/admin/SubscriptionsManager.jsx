@@ -158,7 +158,6 @@ function NewSubscriptionForm({ prefill, onCreated, onCancel, onUnauthorized }) {
     product_slug: prefill?.product_slug || "",
     plan_key: "starter",
     notes: "",
-    customer_id: "",
     waive: false,
     waive_reason: ""
   });
@@ -196,7 +195,6 @@ function NewSubscriptionForm({ prefill, onCreated, onCancel, onUnauthorized }) {
         product_slug: form.product_slug,
         plan_key: form.plan_key,
         notes: form.notes,
-        customer_id: form.customer_id.trim(),
         lead_id: prefill?.lead_id || "",
         waive_reason: form.waive ? form.waive_reason : ""
       });
@@ -264,16 +262,6 @@ function NewSubscriptionForm({ prefill, onCreated, onCancel, onUnauthorized }) {
               </option>
             ))}
           </select>
-        </label>
-        <label className="block">
-          <span className={LABEL}>Customer account ID (optional)</span>
-          <input
-            className={INPUT}
-            value={form.customer_id}
-            onChange={set("customer_id")}
-            maxLength={36}
-            placeholder="Only if they already have a ZUGEE login"
-          />
         </label>
       </div>
 

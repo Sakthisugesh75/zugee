@@ -3,12 +3,13 @@
 
 import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
+import fs from "node:fs";
 
 process.env.NODE_ENV = "test";
 delete process.env.SUPABASE_URL;
 delete process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-const { getPlan } = await import("../lib/pricing.js");
+const { SETUP_FEE_STATUSES, SETUP_WAIVER_REASONS, getPlan } = await import("../lib/pricing.js");
 const subs = await import("../lib/subscriptions.js");
 
 const PRODUCT = "transposs";
@@ -152,6 +153,40 @@ test("status changes never touch prices or the setup fee", async () => {
   assert.equal(cancelled.monthly_price, sub.monthly_price);
   await subs.waiveSetupFee(sub.id, { reason: "manual_admin_waiver" });
   await assert.rejects(() => subs.recordMonthlyPayment(sub.id, PAYMENT), { code: "conflict" });
+});
+
+test("a customer account ID sent by an older client is not stored", async () => {
+  const sub = await newSub({ customer_id: "d3b07384-d113-4a16-a192-349089ef01a1" });
+  assert.ok(!("customer_id" in sub));
+});
+
+// Statements only: comments may mention what the migration deliberately leaves out.
+const MIGRATION = fs
+  .readFileSync(new URL("../supabase/migrations/0001_subscriptions_setup_fee.sql", import.meta.url), "utf8")
+  .replace(/--.*$/gm, "");
+
+function checkList(column) {
+  const match = MIGRATION.match(new RegExp(`${column} in \\(([^)]*)\\)`));
+  return match[1].split(",").map((v) => v.trim().replace(/'/g, ""));
+}
+
+test("the subscriptions migration needs nothing from the removed customer app", () => {
+  assert.ok(!MIGRATION.includes("customer_profiles"));
+  assert.ok(!/customer_id\s+uuid/.test(MIGRATION), "no customer_id column");
+  assert.ok(!MIGRATION.includes("auth.uid()"));
+  assert.match(MIGRATION, /create or replace function public\.update_updated_at_column\(\)/);
+  assert.match(MIGRATION, /create table if not exists public\.subscriptions/);
+  assert.match(MIGRATION, /create table if not exists public\.subscription_payments/);
+  // The only table it references that it does not create is public.leads.
+  const referenced = [...MIGRATION.matchAll(/references public\.(\w+)/g)].map((m) => m[1]);
+  assert.deepEqual([...new Set(referenced)].sort(), ["leads", "subscriptions"]);
+});
+
+test("the subscriptions migration allows exactly the values the code uses", () => {
+  assert.deepEqual(checkList("setup_waiver_reason"), Object.keys(SETUP_WAIVER_REASONS));
+  assert.deepEqual(checkList("setup_fee_status"), SETUP_FEE_STATUSES);
+  assert.deepEqual(checkList("subscription_status"), subs.SUBSCRIPTION_STATUSES);
+  assert.deepEqual(checkList("kind"), ["setup", "subscription"]);
 });
 
 test("addMonths clamps to month end without drifting", () => {
