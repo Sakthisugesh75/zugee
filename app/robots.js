@@ -2,9 +2,9 @@
 // Dynamic robots.txt configuration for search engine crawlers.
 // Keeps the admin portal and API routes out of search indexes.
 
-export default function robots() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com";
+import { SITE_URL } from "@/lib/site";
 
+export default function robots() {
   return {
     rules: [
       {
@@ -13,6 +13,6 @@ export default function robots() {
         disallow: ["/admin", "/api"]
       }
     ],
-    sitemap: `${siteUrl}/sitemap.xml`
+    sitemap: `${SITE_URL}/sitemap.xml`
   };
 }

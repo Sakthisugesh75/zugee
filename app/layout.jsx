@@ -1,6 +1,7 @@
 // app/layout.jsx
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { SITE_URL } from "@/lib/site";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -20,7 +21,8 @@ const SHARE_TITLE = "ZUGEE — Business software built for the way your business
 const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com"),
+  // Relative URLs below (canonical, og:url, og:image, twitter:image) resolve against this.
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "ZUGEE — Business Software for Indian Businesses",
     template: "%s | ZUGEE"
