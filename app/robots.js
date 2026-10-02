@@ -3,7 +3,7 @@
 // Keeps the admin portal and API routes out of search indexes.
 
 export default function robots() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com";
 
   return {
     rules: [

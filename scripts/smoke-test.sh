@@ -4,7 +4,7 @@
 # Run after every production deploy to catch availability regressions.
 #
 # Usage:
-#   SITE_URL=https://www.zugee.in ./scripts/smoke-test.sh
+#   SITE_URL=https://www.getzugee.com ./scripts/smoke-test.sh
 #
 # Exit codes:
 #   0  — all checks passed
@@ -12,7 +12,7 @@
 
 set -euo pipefail
 
-SITE="${SITE_URL:-https://www.zugee.in}"
+SITE="${SITE_URL:-https://www.getzugee.com}"
 PASS=0
 FAIL=0
 

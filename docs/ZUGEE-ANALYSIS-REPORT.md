@@ -487,7 +487,7 @@ The app needs six environment variables in production; `.env.example` lists seve
 
 | Variable | Needed | Purpose |
 | --- | --- | --- |
-| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL for metadata, robots, sitemap and email links; defaults to `https://www.zugee.in` |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Canonical URL for metadata, robots, sitemap and email links; defaults to `https://www.getzugee.com` |
 | `SUPABASE_URL` | Yes | Supabase project URL |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Server-only key for leads and subscriptions |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | For `/app` | Key that respects row-level security |

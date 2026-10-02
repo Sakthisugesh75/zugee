@@ -37,7 +37,7 @@ This document records every piece of text the ZUGEE website shows, from the top 
 | Main tagline | "Industry-focused CRM, ERP, billing and operations software for Indian businesses." |
 | Positioning line (hero badge) | "UNIFIED BUSINESS OPERATING SYSTEM" |
 | Headline | "Replace 5 Disconnected Tools with One Operating System." |
-| Website address | `https://www.zugee.in` |
+| Website address | `https://www.getzugee.com` |
 | Copyright line | "© 2026 Zugee Systems Technologies Pvt. Ltd. All rights reserved." |
 | Footer badge | "Built for Indian SMEs" |
 
@@ -857,7 +857,7 @@ Plain-text version of the confirmation:
 >
 > Best regards,
 > The Zugee Team
-> https://www.zugee.in
+> https://www.getzugee.com
 
 ---
 

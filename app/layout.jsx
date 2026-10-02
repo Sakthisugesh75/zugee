@@ -20,7 +20,7 @@ const SHARE_TITLE = "ZUGEE — Business software built for the way your business
 const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
 
 export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com"),
   title: {
     default: "ZUGEE — Business Software for Indian Businesses",
     template: "%s | ZUGEE"

@@ -6,7 +6,7 @@
 const HOMEPAGE_UPDATED = "2026-09-25";
 
 export default function sitemap() {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in";
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com";
 
   return [
     {

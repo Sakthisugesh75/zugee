@@ -26,7 +26,7 @@ import { BUSINESS_TYPES, getProduct } from "@/lib/products";
 import { PLANS, PRODUCT_SETUP_FOCUS } from "@/lib/pricing";
 import { FAQ_ITEMS } from "@/lib/site-content";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zugee.in";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.getzugee.com";
 
 export const metadata = {
   title: { absolute: "ZUGEE — Business Software for Indian Businesses" },
