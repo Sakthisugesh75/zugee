@@ -9,10 +9,37 @@ import {
   buildLeadConfirmationPayload,
   cleanPhoneForWhatsApp,
   escapeHtml,
-  getAdminNotificationEmail
+  getAdminNotificationEmail,
+  getSenderAddress
 } from "../lib/email.js";
 
 const TEAM_EMAIL = "leads@example.test";
+const SUPPORT_EMAIL = "support@example.test";
+
+const MAIL_ENV_KEYS = [
+  "SMTP_HOST", "SMTP_PORT", "SMTP_SECURE", "SMTP_USER", "SMTP_PASS", "SMTP_FROM",
+  "GMAIL_USER", "GMAIL_APP_PASSWORD"
+];
+
+// Runs fn with exactly the given mail variables set (every other one unset), then restores them.
+async function withMailEnv(values, fn) {
+  const orig = Object.fromEntries(MAIL_ENV_KEYS.map((key) => [key, process.env[key]]));
+  for (const key of MAIL_ENV_KEYS) {
+    if (values[key] === undefined) delete process.env[key];
+    else process.env[key] = values[key];
+  }
+  try {
+    return await fn();
+  } finally {
+    for (const key of MAIL_ENV_KEYS) {
+      if (orig[key] === undefined) delete process.env[key];
+      else process.env[key] = orig[key];
+    }
+  }
+}
+
+const ZOHO_ENV = { SMTP_HOST: "smtp.zoho.test", SMTP_USER: SUPPORT_EMAIL, SMTP_PASS: "zoho-pass" };
+const GMAIL_ENV = { GMAIL_USER: "legacy@gmail.test", GMAIL_APP_PASSWORD: "gmail-pass" };
 
 // Runs fn with ADMIN_NOTIFICATION_EMAIL set to `value` (or unset when undefined), then restores it.
 async function withAdminEmail(value, fn) {
@@ -124,28 +151,122 @@ test("sendLeadNotificationEmail warns and sends nothing when ADMIN_NOTIFICATION_
   assert.ok(!warning.includes("gmail.com"));
 });
 
-test("getEmailTransporter returns null when environment variables are not set", () => {
-  const origGmailUser = process.env.GMAIL_USER;
-  const origGmailPass = process.env.GMAIL_APP_PASSWORD;
-  const origSmtpHost = process.env.SMTP_HOST;
-  const origSmtpUser = process.env.SMTP_USER;
-  const origSmtpPass = process.env.SMTP_PASS;
+test("getEmailTransporter returns null when environment variables are not set", async () => {
+  await withMailEnv({}, () => assert.equal(getEmailTransporter(), null));
+});
 
-  delete process.env.GMAIL_USER;
-  delete process.env.GMAIL_APP_PASSWORD;
-  delete process.env.SMTP_HOST;
-  delete process.env.SMTP_USER;
-  delete process.env.SMTP_PASS;
+test("getEmailTransporter uses the SMTP server even when Gmail is also configured", async () => {
+  await withMailEnv({ ...ZOHO_ENV, ...GMAIL_ENV }, () => {
+    const { options } = getEmailTransporter();
+    assert.equal(options.host, "smtp.zoho.test");
+    assert.equal(options.service, undefined);
+    assert.deepEqual(options.auth, { user: SUPPORT_EMAIL, pass: "zoho-pass" });
+    // No port given: 587 with STARTTLS.
+    assert.equal(options.port, 587);
+    assert.equal(options.secure, false);
+  });
+});
 
-  const transporter = getEmailTransporter();
-  assert.equal(transporter, null);
+test("getEmailTransporter turns TLS on for port 465 or SMTP_SECURE=true", async () => {
+  await withMailEnv({ ...ZOHO_ENV, SMTP_PORT: "465" }, () => {
+    const { options } = getEmailTransporter();
+    assert.equal(options.port, 465);
+    assert.equal(options.secure, true);
+  });
+  await withMailEnv({ ...ZOHO_ENV, SMTP_PORT: "587", SMTP_SECURE: "true" }, () => {
+    assert.equal(getEmailTransporter().options.secure, true);
+  });
+});
 
-  // Restore
-  if (origGmailUser) process.env.GMAIL_USER = origGmailUser;
-  if (origGmailPass) process.env.GMAIL_APP_PASSWORD = origGmailPass;
-  if (origSmtpHost) process.env.SMTP_HOST = origSmtpHost;
-  if (origSmtpUser) process.env.SMTP_USER = origSmtpUser;
-  if (origSmtpPass) process.env.SMTP_PASS = origSmtpPass;
+test("getEmailTransporter falls back to Gmail only when SMTP is not fully configured", async () => {
+  await withMailEnv(GMAIL_ENV, () => {
+    const { options } = getEmailTransporter();
+    assert.equal(options.service, "gmail");
+    assert.deepEqual(options.auth, { user: "legacy@gmail.test", pass: "gmail-pass" });
+  });
+  // SMTP_HOST without a password is incomplete, so Gmail is used.
+  await withMailEnv({ SMTP_HOST: "smtp.zoho.test", SMTP_USER: SUPPORT_EMAIL, ...GMAIL_ENV }, () => {
+    assert.equal(getEmailTransporter().options.service, "gmail");
+  });
+});
+
+test("getEmailTransporter never sends a bare user and password to Gmail", async () => {
+  await withMailEnv({ SMTP_USER: SUPPORT_EMAIL, SMTP_PASS: "zoho-pass" }, () => {
+    assert.equal(getEmailTransporter(), null);
+  });
+  await withMailEnv({ GMAIL_USER: "legacy@gmail.test", SMTP_PASS: "zoho-pass" }, () => {
+    assert.equal(getEmailTransporter(), null);
+  });
+});
+
+const REPLY_LEAD = {
+  reference_id: "ZUG-REPLY01",
+  name: "Meena Iyer",
+  phone: "+91 98765 33333",
+  email: "meena@example.com",
+  industry: "transposs"
+};
+
+test("both emails are sent From the authenticated SMTP mailbox", async () => {
+  await withMailEnv({ ...ZOHO_ENV, ...GMAIL_ENV, SMTP_FROM: '"Other" <other@example.test>' }, () => {
+    assert.equal(getSenderAddress(), SUPPORT_EMAIL);
+    assert.equal(buildLeadNotificationPayload(REPLY_LEAD).from, `"ZUGEE" <${SUPPORT_EMAIL}>`);
+    assert.equal(buildLeadConfirmationPayload(REPLY_LEAD).from, `"ZUGEE Support" <${SUPPORT_EMAIL}>`);
+  });
+});
+
+test("the From address falls back to the Gmail mailbox, and is absent with no mailbox", async () => {
+  await withMailEnv(GMAIL_ENV, () => {
+    assert.equal(buildLeadNotificationPayload(REPLY_LEAD).from, '"ZUGEE" <legacy@gmail.test>');
+    assert.equal(buildLeadConfirmationPayload(REPLY_LEAD).from, '"ZUGEE Support" <legacy@gmail.test>');
+  });
+  await withMailEnv({}, () => {
+    assert.equal(getSenderAddress(), null);
+    const notification = buildLeadNotificationPayload(REPLY_LEAD);
+    const confirmation = buildLeadConfirmationPayload(REPLY_LEAD);
+    assert.equal(notification.from, undefined);
+    assert.equal(confirmation.from, undefined);
+    assert.ok(!("replyTo" in confirmation));
+    assert.ok(!JSON.stringify([notification.from, confirmation.from]).includes("no-reply"));
+  });
+});
+
+test("notification replyTo is the lead's email, and is omitted when they gave none", async () => {
+  await withMailEnv(ZOHO_ENV, () => {
+    assert.equal(buildLeadNotificationPayload(REPLY_LEAD).replyTo, "meena@example.com");
+
+    const withoutEmail = buildLeadNotificationPayload({ ...REPLY_LEAD, email: null });
+    assert.ok(!("replyTo" in withoutEmail));
+  });
+});
+
+test("confirmation replyTo is the support mailbox", async () => {
+  await withMailEnv(ZOHO_ENV, () => {
+    const confirmation = buildLeadConfirmationPayload(REPLY_LEAD);
+    assert.equal(confirmation.to, "meena@example.com");
+    assert.equal(confirmation.replyTo, SUPPORT_EMAIL);
+  });
+});
+
+test("the sent emails carry From and replyTo through to the transporter", async () => {
+  const sentMails = [];
+  const mockTransporter = {
+    sendMail: async (payload) => {
+      sentMails.push(payload);
+      return { messageId: "mock-reply-id" };
+    }
+  };
+
+  await withMailEnv(ZOHO_ENV, async () => {
+    await withAdminEmail(TEAM_EMAIL, () => sendLeadNotificationEmail(REPLY_LEAD, mockTransporter));
+    await sendLeadConfirmationEmail(REPLY_LEAD, mockTransporter);
+  });
+
+  assert.equal(sentMails.length, 2);
+  assert.equal(sentMails[0].from, `"ZUGEE" <${SUPPORT_EMAIL}>`);
+  assert.equal(sentMails[0].replyTo, "meena@example.com");
+  assert.equal(sentMails[1].from, `"ZUGEE Support" <${SUPPORT_EMAIL}>`);
+  assert.equal(sentMails[1].replyTo, SUPPORT_EMAIL);
 });
 
 test("sendLeadNotificationEmail safely returns status when SMTP is unconfigured", async () => {
@@ -159,7 +280,9 @@ test("sendLeadNotificationEmail safely returns status when SMTP is unconfigured"
     message: "Interested in the Growth plan"
   };
 
-  const result = await withAdminEmail(TEAM_EMAIL, () => sendLeadNotificationEmail(sampleLead));
+  const result = await withMailEnv({}, () =>
+    withAdminEmail(TEAM_EMAIL, () => sendLeadNotificationEmail(sampleLead))
+  );
   assert.equal(typeof result, "object");
   assert.equal(result.sent, false);
   assert.equal(result.reason, "SMTP not configured");
