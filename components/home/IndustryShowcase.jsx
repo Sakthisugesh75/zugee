@@ -154,7 +154,7 @@ export default function IndustryShowcase() {
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[180px] transition-colors duration-1000"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full blur-[80px] lg:blur-[180px] transition-colors duration-1000"
           style={{ background: `${activeWorkflow.accent}08` }}
         />
       </div>

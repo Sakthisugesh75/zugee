@@ -28,6 +28,7 @@ import {
   Zap,
 } from "lucide-react";
 import { PRODUCTS, PRODUCT_STATUS } from "@/lib/products";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 // All products in showcase order
 const SHOWCASE_PRODUCTS = [
@@ -66,6 +67,10 @@ const DEFAULT_ACCENT = {
   replaces: "Spreadsheets + disconnected software",
 };
 
+// Shared look for the previous/next buttons (beside the stage on desktop, under it on mobile)
+const ARROW_BUTTON_CLASS =
+  "w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center bg-[#0d0d1a]/90 border border-white/[0.12] hover:border-cyan-400/50 hover:bg-[#15152a] hover:shadow-[0_0_24px_rgba(0,240,255,0.25)] transition-all duration-300 text-slate-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer";
+
 function getAccent(slug) {
   return PRODUCT_ACCENTS[slug] || DEFAULT_ACCENT;
 }
@@ -88,7 +93,7 @@ function StatusChip({ status }) {
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
       )}
       {tone === "soon" && (
-        <span className="text-sm">🔜</span>
+        <Clock className="w-3 h-3 shrink-0" aria-hidden="true" />
       )}
       {label}
     </span>
@@ -96,16 +101,11 @@ function StatusChip({ status }) {
 }
 
 // Active Product Content Display with ZenXAI visual architecture
-function ZenXProductHero({ product, direction, onExplore }) {
+function ZenXProductHero({ product, onExplore }) {
   const accent = getAccent(product.slug);
 
   return (
-    <div
-      key={product.slug}
-      className={`w-full flex flex-col items-center text-center ${
-        direction === "next" ? "animate-zen-next" : "animate-zen-prev"
-      }`}
-    >
+    <div className="w-full flex flex-col items-center text-center">
       {/* 1. Eyebrow Tagline + Status */}
       <div className="flex flex-wrap items-center justify-center gap-3 mb-3">
         <span
@@ -345,34 +345,28 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
 
 export default function ProductShowcase() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [direction, setDirection] = useState("next");
   const [isPaused, setIsPaused] = useState(false);
   const [modalProduct, setModalProduct] = useState(null);
+  // Auto-rotation is desktop only: on phones it swapped the product while people were reading it.
+  const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   const sectionRef = useRef(null);
-  const touchStartX = useRef(0);
-  const touchDelta = useRef(0);
+  const touchStart = useRef({ x: 0, y: 0 });
+  const touchDelta = useRef({ x: 0, y: 0 });
 
   const total = SHOWCASE_PRODUCTS.length;
   const activeProduct = SHOWCASE_PRODUCTS[activeIndex];
   const activeAccent = getAccent(activeProduct.slug);
 
-  const goTo = useCallback(
-    (index) => {
-      if (index === activeIndex) return;
-      setDirection(index > activeIndex ? "next" : "prev");
-      setActiveIndex(index);
-    },
-    [activeIndex]
-  );
+  const goTo = useCallback((index) => {
+    setActiveIndex(index);
+  }, []);
 
   const goPrev = useCallback(() => {
-    setDirection("prev");
     setActiveIndex((prev) => (prev - 1 + total) % total);
   }, [total]);
 
   const goNext = useCallback(() => {
-    setDirection("next");
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
 
@@ -395,31 +389,36 @@ export default function ProductShowcase() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [goPrev, goNext, modalProduct]);
 
-  // Gentle auto-rotation every 7.5 seconds when not paused or in modal
+  // Gentle auto-rotation every 7.5 seconds on desktop, when not paused or in modal
   useEffect(() => {
-    if (isPaused || modalProduct) return;
+    if (!isDesktop || isPaused || modalProduct) return;
     const timer = setInterval(() => {
       goNext();
     }, 7500);
     return () => clearInterval(timer);
-  }, [isPaused, goNext, modalProduct]);
+  }, [isDesktop, isPaused, goNext, modalProduct]);
 
-  // Touch swipe support
+  // Touch swipe support. Only a clearly horizontal swipe switches product, so vertical
+  // page scrolls that drift sideways leave the carousel alone.
   const onTouchStart = (e) => {
     if (modalProduct) return;
-    touchStartX.current = e.touches[0].clientX;
-    touchDelta.current = 0;
+    touchStart.current = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    touchDelta.current = { x: 0, y: 0 };
   };
   const onTouchMove = (e) => {
     if (modalProduct) return;
-    touchDelta.current = e.touches[0].clientX - touchStartX.current;
+    touchDelta.current = {
+      x: e.touches[0].clientX - touchStart.current.x,
+      y: e.touches[0].clientY - touchStart.current.y,
+    };
   };
   const onTouchEnd = () => {
     if (modalProduct) return;
-    if (Math.abs(touchDelta.current) > 40) {
-      touchDelta.current > 0 ? goPrev() : goNext();
+    const { x, y } = touchDelta.current;
+    if (Math.abs(x) > 50 && Math.abs(x) > 1.5 * Math.abs(y)) {
+      x > 0 ? goPrev() : goNext();
     }
-    touchDelta.current = 0;
+    touchDelta.current = { x: 0, y: 0 };
   };
 
   const handleOpenExplore = (product) => {
@@ -437,12 +436,32 @@ export default function ProductShowcase() {
     window.scrollTo({ top: Math.max(0, sectionTop - navbarHeight - 16), behavior: "smooth" });
   };
 
+  // Counter + progress bar, shown above the cards on mobile and below them on desktop
+  const counter = (
+    <div className="flex items-center gap-3 select-none">
+      <span className="text-sm font-mono font-bold text-white min-w-[2ch] text-right">
+        {String(activeIndex + 1).padStart(2, "0")}
+      </span>
+      <div className="w-20 h-1 bg-white/[0.10] relative overflow-hidden rounded-full">
+        <div
+          className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
+          style={{
+            width: `${((activeIndex + 1) / total) * 100}%`,
+            background: activeAccent.accent,
+          }}
+        />
+      </div>
+      <span className="text-sm font-mono text-slate-500 min-w-[2ch]">
+        {String(total).padStart(2, "0")}
+      </span>
+    </div>
+  );
+
   return (
     <section
       ref={sectionRef}
       id="products"
       className="relative overflow-x-clip py-20 sm:py-28 bg-[#06060e] border-b border-white/[0.05] scroll-mt-[80px]"
-      tabIndex={0}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -454,10 +473,10 @@ export default function ProductShowcase() {
       {/* Dynamic Ambient Background Glow that morphs with active product accent */}
       <div className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[550px] rounded-full blur-[190px] transition-colors duration-1000"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[550px] rounded-full blur-[80px] lg:blur-[190px] transition-colors duration-1000"
           style={{ background: `${activeAccent.accent}14` }}
         />
-        <div className="absolute bottom-[10%] right-[15%] w-[450px] h-[450px] bg-indigo-600/[0.04] rounded-full blur-[160px]" />
+        <div className="absolute bottom-[10%] right-[15%] w-[450px] h-[450px] bg-indigo-600/[0.04] rounded-full blur-[80px] lg:blur-[160px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
@@ -480,64 +499,72 @@ export default function ProductShowcase() {
               <span className="text-emerald-400">Available Now</span>
             </span>
             <span className="inline-flex items-center gap-2 text-xs font-semibold">
-              <span className="text-base">🔜</span>
+              <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" aria-hidden="true" />
               <span className="text-slate-400">In Development / Coming Soon</span>
             </span>
           </div>
         </div>
 
-        {/* ========================================================
-            ZENXAI-STYLE SHOWCASE STAGE (Single Active Experience)
-           ======================================================== */}
-        <div className="relative flex items-center justify-center min-h-[520px] px-2 sm:px-12">
-          {/* External Left Navigation Arrow */}
+        {/* Mobile navigation: previous/next and the counter sit above the cards, so they stay put
+            when the next product is taller or shorter. */}
+        <div className="flex lg:hidden items-center justify-center gap-4 mb-8">
           <button
             type="button"
             onClick={goPrev}
             aria-label="Previous product"
-            className="absolute left-0 sm:-left-2 md:-left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-[#0d0d1a]/90 border border-white/[0.12] hover:border-cyan-400/50 hover:bg-[#15152a] hover:shadow-[0_0_24px_rgba(0,240,255,0.25)] transition-all duration-300 text-slate-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer"
+            className={`flex ${ARROW_BUTTON_CLASS}`}
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-
-          {/* External Right Navigation Arrow */}
+          {counter}
           <button
             type="button"
             onClick={goNext}
             aria-label="Next product"
-            className="absolute right-0 sm:-right-2 md:-right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 sm:w-12 sm:h-12 rounded-full flex items-center justify-center bg-[#0d0d1a]/90 border border-white/[0.12] hover:border-cyan-400/50 hover:bg-[#15152a] hover:shadow-[0_0_24px_rgba(0,240,255,0.25)] transition-all duration-300 text-slate-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer"
+            className={`flex ${ARROW_BUTTON_CLASS}`}
+          >
+            <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+        </div>
+
+        {/* ========================================================
+            ZENXAI-STYLE SHOWCASE STAGE (Single Active Experience)
+           ======================================================== */}
+        <div className="relative flex items-center justify-center min-h-[520px] px-2 lg:px-12">
+          {/* External Left Navigation Arrow (desktop only) */}
+          <button
+            type="button"
+            onClick={goPrev}
+            aria-label="Previous product"
+            className={`hidden lg:flex absolute -left-6 top-1/2 -translate-y-1/2 z-30 ${ARROW_BUTTON_CLASS}`}
+          >
+            <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
+          </button>
+
+          {/* External Right Navigation Arrow (desktop only) */}
+          <button
+            type="button"
+            onClick={goNext}
+            aria-label="Next product"
+            className={`hidden lg:flex absolute -right-6 top-1/2 -translate-y-1/2 z-30 ${ARROW_BUTTON_CLASS}`}
           >
             <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
 
-          {/* SINGLE ACTIVE PRODUCT HERO */}
-          <ZenXProductHero
-            product={activeProduct}
-            direction={direction}
-            onExplore={handleOpenExplore}
-          />
+          {/* SINGLE ACTIVE PRODUCT HERO. Every product is in the HTML; only the active one is displayed. */}
+          <div className="w-full">
+            {SHOWCASE_PRODUCTS.map((product, i) => (
+              <div key={product.slug} className={i === activeIndex ? undefined : "hidden"}>
+                <ZenXProductHero product={product} onExplore={handleOpenExplore} />
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Counter and Navigation Controls below stage */}
         <div className="flex flex-col items-center justify-center gap-4 mt-12">
-          {/* Counter + Progress */}
-          <div className="flex items-center gap-3 select-none">
-            <span className="text-sm font-mono font-bold text-white min-w-[2ch] text-right">
-              {String(activeIndex + 1).padStart(2, "0")}
-            </span>
-            <div className="w-20 h-1 bg-white/[0.10] relative overflow-hidden rounded-full">
-              <div
-                className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
-                style={{
-                  width: `${((activeIndex + 1) / total) * 100}%`,
-                  background: activeAccent.accent,
-                }}
-              />
-            </div>
-            <span className="text-sm font-mono text-slate-500 min-w-[2ch]">
-              {String(total).padStart(2, "0")}
-            </span>
-          </div>
+          {/* Counter + Progress (desktop; on mobile it sits above the cards) */}
+          <div className="hidden lg:flex">{counter}</div>
 
           {/* Subtle Quick-Jump Indicator Pills */}
           <div className="flex justify-center gap-1.5 flex-wrap max-w-lg">
@@ -568,46 +595,6 @@ export default function ProductShowcase() {
           onBookDemo={handleBookDemo}
         />
       )}
-
-      {/* Scoped CSS animations for ZenXAI-inspired transitions */}
-      <style jsx>{`
-        @keyframes zenSlideNext {
-          0% {
-            opacity: 0;
-            transform: translateX(40px) scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-          }
-        }
-
-        @keyframes zenSlidePrev {
-          0% {
-            opacity: 0;
-            transform: translateX(-40px) scale(0.98);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0) scale(1);
-          }
-        }
-
-        .animate-zen-next {
-          animation: zenSlideNext 480ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        .animate-zen-prev {
-          animation: zenSlidePrev 480ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .animate-zen-next,
-          .animate-zen-prev {
-            animation: none !important;
-          }
-        }
-      `}</style>
     </section>
   );
 }

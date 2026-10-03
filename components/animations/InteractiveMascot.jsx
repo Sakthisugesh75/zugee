@@ -1,25 +1,9 @@
 // components/animations/InteractiveMascot.jsx
 "use client";
 
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-
-// Subscribes to a CSS media query. Returns false on the server and during hydration.
-function useMediaQuery(query) {
-  const subscribe = useCallback(
-    (onChange) => {
-      const mediaQuery = window.matchMedia(query);
-      mediaQuery.addEventListener("change", onChange);
-      return () => mediaQuery.removeEventListener("change", onChange);
-    },
-    [query]
-  );
-  return useSyncExternalStore(
-    subscribe,
-    () => window.matchMedia(query).matches,
-    () => false
-  );
-}
+import { useMediaQuery } from "@/lib/use-media-query";
 
 /**
  * Premium interactive mascot with:

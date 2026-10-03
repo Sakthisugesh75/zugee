@@ -11,7 +11,7 @@
 
 import { useState } from "react";
 import PricingCallButton from "@/components/home/PricingCallButton";
-import { Check, ChevronDown, ArrowRight, Package, Users, Building2, Wrench } from "lucide-react";
+import { Check, ChevronDown, ArrowRight, Package, Users, Building2, Wrench, ShieldCheck, Clock, Download } from "lucide-react";
 
 // What a quote depends on
 const PRICE_FACTORS = [
@@ -79,8 +79,8 @@ export default function PricingSection({ plans, productSetups }) {
     >
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[550px] bg-cyan-500/[0.04] rounded-full blur-[190px]" />
-        <div className="absolute bottom-[20%] right-[15%] w-[500px] h-[450px] bg-blue-600/[0.03] rounded-full blur-[160px]" />
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[550px] bg-cyan-500/[0.04] rounded-full blur-[80px] lg:blur-[190px]" />
+        <div className="absolute bottom-[20%] right-[15%] w-[500px] h-[450px] bg-blue-600/[0.03] rounded-full blur-[80px] lg:blur-[160px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
@@ -375,17 +375,17 @@ export default function PricingSection({ plans, productSetups }) {
            ======================================================== */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-16">
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
-            <span className="text-2xl mb-1 block">🛡️</span>
+            <ShieldCheck className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
             <p className="text-xs font-bold text-white mb-0.5">GST ITC Invoices</p>
             <p className="text-[11px] text-slate-400">GST-compliant billing</p>
           </div>
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
-            <span className="text-2xl mb-1 block">⏱️</span>
+            <Clock className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
             <p className="text-xs font-bold text-white mb-0.5">14-Day Setup Target</p>
             <p className="text-[11px] text-slate-400">Typical white-glove setup timeline</p>
           </div>
           <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
-            <span className="text-2xl mb-1 block">🔄</span>
+            <Download className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
             <p className="text-xs font-bold text-white mb-0.5">1-Click Data Export</p>
             <p className="text-[11px] text-slate-400">Never locked in, own your data</p>
           </div>

@@ -83,8 +83,8 @@ export default function HowWeWork() {
     >
       {/* Subtle ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[25%] left-[20%] w-[500px] h-[400px] bg-cyan-500/[0.03] rounded-full blur-[160px]" />
-        <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[400px] bg-blue-600/[0.03] rounded-full blur-[160px]" />
+        <div className="absolute top-[25%] left-[20%] w-[500px] h-[400px] bg-cyan-500/[0.03] rounded-full blur-[80px] lg:blur-[160px]" />
+        <div className="absolute bottom-[20%] right-[20%] w-[500px] h-[400px] bg-blue-600/[0.03] rounded-full blur-[80px] lg:blur-[160px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">

@@ -7,7 +7,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, CheckCircle2, AlertTriangle, ArrowRight, Zap, Database } from "lucide-react";
+import { X, CheckCircle2, AlertTriangle, ArrowRight, Zap, Database, Sparkles } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 
 const COMPARISON_CATEGORIES = [
@@ -117,8 +117,8 @@ export default function ComparisonSection() {
     <section className="py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] relative overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-rose-600/[0.03] rounded-full blur-[170px]" />
-        <div className="absolute top-[30%] right-[20%] w-[550px] h-[500px] bg-cyan-500/[0.05] rounded-full blur-[180px]" />
+        <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-rose-600/[0.03] rounded-full blur-[80px] lg:blur-[170px]" />
+        <div className="absolute top-[30%] right-[20%] w-[550px] h-[500px] bg-cyan-500/[0.05] rounded-full blur-[80px] lg:blur-[180px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
@@ -212,8 +212,9 @@ export default function ComparisonSection() {
             </div>
 
             {/* Pain Point Impact Box */}
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium">
-              ⚠️ {activeCategory.legacy.impact}
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-start gap-2">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-px" aria-hidden="true" />
+              <span>{activeCategory.legacy.impact}</span>
             </div>
           </div>
 
@@ -263,8 +264,9 @@ export default function ComparisonSection() {
             </div>
 
             {/* ZUGEE Result Callout Box */}
-            <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300 font-medium">
-              ✨ {activeCategory.zugee.impact}
+            <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300 font-medium flex items-start gap-2">
+              <Sparkles className="w-3.5 h-3.5 shrink-0 mt-px" aria-hidden="true" />
+              <span>{activeCategory.zugee.impact}</span>
             </div>
           </div>
         </div>

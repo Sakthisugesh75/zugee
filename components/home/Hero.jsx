@@ -84,8 +84,8 @@ export default function Hero() {
     <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#06060e] border-b border-white/[0.06]">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-cyan-500/[0.07] rounded-full blur-[180px]" />
-        <div className="absolute top-[40%] right-[10%] w-[450px] h-[400px] bg-violet-600/[0.04] rounded-full blur-[160px]" />
+        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-cyan-500/[0.07] rounded-full blur-[80px] lg:blur-[180px]" />
+        <div className="absolute top-[40%] right-[10%] w-[450px] h-[400px] bg-violet-600/[0.04] rounded-full blur-[80px] lg:blur-[160px]" />
         {/* Subtle cyber grid */}
         <div
           className="absolute inset-0 opacity-[0.14]"
