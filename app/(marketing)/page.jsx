@@ -3,8 +3,6 @@
 //
 // Hero → "Specialised software for each industry"
 // Products → "These are the products"
-// Comparison → "This is the problem ZUGEE solves"
-// Industries → "This is how it fits my business"
 // How It Works → "This is how I use it"
 // Pricing → "How to get a quote" (no prices are published; see below)
 // FAQ → "Common questions answered"
@@ -15,8 +13,6 @@
 
 import Hero from "@/components/home/Hero";
 import ProductShowcase from "@/components/home/ProductShowcase";
-import ComparisonSection from "@/components/home/ComparisonSection";
-import IndustryShowcase from "@/components/home/IndustryShowcase";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
@@ -59,26 +55,20 @@ export default function HomePage() {
       {/* 2. PRODUCTS — "These are the products" */}
       <ProductShowcase />
 
-      {/* 3. COMPARISON — "This is the problem ZUGEE solves" */}
-      <ComparisonSection />
-
-      {/* 4. INDUSTRIES — "This is how it fits my business" */}
-      <IndustryShowcase />
-
-      {/* 5. HOW IT WORKS — "This is how I use it" */}
+      {/* 3. HOW IT WORKS — "This is how I use it" */}
       <HowWeWork />
 
-      {/* 6. PRICING — "How to get a quote" */}
+      {/* 4. PRICING — "How to get a quote" */}
       <PricingSection plans={PLAN_SUMMARIES} productSetups={PRODUCT_SETUPS} />
 
-      {/* 7. FAQ — "Common questions answered" */}
+      {/* 5. FAQ — "Common questions answered" */}
       <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">
         <div className="container">
           <FAQSection />
         </div>
       </section>
 
-      {/* 8. CTA — "I understand what I can do next" */}
+      {/* 6. CTA — "I understand what I can do next" */}
       <FinalCTA />
 
       {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}

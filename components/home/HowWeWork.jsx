@@ -1,7 +1,7 @@
 // components/home/HowWeWork.jsx
 // Complete 4-step onboarding timeline with horizontal connected desktop process,
 // responsive vertical mobile timeline, interactive hover/active states, and staggered scroll reveal.
-// Elevated to frame 14-day setup as a premier white-glove onboarding advantage.
+// The setup timeline must use the Terms wording: a target, not a guarantee.
 
 "use client";
 
@@ -30,15 +30,15 @@ const STEPS = [
     number: "03",
     label: "MIGRATION",
     title: "White-Glove Data Migration",
-    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with validation at every step.",
-    tag: "Clean Ledgers · Role Permissions",
+    description: "Our team brings in your existing records, such as customer and item lists from Excel or Tally.",
+    tag: "Data import · Configuration",
     icon: Database,
   },
   {
     number: "04",
     label: "LAUNCH",
-    title: "Go-Live & Dedicated Support",
-    description: "Your team receives guided mobile training. You begin billing and dispatching live with dedicated onboarding support.",
+    title: "Go-Live & Support",
+    description: "We train your team and you start using ZUGEE, with onboarding support from our team.",
     tag: "Live Operations · Ongoing Support",
     icon: Rocket,
   },
@@ -106,7 +106,7 @@ export default function HowWeWork() {
             </span>
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            You don&apos;t spend months wrestling with software configuration. Our team migrates your data and trains your staff in 14 days.
+            You don&apos;t spend months wrestling with software configuration. Our team moves your data across and trains your staff.
           </p>
         </div>
 
@@ -246,7 +246,7 @@ export default function HowWeWork() {
             <ShieldCheck className="w-6 h-6 text-cyan-400 shrink-0" />
             <div>
               <p className="text-sm font-bold text-white">
-                Typical Setup: 14 Days, Start to Finish
+                Setup typically takes about 14 days. This is a target, not a guarantee.
               </p>
               <p className="text-xs text-slate-300">
                 Discovery, data migration, staff training and go-live — we handle it all so you don&apos;t have to.

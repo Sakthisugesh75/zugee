@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import InteractiveMascot from "@/components/animations/InteractiveMascot";
-import { ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
+import { ArrowRight, Sparkles, Zap } from "lucide-react";
 
 export default function FinalCTA() {
   const [isHovering, setIsHovering] = useState(false);
@@ -24,7 +24,7 @@ export default function FinalCTA() {
   };
 
   const benefits = [
-    { icon: Sparkles, text: "Setup in 2 weeks" },
+    { icon: Sparkles, text: "Set up for you by our team" },
     { icon: Zap, text: "Clear quote on a short call" }
   ];
 
@@ -66,7 +66,7 @@ export default function FinalCTA() {
                 
                 {/* Subheading */}
                 <p className="text-base sm:text-lg text-slate-300 mb-8 max-w-2xl leading-relaxed">
-                  Built with input from Indian SME operators. Streamline operations, boost productivity, and scale smarter — with software designed around how Indian businesses actually work.
+                  Software designed around how Indian businesses actually work, set up for you by our team.
                 </p>
 
                 {/* Benefits Grid */}
@@ -114,21 +114,11 @@ export default function FinalCTA() {
           {/* Bottom trust indicators */}
           <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-cyan-400" />
-              <span>Role-Based Access</span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
-            <div className="flex items-center gap-2">
               <svg className="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
                 <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
               </svg>
               <span>Built for Indian SMEs</span>
-            </div>
-            <div className="w-1 h-1 rounded-full bg-slate-600 hidden sm:block" />
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span>Typical Setup in 2 Weeks</span>
             </div>
           </div>
         </div>

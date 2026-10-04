@@ -39,7 +39,7 @@ const SHOWCASE_PRODUCTS = [
 
 // Product accent palette & category metadata inspired by ZenXAI visual tokens
 const PRODUCT_ACCENTS = {
-  "core-erp":      { accent: "#06B6D4", accent2: "#3B82F6", glow: "rgba(6,182,212,0.25)",   label: "BUSINESS PLATFORM", icon: Cpu, replaces: "Excel + WhatsApp + Standalone Tally" },
+  "core-erp":      { accent: "#06B6D4", accent2: "#3B82F6", glow: "rgba(6,182,212,0.25)",   label: "BUSINESS PLATFORM", icon: Cpu, replaces: "Excel + WhatsApp + separate billing software" },
   "transposs":     { accent: "#3B82F6", accent2: "#6366F1", glow: "rgba(59,130,246,0.25)",  label: "FLEET MANAGEMENT",  icon: Truck, replaces: "Paper logbooks + WhatsApp driver dispatch" },
   "tours-travels": { accent: "#8B5CF6", accent2: "#A855F7", glow: "rgba(139,92,246,0.25)",  label: "TRAVEL & TOURISM",  icon: Plane, replaces: "Word doc quotations + scattered email PDFs" },
   "aqua-erp":      { accent: "#38BDF8", accent2: "#0284C7", glow: "rgba(56,189,248,0.25)",  label: "WATER OPERATIONS",  icon: Activity, replaces: "Pocket diary route delivery records" },
@@ -49,7 +49,7 @@ const PRODUCT_ACCENTS = {
   "college":       { accent: "#6366F1", accent2: "#8B5CF6", glow: "rgba(99,102,241,0.25)",  label: "COLLEGE ERP",       icon: School, replaces: "Legacy college servers + manual desk fees" },
   "pg-management": { accent: "#EC4899", accent2: "#F43F5E", glow: "rgba(236,72,153,0.25)",  label: "HOSPITALITY",       icon: Building, replaces: "Paper rent registers + cash deposit slips" },
   "resort":        { accent: "#EC4899", accent2: "#F43F5E", glow: "rgba(236,72,153,0.25)",  label: "RESORT SUITE",      icon: Building, replaces: "Separate booking calendar + desk invoices" },
-  "logistics":     { accent: "#F97316", accent2: "#EA580C", glow: "rgba(249,115,22,0.25)",  label: "LOGISTICS",         icon: Truck, replaces: "Manual E-Way bill entry + offline tracking" },
+  "logistics":     { accent: "#F97316", accent2: "#EA580C", glow: "rgba(249,115,22,0.25)",  label: "LOGISTICS",         icon: Truck, replaces: "Paper delivery records + phone calls to drivers" },
   "gym":           { accent: "#10B981", accent2: "#059669", glow: "rgba(168,185,129,0.25)",  label: "FITNESS & WELLNESS", icon: Activity, replaces: "Card-based membership logs" },
   "salon":         { accent: "#EC4899", accent2: "#DB2777", glow: "rgba(236,72,153,0.25)",  label: "BEAUTY & SALON",    icon: Users, replaces: "Paper appointment books" },
   "medical":       { accent: "#EF4444", accent2: "#DC2626", glow: "rgba(239,68,68,0.25)",   label: "HEALTHCARE",        icon: Shield, replaces: "Handwritten prescription pads + desk billing" },
@@ -311,7 +311,7 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
         <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 mb-6">
           <span className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
-            White-glove data migration &amp; live setup — typically within 14 days
+            Setup typically takes about 14 days. This is a target, not a guarantee.
           </span>
           <span className="font-bold">Managed Setup</span>
         </div>

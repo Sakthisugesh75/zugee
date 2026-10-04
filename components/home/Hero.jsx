@@ -1,85 +1,11 @@
 // components/home/Hero.jsx
-// ZenXAI-inspired high-impact Hero with a simulated, clearly labelled sample dashboard.
-// Message: specialised software for each industry, set up for you in 14 days. Each ZUGEE product
+// Hero. Message: specialised software for each industry, set up for you. Each ZUGEE product
 // is separate (own login, own database), so nothing here may claim a shared login or shared data.
 
-"use client";
-
-import { useState } from "react";
-import {
-  ArrowRight,
-  Sparkles,
-  TrendingUp,
-  ShieldCheck,
-  CheckCircle2,
-  Users,
-  Truck,
-  FileText,
-  Boxes,
-  Activity,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 
-// Interactive tabs for the simulated Command Center preview
-const PREVIEW_TABS = [
-  {
-    id: "crm",
-    label: "CRM & Sales",
-    icon: Users,
-    stat: "148 Active Leads",
-    trend: "+24% this week",
-    accent: "#06B6D4",
-    sampleData: [
-      { name: "Apex Builders Pvt Ltd", stage: "Site Visit Scheduled", value: "₹45,00,000", time: "10m ago" },
-      { name: "Royal Logistics Corp", stage: "Quotation Sent", value: "₹12,40,000", time: "35m ago" },
-      { name: "Sunrise Packaged Waters", stage: "Demo Completed", value: "₹3,80,000", time: "1h ago" },
-    ],
-  },
-  {
-    id: "fleet",
-    label: "Fleet Dispatch",
-    icon: Truck,
-    stat: "38 Active Trips",
-    trend: "99.4% on time",
-    accent: "#3B82F6",
-    sampleData: [
-      { name: "MH-12-RN-8840 (Volvo 40T)", stage: "In Transit → Pune Hub", value: "Fuel: 82%", time: "Live GPS" },
-      { name: "KA-01-AB-1922 (Eicher 14T)", stage: "Driver Assigned: Suresh K.", value: "Maintenance: OK", time: "Departs 15:30" },
-      { name: "DL-04-CC-9011 (Tata 407)", stage: "Unloading at Warehouse B", value: "E-Way Bill: #8821", time: "Arrived" },
-    ],
-  },
-  {
-    id: "billing",
-    label: "GST Billing",
-    icon: FileText,
-    stat: "₹28.4L Billed Today",
-    trend: "GST Compliant",
-    accent: "#10B981",
-    sampleData: [
-      { name: "INV-2026-0891 (Tax Invoice)", stage: "Paid via UPI / Bank", value: "₹1,84,500", time: "Instant Sync" },
-      { name: "INV-2026-0892 (B2B Supply)", stage: "E-Invoice QR Generated", value: "₹4,20,000", time: "IRN Active" },
-      { name: "INV-2026-0893 (Service Bill)", stage: "WhatsApp Notification (Coming Soon)", value: "₹65,000", time: "Queued" },
-    ],
-  },
-  {
-    id: "inventory",
-    label: "Inventory Sync",
-    icon: Boxes,
-    stat: "4 Warehouses Live",
-    trend: "0 Low-Stock Breaches",
-    accent: "#8B5CF6",
-    sampleData: [
-      { name: "Raw Material Batch #A44", stage: "BOM Allocated: ManuFlow", value: "1,200 Units", time: "Floor Ready" },
-      { name: "Packaged 20L Water Cans", stage: "Dispatched to Route 4", value: "480 Cans", time: "Van Loaded" },
-      { name: "Finished Product SKUs", stage: "Auto-Reconciled with Sales", value: "Stock Value: ₹48L", time: "Live" },
-    ],
-  },
-];
-
 export default function Hero() {
-  const [activeTabId, setActiveTabId] = useState("crm");
-  const activeTab = PREVIEW_TABS.find((t) => t.id === activeTabId) || PREVIEW_TABS[0];
-
   return (
     <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#06060e] border-b border-white/[0.06]">
       {/* Background ambient lighting */}
@@ -119,7 +45,7 @@ export default function Hero() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Set Up for You in 14 Days.
+              Set Up for You.
             </span>
           </h1>
         </div>
@@ -155,20 +81,8 @@ export default function Hero() {
         {/* Proof Checkpoints */}
         <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-4 text-xs sm:text-sm text-slate-300">
           <span className="flex items-center gap-1.5 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-cyan-400" />
-            Zero Double Data Entry
-          </span>
-          <span className="flex items-center gap-1.5 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            GST &amp; E-Invoicing Ready
-          </span>
-          <span className="flex items-center gap-1.5 font-medium">
-            <CheckCircle2 className="w-4 h-4 text-blue-400" />
-            Live Setup in 2 Weeks
-          </span>
-          <span className="flex items-center gap-1.5 font-medium">
             <CheckCircle2 className="w-4 h-4 text-violet-400" />
-            Dedicated Setup Support
+            Set up for you by our team
           </span>
         </div>
 
@@ -177,100 +91,6 @@ export default function Hero() {
           Each ZUGEE product is separate software with its own login and its own data.
           Choose the one built for your business.
         </p>
-
-        {/* ========================================================
-            SAMPLE DASHBOARD PREVIEW (ILLUSTRATIVE DATA)
-           ======================================================== */}
-        <div className="max-w-4xl mx-auto">
-          <div
-            className="rounded-3xl p-4 sm:p-6 md:p-8 relative overflow-hidden transition-all duration-500"
-            style={{
-              background: "rgba(13, 13, 26, 0.75)",
-              border: `1px solid ${activeTab.accent}40`,
-              boxShadow: `0 24px 70px -15px ${activeTab.accent}20, 0 0 0 1px rgba(255,255,255,0.05)`,
-              backdropFilter: "blur(16px)",
-            }}
-          >
-            {/* Top Bar: Live Status & Tabs */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08] mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-slate-500" />
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
-                  SAMPLE DASHBOARD VIEW — ILLUSTRATIVE DATA ONLY
-                </span>
-                <span className="text-white/20">|</span>
-                <span className="text-xs font-mono text-cyan-300">
-                  {activeTab.stat}
-                </span>
-              </div>
-
-              {/* Interactive Module Switchers */}
-              <div className="flex gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
-                {PREVIEW_TABS.map((tab) => {
-                  const isActive = tab.id === activeTabId;
-                  const Icon = tab.icon;
-                  return (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setActiveTabId(tab.id)}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200"
-                      style={{
-                        background: isActive ? `${tab.accent}20` : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${isActive ? `${tab.accent}60` : "rgba(255,255,255,0.06)"}`,
-                        color: isActive ? "#FFFFFF" : "#94A3B8",
-                      }}
-                    >
-                      <Icon className="w-3.5 h-3.5" style={{ color: isActive ? tab.accent : undefined }} />
-                      <span>{tab.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Dashboard Simulated Records */}
-            <div className="space-y-2.5">
-              {activeTab.sampleData.map((row, idx) => (
-                <div
-                  key={idx}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.12] transition-colors gap-2"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className="w-2 h-2 rounded-full flex-shrink-0"
-                      style={{ background: activeTab.accent, boxShadow: `0 0 8px ${activeTab.accent}` }}
-                    />
-                    <span className="text-sm font-semibold text-white">{row.name}</span>
-                  </div>
-
-                  <div className="flex items-center gap-4 text-xs">
-                    <span className="px-2 py-0.5 rounded-md bg-white/[0.05] text-slate-300 border border-white/[0.08]">
-                      {row.stage}
-                    </span>
-                    <span className="font-mono font-bold text-slate-200 min-w-[90px] text-right">
-                      {row.value}
-                    </span>
-                    <span className="text-[11px] font-mono text-slate-500 min-w-[70px] text-right">
-                      {row.time}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Bottom Sync Bar */}
-            <div className="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
-              <div className="flex items-center gap-2">
-                <Activity className="w-3.5 h-3.5 text-cyan-400" />
-                <span>Inside each product, an update in one module shows up in the others — no re-entry.</span>
-              </div>
-              <span className="hidden sm:inline font-mono text-slate-500 font-semibold">
-                Sample Data
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
