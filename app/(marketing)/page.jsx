@@ -21,7 +21,7 @@ import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
-import { BUSINESS_TYPES } from "@/lib/products";
+import { DEMO_FORM_BUSINESS_TYPES } from "@/lib/products";
 import { homePageSchema, serializeJsonLd } from "@/lib/structured-data";
 
 export const metadata = {
@@ -65,7 +65,7 @@ export default function HomePage() {
 
       {/* 8. CONTACT — "See the software live — book a free demo." (#contact).
           Only the option list is passed down, so the full catalog stays out of the client bundle. */}
-      <ContactSection businessTypes={BUSINESS_TYPES} />
+      <ContactSection businessTypes={DEMO_FORM_BUSINESS_TYPES} />
     </>
   );
 }

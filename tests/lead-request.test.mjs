@@ -119,3 +119,14 @@ test("the homepage form keeps its spam honeypot and the API drops filled ones", 
   assert.match(route, /body\.company_website/);
   assert.match(route, /submissionLimiter\.hit\(ip\)/, "the API keeps its rate limit");
 });
+
+test("the homepage demo form offers only Available products plus 'Something else'", async () => {
+  const { DEMO_FORM_BUSINESS_TYPES, BUSINESS_TYPES, PRODUCTS } = await import("../lib/products.js");
+  const offered = DEMO_FORM_BUSINESS_TYPES.map((b) => b.id);
+  const available = PRODUCTS.filter((p) => p.status === "available").map((p) => p.slug);
+  assert.deepEqual(offered, [...available, "other"]);
+  // Every option is still accepted by the API, which validates against the full list.
+  const allowed = new Set(BUSINESS_TYPES.map((b) => b.id));
+  for (const id of offered) assert.ok(allowed.has(id), `${id} not accepted by /api/leads`);
+  assert.match(repoFile("app", "(marketing)", "page.jsx"), /businessTypes=\{DEMO_FORM_BUSINESS_TYPES\}/);
+});
