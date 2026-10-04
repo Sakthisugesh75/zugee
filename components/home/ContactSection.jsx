@@ -302,7 +302,7 @@ export default function ContactSection({ businessTypes }) {
                   )}
                 </button>
 
-                <p className="text-sm sm:text-base text-slate-300 text-center">
+                <p className="text-base text-slate-300 text-center">
                   We only use these details to contact you about ZUGEE. See our{" "}
                   <Link href="/privacy" className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">
                     Privacy Policy

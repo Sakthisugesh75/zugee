@@ -7,7 +7,7 @@ import { SITE_URL } from "@/lib/site";
 import { LEGAL_DRAFT, LEGAL_LAST_UPDATED_ISO, LEGAL_PAGES } from "@/lib/legal";
 
 // Bump when the homepage content changes. A fixed date (not new Date()) keeps lastModified meaningful.
-const HOMEPAGE_UPDATED = "2026-09-25";
+const HOMEPAGE_UPDATED = "2026-10-04";
 
 export default function sitemap() {
   // While the legal pages still hold unconfirmed placeholders they are unindexed and left out.

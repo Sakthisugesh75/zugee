@@ -45,7 +45,7 @@ export default function MascotLogo({
           </span>
 
           {showSubline && (
-            <span className={`text-[11px] text-slate-400 mt-1 whitespace-nowrap ${sublineClassName}`}>
+            <span className={`text-xs text-slate-300 mt-1 whitespace-nowrap ${sublineClassName}`}>
               Systems Technologies Pvt. Ltd.
             </span>
           )}

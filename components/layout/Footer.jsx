@@ -62,7 +62,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/[0.15]">
           <div className="lg:col-span-2 flex flex-col gap-4">
             <MascotLogo size={44} showWordmark={true} showSubline={true} />
-            <p className="text-sm text-slate-300 max-w-sm mt-2 leading-relaxed">
+            <p className="text-base sm:text-sm text-slate-300 max-w-sm mt-2 leading-relaxed">
               Industry-focused CRM, ERP, billing and operations software for Indian businesses.
             </p>
             
@@ -71,12 +71,12 @@ export default function Footer() {
               <svg className="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
               </svg>
-              <span className="text-xs font-semibold text-cyan-400">Built for Indian SMEs</span>
+              <span className="text-sm font-semibold text-cyan-400">Built for Indian SMEs</span>
             </div>
           </div>
 
           <nav aria-label="Site">
-            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Quick Links</p>
+            <p className="text-sm font-bold text-white uppercase tracking-wider mb-5">Quick Links</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-base sm:text-sm">
               {SITE_LINKS.map((l) => (
                 <li key={l.targetId}>
@@ -93,7 +93,7 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="Products">
-            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Products</p>
+            <p className="text-sm font-bold text-white uppercase tracking-wider mb-5">Products</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-base sm:text-sm">
               {listedProducts.slice(0, 6).map((p) => (
                 <li key={p.slug}>
@@ -119,7 +119,7 @@ export default function Footer() {
           </nav>
 
           <div>
-            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Contact</p>
+            <p className="text-sm font-bold text-white uppercase tracking-wider mb-5">Contact</p>
             <address className="not-italic flex flex-col gap-3 text-base sm:text-sm text-slate-300">
               <a href={`mailto:${COMPANY.email}`} className="text-slate-300 hover:text-[#00F0FF] transition-colors break-all">
                 {COMPANY.email}
@@ -132,7 +132,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-base sm:text-sm">
           <div className="flex flex-col sm:flex-row items-center gap-4 text-slate-400">
             <p>© {new Date().getFullYear()} Zugee Systems Technologies Pvt. Ltd. All rights reserved.</p>
             <nav aria-label="Legal">
@@ -152,7 +152,7 @@ export default function Footer() {
             onClick={scrollToTop}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.15] text-slate-300 hover:text-white hover:bg-cyan-500/10 hover:border-cyan-500/30 transition-all duration-200 cursor-pointer group"
           >
-            <span className="text-sm font-medium">Back to top</span>
+            <span className="text-base sm:text-sm font-medium">Back to top</span>
             <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />
           </button>
         </div>

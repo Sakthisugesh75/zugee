@@ -14,8 +14,8 @@ import { homePageSchema, organizationSchema } from "../lib/structured-data.js";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..");
 
-// The company number in any format (9629144648, 96291 44648, +91-96291-44648, …), any Indian
-// +91 mobile number, and phone or WhatsApp links.
+// The company number in any format (with or without spaces, dashes or +91), any Indian +91 mobile
+// number, and phone or WhatsApp links.
 const PHONE_PATTERNS = [
   /9\D?6\D?2\D?9\D?1\D?4\D?4\D?6\D?4\D?8/,
   /\+\s?91[\s-]?\d{5}[\s-]?\d{5}/,

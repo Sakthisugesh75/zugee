@@ -84,7 +84,7 @@ export default function Navbar() {
               key={link.label}
               type="button"
               onClick={() => scrollToSection(link.targetId)}
-              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
+              className="text-sm font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
             >
               {link.label}
             </button>
@@ -109,7 +109,7 @@ export default function Navbar() {
           <button
             type="button"
             onClick={() => scrollToSection("contact")}
-            className="btn-primary text-xs !py-2 !px-3.5"
+            className="btn-primary text-sm !py-2 !px-3.5"
           >
             Book a Demo
           </button>
@@ -151,7 +151,7 @@ export default function Navbar() {
                 >
                   Book a Demo
                 </button>
-                <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-mono">
+                <div className="text-center text-sm text-slate-300 flex items-center justify-center gap-1.5 font-mono">
                   <ShieldCheck className="w-3.5 h-3.5 text-[#00F0FF]" />
                   <span>Zugee Systems Technologies Pvt. Ltd.</span>
                 </div>
