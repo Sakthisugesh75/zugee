@@ -3,8 +3,7 @@
 // Excluded from all search engines and crawlers.
 
 export const metadata = {
-  title: "Admin Portal | Zugee Systems Technologies",
-  description: "Internal administrative portal for managing incoming lead queue.",
+  description: "Internal administrative portal for ZUGEE staff.",
   robots: {
     index: false,
     follow: false

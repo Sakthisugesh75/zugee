@@ -10,7 +10,10 @@ import { PRODUCTS } from "@/lib/products";
 import SubscriptionsManager from "@/components/admin/SubscriptionsManager";
 
 export const metadata = {
-  title: "Subscriptions | Admin Portal"
+  title: "Admin Subscriptions",
+  description: "Customer subscriptions, setup fees and payments recorded by the ZUGEE team.",
+  // Also set by app/admin/layout.jsx; repeated so no admin page depends on the layout for it.
+  robots: { index: false, follow: false }
 };
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

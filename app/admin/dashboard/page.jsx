@@ -287,6 +287,7 @@ export default function AdminDashboardPage() {
       {/* Top Bar */}
       <div className="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-white/[0.08] mb-8">
         <div className="flex items-center gap-3">
+          <h1 className="sr-only">Lead Queue</h1>
           <MascotLogo size={40} showWordmark={true} showSubline={true} />
           <span className="hidden md:inline-block h-6 w-px bg-white/[0.1] mx-2" />
           <span className="text-xs font-mono px-3 py-1 rounded-full bg-[#00F0FF]/10 text-[#00F0FF] border border-[#00F0FF]/30 hidden md:inline-flex items-center gap-1.5 font-medium shadow-[0_0_12px_rgba(0,240,255,0.15)]">

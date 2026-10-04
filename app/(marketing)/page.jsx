@@ -24,8 +24,7 @@ import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 import { BUSINESS_TYPES, getProduct } from "@/lib/products";
 import { PLANS, PRODUCT_SETUP_FOCUS } from "@/lib/pricing";
-import { FAQ_ITEMS } from "@/lib/site-content";
-import { SITE_URL } from "@/lib/site";
+import { homePageSchema, serializeJsonLd } from "@/lib/structured-data";
 
 export const metadata = {
   title: { absolute: "ZUGEE — Business Software for Indian Businesses" },
@@ -45,37 +44,14 @@ const PRODUCT_SETUPS = Object.entries(PRODUCT_SETUP_FOCUS)
   .map(([slug, items]) => ({ slug, name: getProduct(slug)?.name, items }))
   .filter((entry) => Boolean(entry.name));
 
-// Structured data is generated from the same arrays that render the page, so what search engines
-// are told can never drift from what visitors see.
-const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      name: "ZUGEE",
-      legalName: "Zugee Systems Technologies Pvt. Ltd.",
-      url: `${SITE_URL}/`,
-      logo: `${SITE_URL}/zugee-mascot-icon.png`
-    },
-    {
-      "@type": "FAQPage",
-      mainEntity: FAQ_ITEMS.map((faq) => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: { "@type": "Answer", text: faq.answer }
-      }))
-    }
-  ]
-};
+// FAQPage + one SoftwareApplication per available product. The Organization is emitted by the root
+// layout. Built from the same arrays that render the page, so it can never drift from what visitors see.
+const structuredData = homePageSchema();
 
 export default function HomePage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        // JSON.stringify output; "<" is escaped so the payload can never close the script tag.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }} />
 
       {/* 1. HERO — "Specialised software for each industry" */}
       <Hero />

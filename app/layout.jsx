@@ -2,6 +2,7 @@
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
+import { organizationSchema, serializeJsonLd } from "@/lib/structured-data";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -59,6 +60,8 @@ export default function RootLayout({ children }) {
       className={`dark ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased bg-[#06090F] text-white selection:bg-[#00F0FF]/30 selection:text-white">
+        {/* Organization JSON-LD on every page; page-specific schema is added by each page. */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationSchema()) }} />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-[#00F0FF] focus:text-black focus:rounded-lg focus:font-bold focus:text-sm"

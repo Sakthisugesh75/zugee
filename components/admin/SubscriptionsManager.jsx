@@ -778,6 +778,7 @@ export default function SubscriptionsManager({ prefill }) {
     <div className="min-h-screen bg-[#06090F] text-white p-4 sm:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-white/[0.08] mb-8">
         <div className="flex items-center gap-3">
+          <h1 className="sr-only">Subscriptions</h1>
           <MascotLogo size={40} showWordmark={true} showSubline={true} />
           <span className="hidden md:inline-block h-6 w-px bg-white/[0.1] mx-2" />
           <AdminNav active="/admin/subscriptions" />

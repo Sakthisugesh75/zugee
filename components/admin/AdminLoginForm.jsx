@@ -71,7 +71,7 @@ export default function AdminLoginForm() {
           <MascotLogo size={44} showWordmark={true} showSubline={true} />
           <div className="mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#00F0FF]/10 border border-[#00F0FF]/30 text-[#00F0FF] text-xs font-mono shadow-[0_0_12px_rgba(0,240,255,0.15)]">
             <Lock className="w-3.5 h-3.5" />
-            <span>Administrator Access Portal</span>
+            <h1>Administrator Access Portal</h1>
           </div>
         </div>
 
