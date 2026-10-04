@@ -1,11 +1,14 @@
 // components/home/ContactSection.jsx
-// Final CTA: a short demo-request form. The team calls back to arrange a demo meeting or, when
-// the visitor picks "Pricing call", a call to share a quote.
+// The page's final call to action and its main contact path: a short demo-request form. The team
+// calls back to arrange a demo meeting or, when the visitor picks "Pricing call", a call to share a
+// quote. Spam protection: the hidden company_website honeypot plus the server's rate limit.
+// Sends request_type from REQUEST_TYPES and source_page "homepage-contact" only; both must pass
+// the public.leads CHECK constraints (tests/lead-request.test.mjs).
 // Required: name, mobile/WhatsApp, business type. Everything else is
 // optional — most Indian SMB owners would rather be called or WhatsApped than emailed.
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import InteractiveMascot from "@/components/animations/InteractiveMascot";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
@@ -17,8 +20,8 @@ const MAX_LENGTHS = { name: 120, phone: 25, email: 254, company: 160, message: 2
 const EMPTY_FORM = { name: "", phone: "", industry: "", requestType: DEFAULT_REQUEST_TYPE, email: "", company: "", message: "" };
 
 const inputClass =
-  "w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors";
-const labelClass = "block text-sm font-medium text-slate-200 mb-2";
+  "w-full bg-[#06090F] border border-white/[0.18] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white text-base outline-none motion-safe:transition-colors";
+const labelClass = "block text-base font-medium text-slate-200 mb-2";
 
 export default function ContactSection({ businessTypes }) {
   const [formData, setFormData] = useState(EMPTY_FORM);
@@ -27,35 +30,6 @@ export default function ContactSection({ businessTypes }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmed, setConfirmed] = useState(null);
 
-  // Product cards pre-select the business type before scrolling here.
-  useEffect(() => {
-    const handleSelect = (e) => {
-      const slug = e.detail?.slug;
-      if (slug && businessTypes.some((b) => b.id === slug)) {
-        setFormData((prev) => ({ ...prev, industry: slug }));
-      }
-    };
-    window.addEventListener("zugee:select-product", handleSelect);
-    return () => window.removeEventListener("zugee:select-product", handleSelect);
-  }, [businessTypes]);
-
-  // "Schedule a pricing call" buttons switch the request to a pricing call and pre-fill a note
-  // (only if the message is still empty, so we never overwrite what the visitor typed).
-  useEffect(() => {
-    const handlePricingCall = (e) => {
-      const planName = e.detail?.planName;
-      const note = planName
-        ? `I'd like a pricing call about the ${planName} plan.`
-        : "I'd like a pricing call for my business.";
-      setFormData((prev) => ({
-        ...prev,
-        requestType: "pricing_call",
-        message: prev.message.trim() ? prev.message : note
-      }));
-    };
-    window.addEventListener("zugee:pricing-call", handlePricingCall);
-    return () => window.removeEventListener("zugee:pricing-call", handlePricingCall);
-  }, []);
 
   const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
 
@@ -107,13 +81,12 @@ export default function ContactSection({ businessTypes }) {
   const busy = submitStatus === "loading";
 
   return (
-    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-[80px]">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none" />
+    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative scroll-mt-[80px]">
 
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
-            Book a demo
+            See the software live — book a free demo.
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
             Tell us about your business. We&apos;ll call or WhatsApp you to fix a time and show you the product live.
@@ -141,13 +114,13 @@ export default function ContactSection({ businessTypes }) {
                   <CheckCircle2 className="w-8 h-8" aria-hidden="true" />
                 </div>
                 <h3 className="text-2xl font-bold text-white">Thanks, {confirmed.name}.</h3>
-                <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                <p className="text-base text-slate-300 max-w-md mx-auto leading-relaxed">
                   We&apos;ll contact you on{" "}
                   <strong className="text-white">{confirmed.phone}</strong> to arrange your{" "}
                   {confirmed.isPricingCall ? "pricing call" : "demo"}.
                 </p>
                 {confirmed.referenceId && (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-base text-slate-300">
                     Your reference: <span className="text-slate-200 font-semibold">{confirmed.referenceId}</span>
                   </p>
                 )}
@@ -258,7 +231,7 @@ export default function ContactSection({ businessTypes }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="contact-email" className={labelClass}>
-                      Email <span className="text-slate-400 font-normal">(optional)</span>
+                      Email <span className="text-slate-300 font-normal">(optional)</span>
                     </label>
                     <input
                       id="contact-email"
@@ -273,7 +246,7 @@ export default function ContactSection({ businessTypes }) {
                   </div>
                   <div>
                     <label htmlFor="contact-company" className={labelClass}>
-                      Company name <span className="text-slate-400 font-normal">(optional)</span>
+                      Company name <span className="text-slate-300 font-normal">(optional)</span>
                     </label>
                     <input
                       id="contact-company"
@@ -290,7 +263,7 @@ export default function ContactSection({ businessTypes }) {
 
                 <div>
                   <label htmlFor="contact-message" className={labelClass}>
-                    What do you need? <span className="text-slate-400 font-normal">(optional)</span>
+                    What do you need? <span className="text-slate-300 font-normal">(optional)</span>
                   </label>
                   <textarea
                     id="contact-message"
@@ -314,7 +287,7 @@ export default function ContactSection({ businessTypes }) {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="btn-primary w-full text-sm !py-4 cursor-pointer justify-center"
+                  className="btn-primary w-full text-base !py-4 cursor-pointer justify-center"
                 >
                   {busy ? (
                     <span className="flex items-center gap-2">
@@ -329,7 +302,7 @@ export default function ContactSection({ businessTypes }) {
                   )}
                 </button>
 
-                <p className="text-xs text-slate-400 text-center">
+                <p className="text-sm sm:text-base text-slate-300 text-center">
                   We only use these details to contact you about ZUGEE. See our{" "}
                   <Link href="/privacy" className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">
                     Privacy Policy

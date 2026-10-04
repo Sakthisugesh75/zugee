@@ -8,7 +8,7 @@
 // How It Works → "This is how I use it"
 // Pricing → "How to get a quote" (no prices are published; see below)
 // FAQ → "Common questions answered"
-// CTA → "I understand what I can do next"
+// Contact → "See the software live — book a free demo." (#contact)
 //
 // Every claim must pass the rule in docs/ZUGEE-PLATFORM-PLAN.md:
 // "can the product actually do this today?"
@@ -19,7 +19,6 @@ import ProductDetails from "@/components/home/ProductDetails";
 import WhyZugee from "@/components/home/WhyZugee";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
-import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
 import { BUSINESS_TYPES } from "@/lib/products";
@@ -64,10 +63,8 @@ export default function HomePage() {
       {/* 7. FAQ — light section (#faq) */}
       <FAQSection />
 
-      {/* 8. CTA — "I understand what I can do next" */}
-      <FinalCTA />
-
-      {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}
+      {/* 8. CONTACT — "See the software live — book a free demo." (#contact).
+          Only the option list is passed down, so the full catalog stays out of the client bundle. */}
       <ContactSection businessTypes={BUSINESS_TYPES} />
     </>
   );

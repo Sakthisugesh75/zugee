@@ -73,3 +73,49 @@ test("the admin lead list can be filtered by request type", async () => {
   assert.ok(all.leads.some((l) => l.id === pricingLead.id));
   assert.ok(all.leads.some((l) => l.id === demoLead.id));
 });
+
+// ---------------------------------------------------------------------------
+// What the homepage form sends must pass the public.leads CHECK constraints.
+// ---------------------------------------------------------------------------
+const repoFile = (...parts) => fs.readFileSync(new URL(`../${parts.join("/")}`, import.meta.url), "utf8");
+
+function checkList(sql, column) {
+  const match = sql.match(new RegExp(`check \\(${column} in \\(([^)]*)\\)\\)`));
+  assert.ok(match, `no CHECK constraint for ${column}`);
+  return match[1].split(",").map((v) => v.trim().replace(/'/g, ""));
+}
+
+test("every request_type and source_page the homepage form can send passes the leads CHECK constraints", () => {
+  const form = repoFile("components", "home", "ContactSection.jsx");
+  const route = repoFile("app", "api", "leads", "route.js");
+
+  // source_page: every literal the form or the API route writes.
+  const sourcePages = new Set(
+    [...form.matchAll(/source_page:\s*"([^"]+)"/g), ...route.matchAll(/source_page:\s*"([^"]+)"/g)].map((m) => m[1])
+  );
+  assert.deepEqual([...sourcePages], ["homepage-contact"]);
+
+  // request_type: the form only offers REQUEST_TYPES, and the route rejects anything else.
+  assert.match(form, /REQUEST_TYPES\.map\(/);
+  assert.match(form, /request_type: requestType/);
+  assert.match(route, /if \(!isRequestType\(requestType\)\)/);
+  const requestTypes = REQUEST_TYPES.map((t) => t.id);
+
+  for (const file of ["schema.sql", "fresh-install.sql"]) {
+    const sql = repoFile("supabase", file);
+    const allowedTypes = checkList(sql, "request_type");
+    const allowedPages = checkList(sql, "source_page");
+    for (const value of requestTypes) assert.ok(allowedTypes.includes(value), `${file}: request_type '${value}' not allowed`);
+    for (const value of sourcePages) assert.ok(allowedPages.includes(value), `${file}: source_page '${value}' not allowed`);
+  }
+});
+
+test("the homepage form keeps its spam honeypot and the API drops filled ones", () => {
+  const form = repoFile("components", "home", "ContactSection.jsx");
+  const route = repoFile("app", "api", "leads", "route.js");
+  assert.match(form, /id="contact-company-website"/);
+  assert.match(form, /tabIndex=\{-1\}/);
+  assert.match(form, /company_website: honeypot/);
+  assert.match(route, /body\.company_website/);
+  assert.match(route, /submissionLimiter\.hit\(ip\)/, "the API keeps its rate limit");
+});
