@@ -4,6 +4,7 @@
 // Hero → "Specialised software for each industry"
 // Industry grid → "Find your industry"
 // Product details → "What each product covers"
+// Why ZUGEE → "Why choose this company"
 // How It Works → "This is how I use it"
 // Pricing → "How to get a quote" (no prices are published; see below)
 // FAQ → "Common questions answered"
@@ -15,6 +16,7 @@
 import Hero from "@/components/home/Hero";
 import IndustryGrid from "@/components/home/IndustryGrid";
 import ProductDetails from "@/components/home/ProductDetails";
+import WhyZugee from "@/components/home/WhyZugee";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
@@ -50,20 +52,23 @@ export default function HomePage() {
       {/* 3. PRODUCT DETAILS — one block per product (#product-<slug>) */}
       <ProductDetails />
 
-      {/* 4. HOW IT WORKS — "This is how I use it" */}
+      {/* 4. WHY ZUGEE — light section */}
+      <WhyZugee />
+
+      {/* 5. HOW IT WORKS — "This is how I use it" */}
       <HowWeWork />
 
-      {/* 5. PRICING — "How to get a quote" */}
+      {/* 6. PRICING — "How to get a quote" */}
       <PricingSection />
 
-      {/* 6. FAQ — "Common questions answered" */}
+      {/* 7. FAQ — "Common questions answered" */}
       <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">
         <div className="container">
           <FAQSection />
         </div>
       </section>
 
-      {/* 7. CTA — "I understand what I can do next" */}
+      {/* 8. CTA — "I understand what I can do next" */}
       <FinalCTA />
 
       {/* Only the option list is passed down, so the full catalog stays out of the client bundle. */}

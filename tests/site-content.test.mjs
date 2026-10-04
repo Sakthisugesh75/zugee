@@ -5,13 +5,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { FAQ_ITEMS, HOW_WE_WORK } from "../lib/site-content.js";
+import { FAQ_ITEMS, HOW_WE_WORK, WHY_ZUGEE } from "../lib/site-content.js";
 import { PLANS, formatINR, newSubscriptionCharges } from "../lib/pricing.js";
 import { LEGAL_DRAFT, LEGAL_PAGES, legalMetadata } from "../lib/legal.js";
 
 const allCopy = [
   ...FAQ_ITEMS.flatMap((f) => [f.question, f.answer]),
-  ...HOW_WE_WORK.flatMap((s) => [s.title, s.body])
+  ...HOW_WE_WORK.flatMap((s) => [s.title, s.body]),
+  ...WHY_ZUGEE.flatMap((p) => [p.title, p.body])
 ].join("\n");
 
 // Every source file that can put text on the public site, its metadata or its structured data.
@@ -191,4 +192,27 @@ test("legal pages publish no price and no promise the company cannot keep", () =
   const privacy = legalSources.find((p) => p.href === "/privacy").source;
   assert.match(privacy, /We do not promise that your data never leaves India/);
   assert.match(privacy, /sets no cookies for visitors/);
+});
+
+test("Why ZUGEE keeps to the approved wording", () => {
+  assert.deepEqual(WHY_ZUGEE.map((p) => p.key), ["tally", "price", "setup", "custom"]);
+  const copy = WHY_ZUGEE.flatMap((p) => [p.title, p.body]).join("\n");
+
+  // Tally: alongside, never a sync, an integration or a replacement.
+  const tally = WHY_ZUGEE.find((p) => p.key === "tally");
+  assert.match(tally.title, /alongside Tally/);
+  assert.ok(!/\bsync|integrat|replac/i.test(copy), "Why ZUGEE must not claim a Tally sync, integration or replacement");
+
+  // Price: the Terms wording, word for word.
+  const price = WHY_ZUGEE.find((p) => p.key === "price");
+  assert.equal(price.title, "Your monthly price is fixed for the life of your subscription");
+
+  // Custom work is something we build, not something already included.
+  const custom = WHY_ZUGEE.find((p) => p.key === "custom");
+  assert.match(custom.body, /\bWe build\b/);
+  assert.ok(!/\b(included|built in|comes with|out of the box)\b/i.test(copy));
+
+  // Never e-invoice, IRN, e-way bill or GSTR; no superlatives.
+  assert.ok(!/e-?invoic|\bIRN\b|e-?way bill|GSTR/i.test(copy));
+  assert.ok(!/\b(best|only|leading|#1|number one)\b/i.test(copy));
 });
