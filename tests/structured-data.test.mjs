@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { homePageSchema, organizationSchema, serializeJsonLd } from "../lib/structured-data.js";
 import { FAQ_ITEMS } from "../lib/site-content.js";
-import { PRODUCTS } from "../lib/products.js";
+import { PRODUCTS, availableProducts, productAnchor } from "../lib/products.js";
 import { COMPANY } from "../lib/legal.js";
 
 const SITE = "https://www.example.com";
@@ -84,4 +84,26 @@ test("every available product, and only those, is a SoftwareApplication", () => 
 
 test("serialised JSON-LD cannot close its script tag", () => {
   assert.ok(!serializeJsonLd({ text: "</script><script>alert(1)</script>" }).includes("<"));
+});
+
+test("the industry grid, the product details and the SoftwareApplication data use the same anchors", () => {
+  const apps = home["@graph"].filter((node) => node["@type"] === "SoftwareApplication");
+  const available = availableProducts();
+  assert.equal(apps.length, available.length);
+  available.forEach((product, i) => {
+    const anchor = `${SITE}/#${productAnchor(product.slug)}`;
+    assert.equal(apps[i]["@id"], anchor);
+    assert.equal(apps[i].url, anchor);
+  });
+
+  // Both components must build their links and ids from availableProducts() and productAnchor(),
+  // so a card always lands on the block the structured data points to.
+  const read = (file) => fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", file), "utf8");
+  const grid = read("IndustryGrid.jsx");
+  const details = read("ProductDetails.jsx");
+  assert.match(grid, /availableProducts\(\)/);
+  assert.match(grid, /href=\{`#\$\{productAnchor\(product\.slug\)\}`\}/);
+  assert.match(details, /availableProducts\(\)/);
+  assert.match(details, /id=\{productAnchor\(product\.slug\)\}/);
+  assert.match(grid, /id="products"/, "the grid keeps the #products anchor");
 });

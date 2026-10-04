@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
-import { PRODUCTS, PRODUCT_STATUS } from "@/lib/products";
+import { availableProducts, productAnchor } from "@/lib/products";
 import { COMPANY, LEGAL_PAGES } from "@/lib/legal";
 import { ArrowUp } from "lucide-react";
 
@@ -25,7 +25,7 @@ const linkClass = "text-slate-300 hover:text-[#00F0FF] transition-colors cursor-
 
 export default function Footer() {
   const router = useRouter();
-  const listedProducts = PRODUCTS.filter((p) => p.status !== "coming_soon");
+  const listedProducts = availableProducts();
 
   const scrollToSection = (targetId) => {
     const section = document.getElementById(targetId);
@@ -99,7 +99,7 @@ export default function Footer() {
                 <li key={p.slug}>
                   <button
                     type="button"
-                    onClick={() => scrollToSection("products")}
+                    onClick={() => scrollToSection(productAnchor(p.slug))}
                     className={linkClass}
                   >
                     {p.name}
