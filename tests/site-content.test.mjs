@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { FAQ_ITEMS, HOW_WE_WORK, WHY_ZUGEE } from "../lib/site-content.js";
+import { FAQ_ITEMS, HOW_WE_WORK, SETUP_TIMELINE, WHY_ZUGEE } from "../lib/site-content.js";
 import { PLANS, formatINR, newSubscriptionCharges } from "../lib/pricing.js";
 import { LEGAL_DRAFT, LEGAL_PAGES, legalMetadata } from "../lib/legal.js";
 
@@ -215,4 +215,21 @@ test("Why ZUGEE keeps to the approved wording", () => {
   // Never e-invoice, IRN, e-way bill or GSTR; no superlatives.
   assert.ok(!/e-?invoic|\bIRN\b|e-?way bill|GSTR/i.test(copy));
   assert.ok(!/\b(best|only|leading|#1|number one)\b/i.test(copy));
+});
+
+test("How it works is Demo, Setup, Go-live, Support, with only the approved timeline", () => {
+  assert.deepEqual(HOW_WE_WORK.map((s) => s.title), ["Demo", "Setup", "Go-live", "Support"]);
+  assert.equal(SETUP_TIMELINE, "Setup typically takes about 14 days. This is a target, not a guarantee.");
+
+  // No other "N days" / "N weeks" timeline anywhere the homepage is built from.
+  const sources = [
+    ...fs.readdirSync(path.join(REPO_ROOT, "components", "home")).map((f) => path.join(REPO_ROOT, "components", "home", f)),
+    path.join(REPO_ROOT, "app", "(marketing)", "page.jsx"),
+    path.join(REPO_ROOT, "lib", "site-content.js")
+  ];
+  for (const file of sources) {
+    const source = fs.readFileSync(file, "utf8").replaceAll(SETUP_TIMELINE, "");
+    const timeline = source.match(/\b\d+[\s-]*(working[\s-])?(days?|weeks?|months?)\b/i);
+    assert.ok(!timeline, `${path.relative(REPO_ROOT, file)} states a timeline: "${timeline?.[0]}"`);
+  }
 });
