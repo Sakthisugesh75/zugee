@@ -1,6 +1,6 @@
 // components/home/IndustryGrid.jsx
 // "Find your industry": one small card per Available product, all on one screen. Each card jumps
-// to that product's block in ProductDetails. Coming Soon products are not shown.
+// to that product's slide in ProductCarousel. Coming Soon products are not shown.
 // Server component; plain anchor links, no JavaScript.
 
 import { availableProducts, productAnchor } from "@/lib/products";

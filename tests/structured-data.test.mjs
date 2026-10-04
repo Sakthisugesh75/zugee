@@ -86,7 +86,7 @@ test("serialised JSON-LD cannot close its script tag", () => {
   assert.ok(!serializeJsonLd({ text: "</script><script>alert(1)</script>" }).includes("<"));
 });
 
-test("the industry grid, the product details and the SoftwareApplication data use the same anchors", () => {
+test("the industry grid, the product carousel and the SoftwareApplication data use the same anchors", () => {
   const apps = home["@graph"].filter((node) => node["@type"] === "SoftwareApplication");
   const available = availableProducts();
   assert.equal(apps.length, available.length);
@@ -100,10 +100,13 @@ test("the industry grid, the product details and the SoftwareApplication data us
   // so a card always lands on the block the structured data points to.
   const read = (file) => fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", file), "utf8");
   const grid = read("IndustryGrid.jsx");
-  const details = read("ProductDetails.jsx");
+  const carousel = read("ProductCarousel.jsx");
   assert.match(grid, /availableProducts\(\)/);
   assert.match(grid, /href=\{`#\$\{productAnchor\(product\.slug\)\}`\}/);
-  assert.match(details, /availableProducts\(\)/);
-  assert.match(details, /id=\{productAnchor\(product\.slug\)\}/);
+  assert.match(carousel, /availableProducts\(\)/);
+  // Every slide carries its anchor and stays in the HTML (inactive slides are only hidden).
+  assert.match(carousel, /id=\{productAnchor\(product\.slug\)\}/);
+  assert.match(carousel, /className=\{i === activeIndex \? undefined : "hidden"\}/);
+  assert.ok(!/setInterval/.test(carousel), "the carousel must not auto-rotate");
   assert.match(grid, /id="products"/, "the grid keeps the #products anchor");
 });

@@ -97,13 +97,11 @@ export default function Footer() {
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-base sm:text-sm">
               {listedProducts.slice(0, 6).map((p) => (
                 <li key={p.slug}>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection(productAnchor(p.slug))}
-                    className={linkClass}
-                  >
+                  {/* Plain link: on the homepage the product carousel opens this product's slide;
+                      from other pages it loads the homepage at that slide. */}
+                  <a href={`/#${productAnchor(p.slug)}`} className={linkClass}>
                     {p.name}
-                  </button>
+                  </a>
                 </li>
               ))}
               <li>

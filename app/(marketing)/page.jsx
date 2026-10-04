@@ -3,7 +3,7 @@
 //
 // Hero → "Specialised software for each industry"
 // Industry grid → "Find your industry"
-// Product details → "What each product covers"
+// Product carousel → "What each product covers"
 // Why ZUGEE → "Why choose this company"
 // How It Works → "This is how I use it"
 // Pricing → "How to get a quote" (no prices are published; see below)
@@ -15,7 +15,7 @@
 
 import Hero from "@/components/home/Hero";
 import IndustryGrid from "@/components/home/IndustryGrid";
-import ProductDetails from "@/components/home/ProductDetails";
+import ProductCarousel from "@/components/home/ProductCarousel";
 import WhyZugee from "@/components/home/WhyZugee";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
@@ -48,8 +48,8 @@ export default function HomePage() {
       {/* 2. INDUSTRY GRID — "Find your industry" (#products) */}
       <IndustryGrid />
 
-      {/* 3. PRODUCT DETAILS — one block per product (#product-<slug>) */}
-      <ProductDetails />
+      {/* 3. PRODUCT CAROUSEL — one slide per product (#product-<slug>) */}
+      <ProductCarousel />
 
       {/* 4. WHY ZUGEE — light section */}
       <WhyZugee />
