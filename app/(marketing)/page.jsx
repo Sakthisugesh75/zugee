@@ -8,7 +8,8 @@
 // How It Works → "This is how I use it"
 // Pricing → "How to get a quote" (no prices are published; see below)
 // FAQ → "Common questions answered"
-// Contact → "See the software live — book a free demo." (#contact)
+// Final CTA → "See the software live — book a free demo."
+// Contact → the demo form (#contact)
 //
 // Every claim must pass the rule in docs/ZUGEE-PLATFORM-PLAN.md:
 // "can the product actually do this today?"
@@ -20,6 +21,7 @@ import WhyZugee from "@/components/home/WhyZugee";
 import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FAQSection from "@/components/home/FAQSection";
+import FinalCTA from "@/components/home/FinalCTA";
 import ContactSection from "@/components/home/ContactSection";
 import { DEMO_FORM_BUSINESS_TYPES } from "@/lib/products";
 import { homePageSchema, serializeJsonLd } from "@/lib/structured-data";
@@ -51,7 +53,7 @@ export default function HomePage() {
       {/* 3. PRODUCT CAROUSEL — one slide per product (#product-<slug>) */}
       <ProductCarousel />
 
-      {/* 4. WHY ZUGEE — light section */}
+      {/* 4. WHY ZUGEE */}
       <WhyZugee />
 
       {/* 5. HOW IT WORKS — "This is how I use it" */}
@@ -60,11 +62,13 @@ export default function HomePage() {
       {/* 6. PRICING — "How to get a quote" */}
       <PricingSection />
 
-      {/* 7. FAQ — light section (#faq) */}
+      {/* 7. FAQ (#faq) */}
       <FAQSection />
 
-      {/* 8. CONTACT — "See the software live — book a free demo." (#contact).
-          Only the option list is passed down, so the full catalog stays out of the client bundle. */}
+      {/* 8. FINAL CTA — "See the software live — book a free demo." */}
+      <FinalCTA />
+
+      {/* 9. CONTACT — the demo form (#contact). Only the option list is passed down, so the full catalog stays out of the client bundle. */}
       <ContactSection businessTypes={DEMO_FORM_BUSINESS_TYPES} />
     </>
   );

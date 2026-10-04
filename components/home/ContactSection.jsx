@@ -1,6 +1,5 @@
 // components/home/ContactSection.jsx
-// The page's final call to action and its main contact path: a short demo-request form. The team
-// calls back to arrange a demo meeting or, when the visitor picks "Pricing call", a call to share a
+// The demo-request form, directly below the Final CTA, in the original design. The team calls back to arrange a demo meeting or, when the visitor picks "Pricing call", a call to share a
 // quote. Spam protection: the hidden company_website honeypot plus the server's rate limit.
 // Sends request_type from REQUEST_TYPES and source_page "homepage-contact" only; both must pass
 // the public.leads CHECK constraints (tests/lead-request.test.mjs).
@@ -8,7 +7,7 @@
 // optional — most Indian SMB owners would rather be called or WhatsApped than emailed.
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import InteractiveMascot from "@/components/animations/InteractiveMascot";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
@@ -29,6 +28,22 @@ export default function ContactSection({ businessTypes }) {
   const [submitStatus, setSubmitStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
   const [confirmed, setConfirmed] = useState(null);
+
+  // Pre-select: the product carousel's "Book a demo" picks that business type, and "Ask for a quote"
+  // switches the request to a pricing call. Never overwrites a choice the visitor already made.
+  useEffect(() => {
+    const onSelectProduct = (e) => {
+      const slug = e.detail?.slug;
+      if (slug && businessTypes.some((b) => b.id === slug)) setFormData((prev) => ({ ...prev, industry: slug }));
+    };
+    const onPricingCall = () => setFormData((prev) => ({ ...prev, requestType: "pricing_call" }));
+    window.addEventListener("zugee:select-product", onSelectProduct);
+    window.addEventListener("zugee:pricing-call", onPricingCall);
+    return () => {
+      window.removeEventListener("zugee:select-product", onSelectProduct);
+      window.removeEventListener("zugee:pricing-call", onPricingCall);
+    };
+  }, [businessTypes]);
 
 
   const updateField = (field) => (e) => setFormData((prev) => ({ ...prev, [field]: e.target.value }));
@@ -81,12 +96,13 @@ export default function ContactSection({ businessTypes }) {
   const busy = submitStatus === "loading";
 
   return (
-    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative scroll-mt-[80px]">
+    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-[80px]">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] max-w-full h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none hidden motion-safe:block" aria-hidden="true" />
 
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
-            See the software live — book a free demo.
+            Book a demo
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
             Tell us about your business. We&apos;ll call or WhatsApp you to fix a time and show you the product live.

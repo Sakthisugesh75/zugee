@@ -204,7 +204,7 @@ function ProductDetailDialog({ product, onClose, onBookDemo }) {
         <div className="flex flex-col sm:flex-row items-center gap-3">
           <button
             type="button"
-            onClick={onBookDemo}
+            onClick={() => onBookDemo(product)}
             className={`w-full sm:flex-1 min-h-12 py-3.5 px-6 rounded-full text-white text-base font-bold flex items-center justify-center gap-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-white ${GLOW_BUTTON}`}
             style={{ background: buttonBackground(accent) }}
           >
@@ -310,8 +310,10 @@ export default function ProductCarousel() {
     touchDelta.current = { x: 0, y: 0 };
   };
 
-  const bookDemo = () => {
+  // Pre-selects this product in the demo form (ContactSection listens), then scrolls there.
+  const bookDemo = (product) => {
     setDialogProduct(null);
+    window.dispatchEvent(new CustomEvent("zugee:select-product", { detail: { slug: product.slug } }));
     scrollToElement(document.getElementById("contact"), !reducedMotion);
   };
 

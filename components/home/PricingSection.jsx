@@ -1,11 +1,12 @@
 // components/home/PricingSection.jsx
-// Pricing approach: no prices are published. Each business is quoted on a short call, and the
-// monthly price is fixed for the life of the subscription. Wording follows the Terms of Service.
-// Nothing from lib/pricing.js reaches this component.
-// Server component; only the button is a client island.
+// Pricing in the original dark design (ambient glow, uppercase gradient heading, factor tiles,
+// gradient call button) with the current content: no published prices, a quote on a short call,
+// and the monthly price fixed for the life of the subscription (Terms wording).
+// Nothing from lib/pricing.js reaches this component. Server component; the button is a client
+// island that also pre-selects "Pricing call" in the form. Glows only under motion-safe.
 
 import { ArrowRight, Building2, Lock, Package, Users, Wrench } from "lucide-react";
-import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
+import PricingCallButton from "@/components/home/PricingCallButton";
 
 // What a quote depends on (Terms: product, users and branches, and how much setup you need).
 const PRICE_FACTORS = [
@@ -17,41 +18,58 @@ const PRICE_FACTORS = [
 
 export default function PricingSection() {
   return (
-    <section id="pricing" className="scroll-mt-[80px] py-16 sm:py-20 bg-[#080C14] border-b border-white/[0.08]">
-      <div className="container max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Pricing</h2>
-          <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
+    <section
+      id="pricing"
+      className="relative overflow-hidden py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] scroll-mt-[80px]"
+    >
+      <div className="absolute inset-0 pointer-events-none hidden motion-safe:block" aria-hidden="true">
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] max-w-full h-[550px] bg-cyan-500/[0.04] rounded-full blur-[80px] lg:blur-[190px]" />
+        <div className="absolute bottom-[20%] right-[15%] w-[500px] max-w-full h-[450px] bg-blue-600/[0.03] rounded-full blur-[80px] lg:blur-[160px]" />
+      </div>
+
+      <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight leading-tight mb-4">
+            <span
+              style={{
+                backgroundImage: "linear-gradient(135deg, #06B6D4, #3B82F6)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent"
+              }}
+            >
+              Pricing
+            </span>
+          </h2>
+          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
             We don&apos;t publish prices. We quote each business on a short call, based on the product, the number of
             users and branches, and how much setup you need.
           </p>
         </div>
 
-        <div className="mt-8 mx-auto max-w-2xl flex items-start sm:items-center gap-4 rounded-2xl border border-cyan-400/40 bg-cyan-400/[0.08] p-5 sm:p-6">
-          <Lock className="w-7 h-7 shrink-0 text-cyan-300" aria-hidden="true" />
+        <div className="max-w-3xl mx-auto mb-10 flex items-start sm:items-center gap-4 rounded-2xl border border-cyan-400/40 bg-white/[0.03] backdrop-blur-md p-5 sm:p-6 motion-safe:shadow-[0_10px_30px_rgba(6,182,212,0.12)]">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-500/10 border border-cyan-500/30">
+            <Lock className="w-5 h-5 text-cyan-300" aria-hidden="true" />
+          </span>
           <p className="text-lg sm:text-xl font-bold text-white leading-snug">
             Your monthly price is fixed for the life of your subscription.
           </p>
         </div>
 
-        <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0">
+        <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-10 list-none p-0">
           {PRICE_FACTORS.map(({ icon: Icon, title, desc }) => (
-            <li key={title} className="rounded-2xl border border-white/[0.12] bg-white/[0.03] p-5">
-              <Icon className="w-6 h-6 text-cyan-300" aria-hidden="true" />
-              <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
-              <p className="mt-1 text-base text-slate-300">{desc}</p>
+            <li key={title} className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] text-center">
+              <Icon className="w-6 h-6 text-cyan-300 mx-auto mb-3" aria-hidden="true" />
+              <h3 className="text-base font-bold text-white mb-1">{title}</h3>
+              <p className="text-base text-slate-300">{desc}</p>
             </li>
           ))}
         </ul>
 
-        <div className="mt-10 flex justify-center">
-          <SmoothScrollLink
-            targetId="contact"
-            className="inline-flex items-center justify-center gap-2 min-h-12 px-8 py-3 rounded-full text-base font-bold text-[#04121A] bg-cyan-400 hover:bg-cyan-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080C14] motion-safe:transition-colors"
-          >
-            Ask for a quote
-            <ArrowRight className="w-5 h-5" aria-hidden="true" />
-          </SmoothScrollLink>
+        <div className="flex justify-center">
+          <PricingCallButton className="min-h-12 px-7 sm:px-9 py-3.5 rounded-full text-base font-bold tracking-wide text-white bg-gradient-to-r from-cyan-700 to-blue-700 inline-flex items-center gap-2 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 motion-safe:shadow-[0_4px_20px_rgba(6,182,212,0.35)] motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-105">
+            <span>Ask for a quote</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
+          </PricingCallButton>
         </div>
       </div>
     </section>
