@@ -233,3 +233,12 @@ test("How it works is Demo, Setup, Go-live, Support, with only the approved time
     assert.ok(!timeline, `${path.relative(REPO_ROOT, file)} states a timeline: "${timeline?.[0]}"`);
   }
 });
+
+test("the pricing section quotes on a call, states the price lock, and shows no prices", () => {
+  const source = fs.readFileSync(path.join(REPO_ROOT, "components", "home", "PricingSection.jsx"), "utf8");
+  assert.match(source, /id="pricing"/);
+  assert.match(source, /Your monthly price is fixed for the life of your subscription\./);
+  assert.ok(!/from ["'][^"']*lib\/pricing/.test(source), "the pricing section must not import lib/pricing.js");
+  assert.ok(!/₹|\bRs\.?\s?\d|\bINR\b|\/\s?(month|mo)\b/i.test(source), "the pricing section shows a price");
+  assert.ok(!/\b(best|cheapest|lowest)\b/i.test(source), "no superlatives");
+});

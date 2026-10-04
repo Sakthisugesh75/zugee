@@ -1,77 +1,59 @@
 // components/home/PricingSection.jsx
-// No prices are shown anywhere on the site. Pricing depends on the product, users, branches and
-// setup needs, and is quoted on a short call. Nothing from lib/pricing.js reaches this component.
+// Pricing approach: no prices are published. Each business is quoted on a short call, and the
+// monthly price is fixed for the life of the subscription. Wording follows the Terms of Service.
+// Nothing from lib/pricing.js reaches this component.
+// Server component; only the button is a client island.
 
-import PricingCallButton from "@/components/home/PricingCallButton";
-import { ArrowRight, Package, Users, Building2, Wrench } from "lucide-react";
+import { ArrowRight, Building2, Lock, Package, Users, Wrench } from "lucide-react";
+import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 
-// What a quote depends on
+// What a quote depends on (Terms: product, users and branches, and how much setup you need).
 const PRICE_FACTORS = [
-  { icon: Package, title: "Your product", desc: "Each ZUGEE product is priced on its own" },
-  { icon: Users, title: "Number of users", desc: "How many of your staff will sign in" },
-  { icon: Building2, title: "Number of branches", desc: "One location or several" },
-  { icon: Wrench, title: "Setup needs", desc: "Data migration, configuration and training" },
+  { icon: Package, title: "Your product", desc: "Each ZUGEE product is priced on its own." },
+  { icon: Users, title: "Number of users", desc: "How many of your staff will sign in." },
+  { icon: Building2, title: "Number of branches", desc: "One location or several." },
+  { icon: Wrench, title: "Setup needs", desc: "Data migration, configuration and training." }
 ];
 
 export default function PricingSection() {
   return (
-    <section
-      id="pricing"
-      className="relative overflow-hidden py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] scroll-mt-[80px]"
-    >
-      {/* Background ambient lighting */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[800px] h-[550px] bg-cyan-500/[0.04] rounded-full blur-[80px] lg:blur-[190px]" />
-        <div className="absolute bottom-[20%] right-[15%] w-[500px] h-[450px] bg-blue-600/[0.03] rounded-full blur-[80px] lg:blur-[160px]" />
-      </div>
-
-      <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-10 sm:mb-12">
-          <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
-            Pricing
-          </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white mb-4 leading-tight">
-            Get a Clear Quote{" "}
-            <span
-              style={{
-                backgroundImage: "linear-gradient(135deg, #06B6D4, #3B82F6)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              For Your Business.
-            </span>
-          </h2>
-          <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
-            Your price depends on the product you choose, how many users and branches you have, and how much setup your business needs. Tell us a little about your business and we&apos;ll share a clear quote on a short call.
+    <section id="pricing" className="scroll-mt-[80px] py-16 sm:py-20 bg-[#080C14] border-b border-white/[0.08]">
+      <div className="container max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Pricing</h2>
+          <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-300">
+            We don&apos;t publish prices. We quote each business on a short call, based on the product, the number of
+            users and branches, and how much setup you need.
           </p>
         </div>
 
-        {/* ========================================================
-            WHAT YOUR QUOTE DEPENDS ON + PRICING CALL CTA
-           ======================================================== */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-8">
-          {PRICE_FACTORS.map((factor) => {
-            const Icon = factor.icon;
-            return (
-              <div key={factor.title} className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
-                <Icon className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
-                <p className="text-xs font-bold text-white mb-0.5">{factor.title}</p>
-                <p className="text-[11px] text-slate-400">{factor.desc}</p>
-              </div>
-            );
-          })}
+        <div className="mt-8 mx-auto max-w-2xl flex items-start sm:items-center gap-4 rounded-2xl border border-cyan-400/40 bg-cyan-400/[0.08] p-5 sm:p-6">
+          <Lock className="w-7 h-7 shrink-0 text-cyan-300" aria-hidden="true" />
+          <p className="text-lg sm:text-xl font-bold text-white leading-snug">
+            Your monthly price is fixed for the life of your subscription.
+          </p>
         </div>
 
-        <div className="flex justify-center">
-          <PricingCallButton className="px-7 sm:px-9 py-3.5 rounded-full text-sm font-bold tracking-wide text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_4px_20px_rgba(6,182,212,0.35)] hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer">
-            <span>Schedule a pricing call</span>
-            <ArrowRight className="w-4 h-4" aria-hidden="true" />
-          </PricingCallButton>
+        <ul className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 list-none p-0 m-0">
+          {PRICE_FACTORS.map(({ icon: Icon, title, desc }) => (
+            <li key={title} className="rounded-2xl border border-white/[0.12] bg-white/[0.03] p-5">
+              <Icon className="w-6 h-6 text-cyan-300" aria-hidden="true" />
+              <h3 className="mt-3 text-lg font-bold text-white">{title}</h3>
+              <p className="mt-1 text-base text-slate-300">{desc}</p>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-10 flex justify-center">
+          <SmoothScrollLink
+            targetId="contact"
+            className="inline-flex items-center justify-center gap-2 min-h-12 px-8 py-3 rounded-full text-base font-bold text-[#04121A] bg-cyan-400 hover:bg-cyan-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#080C14] motion-safe:transition-colors"
+          >
+            Ask for a quote
+            <ArrowRight className="w-5 h-5" aria-hidden="true" />
+          </SmoothScrollLink>
         </div>
       </div>
-
     </section>
   );
 }
