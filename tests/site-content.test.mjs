@@ -8,6 +8,7 @@ import path from "node:path";
 import { FAQ_ITEMS, HOW_WE_WORK, SETUP_TIMELINE, WHY_ZUGEE } from "../lib/site-content.js";
 import { PLANS, formatINR, newSubscriptionCharges } from "../lib/pricing.js";
 import { LEGAL_DRAFT, LEGAL_PAGES, legalMetadata } from "../lib/legal.js";
+import { PRODUCTS } from "../lib/products.js";
 
 const allCopy = [
   ...FAQ_ITEMS.flatMap((f) => [f.question, f.answer]),
@@ -139,16 +140,44 @@ test("the setup fee and subscription are explained, with pricing shared on the c
   assert.match(monthly.answer, /on the call/i);
 });
 
-test("the FAQ never claims a shared login or shared database across products", () => {
-  assert.ok(!/unified zugee account|unified account|single login|one login|one account|one operating system/i.test(allCopy));
-  assert.ok(!/shared (login|users|database)/i.test(allCopy));
+// Approved by the founder on 2026-10-04. "In one login" means one login within a product; two
+// products still run separately with their own data.
+const MULTI_PRODUCT_ANSWER =
+  "Each ZUGEE product is a complete system for its industry, in one login. If you run two different businesses, each product runs separately with its own data.";
 
+test("the FAQ never claims a shared login or shared database across products", () => {
   const multi = FAQ_ITEMS.find((f) => f.question === "Can I use more than one ZUGEE product?");
   assert.ok(multi);
-  assert.match(multi.answer, /^Yes\./);
-  assert.match(multi.answer, /own login/i);
-  assert.match(multi.answer, /side by side/i);
-  assert.ok(!/coming soon/i.test(multi.answer));
+  assert.equal(multi.answer, MULTI_PRODUCT_ANSWER);
+
+  // Outside that one approved answer, no copy may suggest one login or account across products.
+  const rest = allCopy.replace(MULTI_PRODUCT_ANSWER, "");
+  assert.ok(!/unified zugee account|unified account|single login|one login|one account|one operating system/i.test(rest));
+  assert.ok(!/shared (login|users|database)/i.test(allCopy));
+  assert.ok(!/across (all )?(our |zugee )?products/i.test(allCopy));
+});
+
+test("the old 'separate software with its own login' wording is gone from the homepage", () => {
+  const sources = [
+    ...fs.readdirSync(path.join(REPO_ROOT, "components", "home")).map((f) => path.join(REPO_ROOT, "components", "home", f)),
+    path.join(REPO_ROOT, "app", "(marketing)", "page.jsx")
+  ];
+  for (const file of sources) {
+    const source = fs.readFileSync(file, "utf8");
+    assert.ok(!/own login|separate software|runs as its own system/i.test(source), `${path.relative(REPO_ROOT, file)} uses the old wording`);
+  }
+  assert.ok(!/own login|separate software/i.test(allCopy), "site copy uses the old wording");
+});
+
+test("the 'which products' FAQ names exactly the Available products", () => {
+  const faq = FAQ_ITEMS.find((f) => f.question === "Which ZUGEE products can I use today?");
+  assert.ok(faq);
+  for (const product of PRODUCTS) {
+    if (product.status === "available") assert.ok(faq.answer.includes(product.name), `${product.name} missing`);
+    else assert.ok(!faq.answer.includes(product.name), `Coming Soon product ${product.name} named`);
+  }
+  assert.ok(faq.answer.endsWith("More industries are on the way — tell us yours and we'll let you know."));
+  assert.ok(!/coming soon/i.test(faq.answer));
 });
 
 // ---------------------------------------------------------------------------

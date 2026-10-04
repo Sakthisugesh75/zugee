@@ -61,12 +61,8 @@ export default function HomePage() {
       {/* 6. PRICING — "How to get a quote" */}
       <PricingSection />
 
-      {/* 7. FAQ — "Common questions answered" */}
-      <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">
-        <div className="container">
-          <FAQSection />
-        </div>
-      </section>
+      {/* 7. FAQ — light section (#faq) */}
+      <FAQSection />
 
       {/* 8. CTA — "I understand what I can do next" */}
       <FinalCTA />
