@@ -305,8 +305,7 @@ const sections = [
         </ul>
         <h3>How to use them</h3>
         <p>
-          Email <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a> or call{" "}
-          <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>. Tell us your name and the phone number or email address you
+          Email <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>. Tell us your name and the phone number or email address you
           gave us, and what you want done. We may ask one question to confirm it is really you. There is no fee.
         </p>
         <p>
@@ -389,9 +388,6 @@ const sections = [
           </li>
           <li>
             Email: <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
-          </li>
-          <li>
-            Phone: <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>
           </li>
           <li>
             {COMPANY.name}, {COMPANY.city}

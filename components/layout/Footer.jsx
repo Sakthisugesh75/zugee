@@ -1,9 +1,8 @@
 // components/layout/Footer.jsx
 // Footer with smooth scroll navigation (no URL hash changes)
 //
-// TODO(founder): add real trust details here once confirmed — registered address, phone,
-// WhatsApp, support email and founder/team names (Phase 3). Never add a CIN, GSTIN, address or
-// number that isn't real.
+// The Contact column shows email, city and support hours only: the site publishes no phone
+// number (tests/public-contact.test.mjs). Never add a CIN, GSTIN or address that isn't real.
 
 "use client";
 
@@ -11,7 +10,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { PRODUCTS, PRODUCT_STATUS } from "@/lib/products";
-import { LEGAL_PAGES } from "@/lib/legal";
+import { COMPANY, LEGAL_PAGES } from "@/lib/legal";
 import { ArrowUp } from "lucide-react";
 
 const SITE_LINKS = [
@@ -22,7 +21,7 @@ const SITE_LINKS = [
   { label: "Book a demo", targetId: "contact" }
 ];
 
-const linkClass = "text-slate-400 hover:text-[#00F0FF] transition-colors cursor-pointer bg-transparent border-none text-left p-0";
+const linkClass = "text-slate-300 hover:text-[#00F0FF] transition-colors cursor-pointer bg-transparent border-none text-left p-0";
 
 export default function Footer() {
   const router = useRouter();
@@ -60,7 +59,7 @@ export default function Footer() {
       <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/[0.02] via-transparent to-transparent pointer-events-none" />
       
       <div className="container relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/[0.15]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-white/[0.15]">
           <div className="lg:col-span-2 flex flex-col gap-4">
             <MascotLogo size={44} showWordmark={true} showSubline={true} />
             <p className="text-sm text-slate-300 max-w-sm mt-2 leading-relaxed">
@@ -78,7 +77,7 @@ export default function Footer() {
 
           <nav aria-label="Site">
             <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Quick Links</p>
-            <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
+            <ul className="flex flex-col gap-3 list-none p-0 m-0 text-base sm:text-sm">
               {SITE_LINKS.map((l) => (
                 <li key={l.targetId}>
                   <button
@@ -95,7 +94,7 @@ export default function Footer() {
 
           <nav aria-label="Products">
             <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Products</p>
-            <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
+            <ul className="flex flex-col gap-3 list-none p-0 m-0 text-base sm:text-sm">
               {listedProducts.slice(0, 6).map((p) => (
                 <li key={p.slug}>
                   <button
@@ -118,6 +117,19 @@ export default function Footer() {
               </li>
             </ul>
           </nav>
+
+          <div>
+            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Contact</p>
+            <address className="not-italic flex flex-col gap-3 text-base sm:text-sm text-slate-300">
+              <a href={`mailto:${COMPANY.email}`} className="text-slate-300 hover:text-[#00F0FF] transition-colors break-all">
+                {COMPANY.email}
+              </a>
+              <span>
+                {COMPANY.address.locality}, {COMPANY.address.region}
+              </span>
+              <span>{COMPANY.supportHours}</span>
+            </address>
+          </div>
         </div>
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm">

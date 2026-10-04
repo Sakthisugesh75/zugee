@@ -63,15 +63,12 @@ export function LegalTable({ head, rows }) {
   );
 }
 
-/** Email and phone, the same on every page. */
+/** Email and address, the same on every page. */
 export function ContactLines() {
   return (
     <ul>
       <li>
         Email: <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>
-      </li>
-      <li>
-        Phone: <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>
       </li>
       <li>
         {COMPANY.name}, {COMPANY.city}

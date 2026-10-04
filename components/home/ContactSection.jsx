@@ -202,7 +202,7 @@ export default function ContactSection({ businessTypes }) {
                       maxLength={MAX_LENGTHS.phone}
                       autoComplete="tel"
                       inputMode="tel"
-                      placeholder="+91 98765 43210"
+                      placeholder="10-digit mobile number"
                       value={formData.phone}
                       onChange={updateField("phone")}
                       className={inputClass}

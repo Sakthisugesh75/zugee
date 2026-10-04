@@ -195,8 +195,8 @@ const sections = [
         </KeyPoint>
         <p>
           Pay only to the bank account or UPI ID on an invoice from us. We will never ask you for an OTP, a UPI PIN or
-          a password. If a payment request looks unusual, call us on <a href={COMPANY.phoneHref}>{COMPANY.phone}</a>{" "}
-          before you pay.
+          a password. If a payment request looks unusual, check with us before you pay: email{" "}
+          <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a> or call the number our team already uses with you.
         </p>
       </>
     )

@@ -47,13 +47,14 @@ test("no source file adds rating, review or offer schema", () => {
   }
 });
 
-test("the Organization carries the company's real contact details", () => {
+test("the Organization carries the company's real contact details, without a phone number", () => {
   assert.equal(organization["@type"], "Organization");
   assert.equal(organization.name, "ZUGEE");
   assert.equal(organization.url, `${SITE}/`);
   assert.equal(organization.logo, `${SITE}/zugee-mascot-icon.png`);
   assert.equal(organization.email, COMPANY.email);
-  assert.equal(organization.telephone, COMPANY.phone);
+  // The site publishes no phone number (tests/public-contact.test.mjs).
+  assert.ok(!("telephone" in organization));
   assert.equal(organization.address.addressLocality, "Coimbatore");
   assert.equal(organization.address.addressRegion, "Tamil Nadu");
   assert.equal(organization.address.addressCountry, "IN");
