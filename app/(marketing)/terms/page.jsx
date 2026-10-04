@@ -309,8 +309,8 @@ const sections = [
         </p>
         <h3>Not tax or legal advice</h3>
         <p>
-          The product helps you produce GST invoices and reports. You remain responsible for your own accounts and tax
-          filings. Check them with your chartered accountant.
+          The product helps you manage invoices and records. You remain responsible for your tax filings and GST
+          compliance. Check them with your chartered accountant.
         </p>
       </>
     )
