@@ -22,8 +22,8 @@ import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/home/FAQSection";
 import ContactSection from "@/components/home/ContactSection";
-import { DEMO_FORM_BUSINESS_TYPES, getProduct } from "@/lib/products";
-import { PLANS, PRODUCT_SETUP_FOCUS } from "@/lib/pricing";
+import { DEMO_FORM_BUSINESS_TYPES } from "@/lib/products";
+import { PLANS } from "@/lib/pricing";
 import { homePageSchema, serializeJsonLd } from "@/lib/structured-data";
 
 export const metadata = {
@@ -39,10 +39,6 @@ export const metadata = {
 // each plan includes are passed to the page, so the amounts in lib/pricing.js (still used by the
 // admin subscriptions tool) never reach the HTML or the client bundle.
 const PLAN_SUMMARIES = PLANS.map(({ key, name, features, setupIncludes }) => ({ key, name, features, setupIncludes }));
-
-const PRODUCT_SETUPS = Object.entries(PRODUCT_SETUP_FOCUS)
-  .map(([slug, items]) => ({ slug, name: getProduct(slug)?.name, items }))
-  .filter((entry) => Boolean(entry.name));
 
 // FAQPage + one SoftwareApplication per available product. The Organization is emitted by the root
 // layout. Built from the same arrays that render the page, so it can never drift from what visitors see.
@@ -69,7 +65,7 @@ export default function HomePage() {
       <HowWeWork />
 
       {/* 6. PRICING — "How to get a quote" */}
-      <PricingSection plans={PLAN_SUMMARIES} productSetups={PRODUCT_SETUPS} />
+      <PricingSection plans={PLAN_SUMMARIES} />
 
       {/* 7. FAQ — "Common questions answered" */}
       <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">

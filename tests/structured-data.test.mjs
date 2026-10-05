@@ -96,11 +96,19 @@ test("every SoftwareApplication is a product the showcase renders, with its name
     assert.ok(!("url" in apps[i]), `${product.name} points at an anchor that doesn't exist`);
   });
 
-  // The showcase renders every catalog product (all of them in the HTML, the active one shown),
-  // with the same name and description fields the structured data uses.
+  // The showcase renders exactly the Available products (all of them in the HTML, the active one
+  // shown), with the same name and description fields the structured data uses, and no status labels.
   const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
-  assert.match(showcase, /PRODUCTS\.filter\(\(p\) => p\.status === "available"\)/);
+  assert.match(showcase, /const SHOWCASE_PRODUCTS = availableProducts\(\);/);
+  const showcaseCode = showcase.replace(/\/\*[\s\S]*?\*\/|^\s*\/\/.*$/gm, ""); // comments may explain the rule
+  assert.ok(!/StatusChip|PRODUCT_STATUS|Available Now|Coming Soon/.test(showcaseCode), "the showcase shows no status labels");
   assert.match(showcase, /\{product\.name\}/);
   assert.match(showcase, /\{product\.description\}/);
   assert.match(showcase, /id="products"/, "the showcase keeps the #products anchor");
+});
+
+test("the footer lists only Available products", () => {
+  const footer = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "layout", "Footer.jsx"), "utf8");
+  assert.match(footer, /const listedProducts = availableProducts\(\);/);
+  assert.ok(!/coming_soon/.test(footer));
 });

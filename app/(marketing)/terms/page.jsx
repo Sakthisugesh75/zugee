@@ -79,8 +79,8 @@ const sections = [
         </p>
         <ul>
           <li>
-            You can buy only products marked <strong>Available</strong> on our website. Products marked{" "}
-            <strong>Coming Soon</strong> are not for sale, and we make no promise about when they will be ready.
+            You can buy only products shown on our website. Other products are not for sale, and we make no
+            promise about when they will be ready.
           </li>
           <li>
             What you get is what we showed you working in your demo, set up as described in your quote.

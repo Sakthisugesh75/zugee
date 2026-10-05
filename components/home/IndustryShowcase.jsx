@@ -174,14 +174,14 @@ export default function IndustryShowcase() {
           </p>
         </div>
 
-        {/* 4 Core Foundation Pillars */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-16">
+        {/* Core Foundation Pillars: centred, equal-height 3-column grid on desktop, stacked on mobile */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 items-stretch gap-4 max-w-5xl mx-auto mb-16">
           {FOUNDATION_PILLARS.map((pillar) => {
             const Icon = pillar.icon;
             return (
               <div
                 key={pillar.title}
-                className="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] transition-colors flex flex-col justify-between"
+                className="h-full p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] transition-colors flex flex-col justify-between"
               >
                 <div>
                   <div

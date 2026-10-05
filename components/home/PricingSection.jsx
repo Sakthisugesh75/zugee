@@ -4,7 +4,7 @@
 // Shows what each plan includes (Starter, Growth, Enterprise), an expandable comparison matrix,
 // and trust guarantees.
 //
-// `plans` and `productSetups` come from the server page with the price fields stripped, so the
+// `plans` comes from the server page with the price fields stripped, so the
 // numbers in lib/pricing.js never reach this client bundle.
 
 "use client";
@@ -56,7 +56,7 @@ const ENTERPRISE_FEATURES = [
   "Priority support — direct founder line, business hours",
 ];
 
-export default function PricingSection({ plans, productSetups }) {
+export default function PricingSection({ plans }) {
   const [openAccordions, setOpenAccordions] = useState({ starter: false, growth: false });
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
 
@@ -389,34 +389,6 @@ export default function PricingSection({ plans, productSetups }) {
           </div>
         </div>
 
-        {/* Product Setup Focus Details */}
-        {productSetups.length > 0 && (
-          <div className="max-w-4xl mx-auto rounded-3xl border border-white/[0.08] bg-[#0A0F1D]/80 p-6 sm:p-8">
-            <h3 className="text-base font-bold text-white mb-1">
-              White-Glove Setup is Custom-Tailored to Your Trade
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-400 mb-5">
-              During the 14-day onboarding, our engineers configure workflows specific to your product:
-            </p>
-            <dl className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-              {productSetups.map(({ slug, name, items }) => (
-                <div key={slug} className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
-                  <dt className="text-sm font-bold text-cyan-300 mb-2">{name}</dt>
-                  <dd>
-                    <ul className="space-y-1.5 text-xs text-slate-300">
-                      {items.map((item) => (
-                        <li key={item} className="flex items-center gap-1.5">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
-        )}
       </div>
 
     </section>

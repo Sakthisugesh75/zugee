@@ -27,15 +27,12 @@ import {
   Clock,
   Zap,
 } from "lucide-react";
-import { PRODUCTS, PRODUCT_STATUS } from "@/lib/products";
+import { availableProducts } from "@/lib/products";
 import { useMediaQuery } from "@/lib/use-media-query";
 
-// All products in showcase order
-const SHOWCASE_PRODUCTS = [
-  ...PRODUCTS.filter((p) => p.status === "available"),
-  ...PRODUCTS.filter((p) => p.status === "in_development"),
-  ...PRODUCTS.filter((p) => p.status === "coming_soon"),
-];
+// Only products a business can use today. Coming Soon products stay in lib/products.js and appear
+// here automatically once their status changes to "available".
+const SHOWCASE_PRODUCTS = availableProducts();
 
 // Product accent palette & category metadata inspired by ZenXAI visual tokens
 const PRODUCT_ACCENTS = {
@@ -75,30 +72,6 @@ function getAccent(slug) {
   return PRODUCT_ACCENTS[slug] || DEFAULT_ACCENT;
 }
 
-// Status chip
-function StatusChip({ status }) {
-  const { label, tone } = PRODUCT_STATUS[status] || PRODUCT_STATUS.available;
-  const map = {
-    available: { bg: "rgba(16,185,129,0.15)", color: "#34D399", border: "rgba(16,185,129,0.45)" },
-    progress:  { bg: "rgba(56,189,248,0.15)", color: "#38BDF8", border: "rgba(56,189,248,0.45)" },
-    soon:      { bg: "rgba(148,163,184,0.10)", color: "#94A3B8", border: "rgba(148,163,184,0.30)" },
-  };
-  const s = map[tone] || map.available;
-  return (
-    <span
-      className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-bold tracking-wide uppercase"
-      style={{ background: s.bg, color: s.color, border: `1.5px solid ${s.border}` }}
-    >
-      {tone === "available" && (
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-      )}
-      {tone === "soon" && (
-        <Clock className="w-3 h-3 shrink-0" aria-hidden="true" />
-      )}
-      {label}
-    </span>
-  );
-}
 
 // Active Product Content Display with ZenXAI visual architecture
 function ZenXProductHero({ product, onExplore }) {
@@ -114,8 +87,6 @@ function ZenXProductHero({ product, onExplore }) {
         >
           {accent.label}
         </span>
-        <span className="text-white/20">•</span>
-        <StatusChip status={product.status} />
       </div>
 
       {/* 2. Big ZenXAI-Style Gradient Heading */}
@@ -139,12 +110,11 @@ function ZenXProductHero({ product, onExplore }) {
             background: "rgba(255, 255, 255, 0.03)",
             border: `1px solid ${accent.accent}40`,
             boxShadow: `0 12px 36px -10px ${accent.glow}`,
-            backdropFilter: "blur(12px)",
           }}
         >
           <div>
             <div
-              className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4"
+              className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4 select-none"
               style={{
                 color: accent.accent,
                 borderBottom: `1px solid ${accent.accent}30`,
@@ -179,12 +149,11 @@ function ZenXProductHero({ product, onExplore }) {
             background: "rgba(255, 255, 255, 0.03)",
             border: `1px solid ${accent.accent}40`,
             boxShadow: `0 12px 36px -10px ${accent.glow}`,
-            backdropFilter: "blur(12px)",
           }}
         >
           <div>
             <div
-              className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4"
+              className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4 select-none"
               style={{
                 color: accent.accent,
                 borderBottom: `1px solid ${accent.accent}30`,
@@ -496,17 +465,6 @@ export default function ProductShowcase() {
             From CRM and billing to fleet, travel, education and operations — pick the ZUGEE product built for your kind of business.
           </p>
 
-          {/* Availability Legend */}
-          <div className="flex items-center justify-center gap-6 flex-wrap">
-            <span className="inline-flex items-center gap-2 text-xs font-semibold">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-emerald-400">Available Now</span>
-            </span>
-            <span className="inline-flex items-center gap-2 text-xs font-semibold">
-              <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" aria-hidden="true" />
-              <span className="text-slate-400">In Development / Coming Soon</span>
-            </span>
-          </div>
         </div>
 
         {/* Mobile navigation: previous/next and the counter sit above the cards, so they stay put
