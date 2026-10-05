@@ -141,3 +141,10 @@ test("the Key Capabilities box lists every module of a product", () => {
   const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
   assert.ok(!/modules\.slice\(/.test(showcase), "capabilities must not be cut short");
 });
+
+test("product cards don't show the internal slug", () => {
+  const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
+  assert.ok(!/Module #\{product\.slug\}/.test(showcase));
+  assert.match(showcase, /Tailored for \{product\.industry\}/);
+  assert.match(showcase, /Replaces: \{accent\.replaces\}/);
+});

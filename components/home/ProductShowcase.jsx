@@ -127,17 +127,13 @@ function ZenXProductHero({ product, onExplore }) {
             </p>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-white/[0.06] flex flex-col gap-1.5 text-xs text-slate-400">
-            <div className="flex items-center justify-between">
-              <span>Tailored for {product.industry}</span>
-              <span className="font-mono text-[11px] uppercase tracking-wider text-slate-500">
-                Module #{product.slug}
-              </span>
-            </div>
+          {/* The product slug stays in the data and anchors; it is not shown on the card. */}
+          <div className="pt-4 mt-6 border-t border-white/[0.06] flex flex-col gap-2 text-xs text-slate-400">
+            <p>Tailored for {product.industry}</p>
             {accent.replaces && (
-              <div className="text-[11px] text-rose-300/80 font-mono">
+              <p className="text-[11px] text-rose-300/80 font-mono leading-relaxed">
                 Replaces: {accent.replaces}
-              </div>
+              </p>
             )}
           </div>
         </div>
