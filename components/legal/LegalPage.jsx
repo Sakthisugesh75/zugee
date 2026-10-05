@@ -92,7 +92,7 @@ export default function LegalPage({ path, title, intro, sections }) {
       <div className="container relative z-10 pt-32 pb-20 sm:pt-36">
         <article className="max-w-3xl mx-auto">
           <header className="pb-8 mb-10 border-b border-white/[0.08]">
-            <p className="text-sm font-mono font-semibold uppercase tracking-widest text-cyan-400 mb-3">Legal</p>
+            <p className="text-xs font-mono font-semibold uppercase tracking-widest text-cyan-400 mb-3">Legal</p>
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">{title}</h1>
             <p className="text-sm text-slate-400 font-mono">
               Last updated: <time dateTime={LEGAL_LAST_UPDATED_ISO}>{LEGAL_LAST_UPDATED}</time>
@@ -108,7 +108,7 @@ export default function LegalPage({ path, title, intro, sections }) {
           )}
 
           <nav aria-label="On this page" className="glass-card p-6 mb-12">
-            <p className="text-sm font-bold text-white uppercase tracking-wider mb-4">On this page</p>
+            <p className="text-xs font-bold text-white uppercase tracking-wider mb-4">On this page</p>
             <ol className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 list-none p-0 m-0 text-sm">
               {sections.map((section, idx) => (
                 <li key={section.id}>

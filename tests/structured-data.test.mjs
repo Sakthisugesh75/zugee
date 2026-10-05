@@ -86,27 +86,21 @@ test("serialised JSON-LD cannot close its script tag", () => {
   assert.ok(!serializeJsonLd({ text: "</script><script>alert(1)</script>" }).includes("<"));
 });
 
-test("the industry grid, the product carousel and the SoftwareApplication data use the same anchors", () => {
+test("every SoftwareApplication is a product the showcase renders, with its name and description", () => {
   const apps = home["@graph"].filter((node) => node["@type"] === "SoftwareApplication");
   const available = availableProducts();
   assert.equal(apps.length, available.length);
   available.forEach((product, i) => {
-    const anchor = `${SITE}/#${productAnchor(product.slug)}`;
-    assert.equal(apps[i]["@id"], anchor);
-    assert.equal(apps[i].url, anchor);
+    assert.equal(apps[i]["@id"], `${SITE}/#${productAnchor(product.slug)}`);
+    // No url: the showcase has no per-product anchor to point at.
+    assert.ok(!("url" in apps[i]), `${product.name} points at an anchor that doesn't exist`);
   });
 
-  // Both components must build their links and ids from availableProducts() and productAnchor(),
-  // so a card always lands on the block the structured data points to.
-  const read = (file) => fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", file), "utf8");
-  const grid = read("IndustryGrid.jsx");
-  const carousel = read("ProductCarousel.jsx");
-  assert.match(grid, /availableProducts\(\)/);
-  assert.match(grid, /href=\{`#\$\{productAnchor\(product\.slug\)\}`\}/);
-  assert.match(carousel, /availableProducts\(\)/);
-  // Every slide carries its anchor and stays in the HTML (inactive slides are only hidden).
-  assert.match(carousel, /id=\{productAnchor\(product\.slug\)\}/);
-  assert.match(carousel, /className=\{i === activeIndex \? undefined : "hidden"\}/);
-  assert.ok(!/setInterval/.test(carousel), "the carousel must not auto-rotate");
-  assert.match(grid, /id="products"/, "the grid keeps the #products anchor");
+  // The showcase renders every catalog product (all of them in the HTML, the active one shown),
+  // with the same name and description fields the structured data uses.
+  const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
+  assert.match(showcase, /PRODUCTS\.filter\(\(p\) => p\.status === "available"\)/);
+  assert.match(showcase, /\{product\.name\}/);
+  assert.match(showcase, /\{product\.description\}/);
+  assert.match(showcase, /id="products"/, "the showcase keeps the #products anchor");
 });

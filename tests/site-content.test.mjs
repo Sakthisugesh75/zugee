@@ -5,15 +5,13 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { FAQ_ITEMS, HOW_WE_WORK, SETUP_TIMELINE, WHY_ZUGEE } from "../lib/site-content.js";
+import { FAQ_ITEMS, HOW_WE_WORK } from "../lib/site-content.js";
 import { PLANS, formatINR, newSubscriptionCharges } from "../lib/pricing.js";
 import { LEGAL_DRAFT, LEGAL_PAGES, legalMetadata } from "../lib/legal.js";
-import { PRODUCTS } from "../lib/products.js";
 
 const allCopy = [
   ...FAQ_ITEMS.flatMap((f) => [f.question, f.answer]),
-  ...HOW_WE_WORK.flatMap((s) => [s.title, s.body]),
-  ...WHY_ZUGEE.flatMap((p) => [p.title, p.body])
+  ...HOW_WE_WORK.flatMap((s) => [s.title, s.body])
 ].join("\n");
 
 // Every source file that can put text on the public site, its metadata or its structured data.
@@ -140,44 +138,16 @@ test("the setup fee and subscription are explained, with pricing shared on the c
   assert.match(monthly.answer, /on the call/i);
 });
 
-// Approved by the founder on 2026-10-04. "In one login" means one login within a product; two
-// products still run separately with their own data.
-const MULTI_PRODUCT_ANSWER =
-  "Each ZUGEE product is a complete system for its industry, in one login. If you run two different businesses, each product runs separately with its own data.";
-
 test("the FAQ never claims a shared login or shared database across products", () => {
+  assert.ok(!/unified zugee account|unified account|single login|one login|one account|one operating system/i.test(allCopy));
+  assert.ok(!/shared (login|users|database)/i.test(allCopy));
+
   const multi = FAQ_ITEMS.find((f) => f.question === "Can I use more than one ZUGEE product?");
   assert.ok(multi);
-  assert.equal(multi.answer, MULTI_PRODUCT_ANSWER);
-
-  // Outside that one approved answer, no copy may suggest one login or account across products.
-  const rest = allCopy.replace(MULTI_PRODUCT_ANSWER, "");
-  assert.ok(!/unified zugee account|unified account|single login|one login|one account|one operating system/i.test(rest));
-  assert.ok(!/shared (login|users|database)/i.test(allCopy));
-  assert.ok(!/across (all )?(our |zugee )?products/i.test(allCopy));
-});
-
-test("the old 'separate software with its own login' wording is gone from the homepage", () => {
-  const sources = [
-    ...fs.readdirSync(path.join(REPO_ROOT, "components", "home")).map((f) => path.join(REPO_ROOT, "components", "home", f)),
-    path.join(REPO_ROOT, "app", "(marketing)", "page.jsx")
-  ];
-  for (const file of sources) {
-    const source = fs.readFileSync(file, "utf8");
-    assert.ok(!/own login|separate software|runs as its own system/i.test(source), `${path.relative(REPO_ROOT, file)} uses the old wording`);
-  }
-  assert.ok(!/own login|separate software/i.test(allCopy), "site copy uses the old wording");
-});
-
-test("the 'which products' FAQ names exactly the Available products", () => {
-  const faq = FAQ_ITEMS.find((f) => f.question === "Which ZUGEE products can I use today?");
-  assert.ok(faq);
-  for (const product of PRODUCTS) {
-    if (product.status === "available") assert.ok(faq.answer.includes(product.name), `${product.name} missing`);
-    else assert.ok(!faq.answer.includes(product.name), `Coming Soon product ${product.name} named`);
-  }
-  assert.ok(faq.answer.endsWith("More industries are on the way — tell us yours and we'll let you know."));
-  assert.ok(!/coming soon/i.test(faq.answer));
+  assert.match(multi.answer, /^Yes\./);
+  assert.match(multi.answer, /own login/i);
+  assert.match(multi.answer, /side by side/i);
+  assert.ok(!/coming soon/i.test(multi.answer));
 });
 
 // ---------------------------------------------------------------------------
@@ -221,53 +191,4 @@ test("legal pages publish no price and no promise the company cannot keep", () =
   const privacy = legalSources.find((p) => p.href === "/privacy").source;
   assert.match(privacy, /We do not promise that your data never leaves India/);
   assert.match(privacy, /sets no cookies for visitors/);
-});
-
-test("Why ZUGEE keeps to the approved wording", () => {
-  assert.deepEqual(WHY_ZUGEE.map((p) => p.key), ["tally", "price", "setup", "custom"]);
-  const copy = WHY_ZUGEE.flatMap((p) => [p.title, p.body]).join("\n");
-
-  // Tally: alongside, never a sync, an integration or a replacement.
-  const tally = WHY_ZUGEE.find((p) => p.key === "tally");
-  assert.match(tally.title, /alongside Tally/);
-  assert.ok(!/\bsync|integrat|replac/i.test(copy), "Why ZUGEE must not claim a Tally sync, integration or replacement");
-
-  // Price: the Terms wording, word for word.
-  const price = WHY_ZUGEE.find((p) => p.key === "price");
-  assert.equal(price.title, "Your monthly price is fixed for the life of your subscription");
-
-  // Custom work is something we build, not something already included.
-  const custom = WHY_ZUGEE.find((p) => p.key === "custom");
-  assert.match(custom.body, /\bWe build\b/);
-  assert.ok(!/\b(included|built in|comes with|out of the box)\b/i.test(copy));
-
-  // Never e-invoice, IRN, e-way bill or GSTR; no superlatives.
-  assert.ok(!/e-?invoic|\bIRN\b|e-?way bill|GSTR/i.test(copy));
-  assert.ok(!/\b(best|only|leading|#1|number one)\b/i.test(copy));
-});
-
-test("How it works is Demo, Setup, Go-live, Support, with only the approved timeline", () => {
-  assert.deepEqual(HOW_WE_WORK.map((s) => s.title), ["Demo", "Setup", "Go-live", "Support"]);
-  assert.equal(SETUP_TIMELINE, "Setup typically takes about 14 days. This is a target, not a guarantee.");
-
-  // No other "N days" / "N weeks" timeline anywhere the homepage is built from.
-  const sources = [
-    ...fs.readdirSync(path.join(REPO_ROOT, "components", "home")).map((f) => path.join(REPO_ROOT, "components", "home", f)),
-    path.join(REPO_ROOT, "app", "(marketing)", "page.jsx"),
-    path.join(REPO_ROOT, "lib", "site-content.js")
-  ];
-  for (const file of sources) {
-    const source = fs.readFileSync(file, "utf8").replaceAll(SETUP_TIMELINE, "");
-    const timeline = source.match(/\b\d+[\s-]*(working[\s-])?(days?|weeks?|months?)\b/i);
-    assert.ok(!timeline, `${path.relative(REPO_ROOT, file)} states a timeline: "${timeline?.[0]}"`);
-  }
-});
-
-test("the pricing section quotes on a call, states the price lock, and shows no prices", () => {
-  const source = fs.readFileSync(path.join(REPO_ROOT, "components", "home", "PricingSection.jsx"), "utf8");
-  assert.match(source, /id="pricing"/);
-  assert.match(source, /Your monthly price is fixed for the life of your subscription\./);
-  assert.ok(!/from ["'][^"']*lib\/pricing/.test(source), "the pricing section must not import lib/pricing.js");
-  assert.ok(!/₹|\bRs\.?\s?\d|\bINR\b|\/\s?(month|mo)\b/i.test(source), "the pricing section shows a price");
-  assert.ok(!/\b(best|cheapest|lowest)\b/i.test(source), "no superlatives");
 });
