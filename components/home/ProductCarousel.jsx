@@ -82,6 +82,7 @@ function ProductSlide({ product, onExplore }) {
         style={{
           backgroundImage: `linear-gradient(135deg, #FFFFFF 40%, ${accent.accent} 140%)`,
           WebkitBackgroundClip: "text",
+          backgroundClip: "text",
           WebkitTextFillColor: "transparent"
         }}
       >
@@ -337,7 +338,7 @@ export default function ProductCarousel() {
       ref={sectionRef}
       aria-labelledby="product-details-heading"
       aria-roledescription="carousel"
-      className="relative overflow-x-clip py-16 sm:py-24 bg-[#06060e] border-b border-white/[0.05]"
+      className="relative overflow-x-clip py-16 sm:py-24 bg-[#06060e] border-b border-white/[0.05] [-webkit-tap-highlight-color:transparent]"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -353,9 +354,19 @@ export default function ProductCarousel() {
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <h2
           id="product-details-heading"
-          className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white text-center mb-8 sm:mb-12"
+          className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white text-center leading-tight mb-10 sm:mb-14"
         >
-          What each product covers
+          What each product{" "}
+          <span
+            style={{
+              backgroundImage: "linear-gradient(135deg, #06B6D4, #3B82F6)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent"
+            }}
+          >
+            covers
+          </span>
         </h2>
 
         {/* Mobile: previous / counter / next above the slide, so they don't move between slides */}
@@ -370,7 +381,7 @@ export default function ProductCarousel() {
         </div>
 
         <div
-          className="relative flex items-center justify-center lg:min-h-[520px] px-0 lg:px-12 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
+          className="relative flex items-center justify-center lg:min-h-[520px] px-0 lg:px-12 rounded-3xl select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400/70"
           tabIndex={0}
           onKeyDown={onKeyDown}
           aria-label="Products. Use the left and right arrow keys to move between products."

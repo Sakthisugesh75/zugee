@@ -1,17 +1,14 @@
 // components/home/Hero.jsx
 // Hero in the original dark design (ambient glow, grid texture, uppercase headline with a gradient
-// half) with the current content only: headline, where we are based, one "Book a demo" button and
-// the industries available today. No dashboards, screenshots or anything resembling product screens.
-// Server component; only the scroll button is a client island. Glows only under motion-safe.
+// half) with the current content only: headline, subline and one "Book a demo" button. No
+// dashboards, screenshots or anything resembling product screens. The company's location is in
+// the footer. Server component; only the scroll button is a client island. Glows only under
+// motion-safe.
 
 import { ArrowRight } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
-import { availableProducts } from "@/lib/products";
-import { productIcon } from "@/components/home/product-icons";
 
 export default function Hero() {
-  const products = availableProducts();
-
   return (
     <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#06060e] border-b border-white/[0.06]">
       {/* Background ambient lighting (motion-safe only) and grid texture */}
@@ -30,25 +27,26 @@ export default function Hero() {
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto text-center mb-6">
-          <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-white leading-[1.08] uppercase text-balance">
-            Industry-ready ERP &amp; CRM for Indian businesses —{" "}
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-white leading-[1.08] uppercase text-balance">
+            ERP &amp; CRM{" "}
             <span
               style={{
                 backgroundImage: "linear-gradient(135deg, #06B6D4 20%, #3B82F6 60%, #8B5CF6 100%)",
                 WebkitBackgroundClip: "text",
+                backgroundClip: "text",
                 WebkitTextFillColor: "transparent"
               }}
             >
-              set up for you, supported by a real person.
+              built for your industry.
             </span>
           </h1>
         </div>
 
-        <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto text-center leading-relaxed mb-8">
-          Based in Coimbatore, Tamil Nadu.
+        <p className="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto text-center leading-relaxed mb-10">
+          Your daily operations in one system — configured to how your business works.
         </p>
 
-        <div className="flex justify-center mb-12">
+        <div className="flex justify-center">
           <SmoothScrollLink
             targetId="contact"
             className="group/btn w-full sm:w-auto min-h-12 px-8 py-3.5 rounded-full text-white text-base font-bold uppercase tracking-[0.1em] inline-flex items-center justify-center gap-2.5 cursor-pointer bg-gradient-to-br from-cyan-700 to-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300 focus-visible:ring-offset-2 focus-visible:ring-offset-[#06060e] motion-safe:shadow-[0_8px_32px_rgba(6,182,212,0.35)] motion-safe:transition-transform motion-safe:duration-300 motion-safe:hover:scale-105"
@@ -56,24 +54,6 @@ export default function Hero() {
             <span>Book a demo</span>
             <ArrowRight className="w-4 h-4 motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover/btn:translate-x-1" aria-hidden="true" />
           </SmoothScrollLink>
-        </div>
-
-        <div className="max-w-5xl mx-auto">
-          <p className="text-base text-slate-300 text-center mb-5">Software for these industries, available today:</p>
-          <ul className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 list-none p-0 m-0">
-            {products.map((product) => {
-              const Icon = productIcon(product.slug);
-              return (
-                <li
-                  key={product.slug}
-                  className="flex items-center gap-2.5 rounded-2xl sm:rounded-full border border-white/[0.12] bg-white/[0.03] backdrop-blur-md px-4 py-2.5"
-                >
-                  <Icon className="w-5 h-5 shrink-0 text-cyan-300" aria-hidden="true" />
-                  <span className="text-base text-slate-100 leading-snug">{product.industry}</span>
-                </li>
-              );
-            })}
-          </ul>
         </div>
       </div>
     </section>

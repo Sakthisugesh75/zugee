@@ -34,6 +34,7 @@ export default function PricingSection() {
               style={{
                 backgroundImage: "linear-gradient(135deg, #06B6D4, #3B82F6)",
                 WebkitBackgroundClip: "text",
+                backgroundClip: "text",
                 WebkitTextFillColor: "transparent"
               }}
             >
