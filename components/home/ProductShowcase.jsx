@@ -49,7 +49,7 @@ const PRODUCT_ACCENTS = {
   "logistics":     { accent: "#F97316", accent2: "#EA580C", glow: "rgba(249,115,22,0.25)",  label: "LOGISTICS",         icon: Truck },
   "gym":           { accent: "#10B981", accent2: "#059669", glow: "rgba(168,185,129,0.25)",  label: "FITNESS & WELLNESS", icon: Activity, replaces: "Card-based membership logs" },
   "salon":         { accent: "#EC4899", accent2: "#DB2777", glow: "rgba(236,72,153,0.25)",  label: "BEAUTY & SALON",    icon: Users, replaces: "Paper appointment books" },
-  "medical":       { accent: "#EF4444", accent2: "#DC2626", glow: "rgba(239,68,68,0.25)",   label: "HEALTHCARE",        icon: Shield, replaces: "Handwritten prescription pads + desk billing" },
+  "medical":       { accent: "#EF4444", accent2: "#DC2626", glow: "rgba(239,68,68,0.25)",   label: "HEALTHCARE",        icon: Shield, replaces: "Paper OP registers + manual billing" },
   "construction":  { accent: "#94A3B8", accent2: "#64748B", glow: "rgba(148,163,184,0.25)", label: "CONSTRUCTION",      icon: Layers, replaces: "Site notebook muster rolls" },
   "warehouse":     { accent: "#6366F1", accent2: "#4F46E5", glow: "rgba(99,102,241,0.25)",  label: "WAREHOUSING",       icon: Layers, replaces: "Bin cards + manual tallying" },
   "tasks":         { accent: "#06B6D4", accent2: "#0284C7", glow: "rgba(6,182,212,0.25)",   label: "PRODUCTIVITY",      icon: TrendingUp, replaces: "Scattered WhatsApp task reminders" },
@@ -163,7 +163,7 @@ function ZenXProductHero({ product, onExplore }) {
             </div>
 
             <ul className="space-y-3">
-              {product.modules.slice(0, 5).map((mod) => (
+              {product.modules.map((mod) => (
                 <li
                   key={mod}
                   className="flex items-center gap-3 text-sm sm:text-[15px] text-slate-200"

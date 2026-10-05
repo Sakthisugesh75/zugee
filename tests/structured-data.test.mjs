@@ -112,3 +112,32 @@ test("the footer lists only Available products", () => {
   assert.match(footer, /const listedProducts = availableProducts\(\);/);
   assert.ok(!/coming_soon/.test(footer));
 });
+
+test("Hospital Management is Available, as approved, everywhere Available products appear", async () => {
+  const { DEMO_FORM_BUSINESS_TYPES, availableProducts: available } = await import("../lib/products.js");
+  const hospital = PRODUCTS.find((p) => p.slug === "medical");
+  assert.equal(hospital.name, "Hospital Management");
+  assert.equal(hospital.industry, "Hospitals & clinics");
+  assert.equal(hospital.status, "available");
+  assert.equal(
+    hospital.description,
+    "Patients, appointments, doctors, admissions, billing, pharmacy and lab reports for hospitals and clinics."
+  );
+  assert.deepEqual(hospital.modules, [
+    "Patients (registration, history)",
+    "Appointments",
+    "Doctors & departments",
+    "OP & IP admissions",
+    "Billing",
+    "Pharmacy",
+    "Lab reports"
+  ]);
+  assert.ok(available().some((p) => p.slug === "medical"), "in the carousel");
+  assert.ok(DEMO_FORM_BUSINESS_TYPES.some((b) => b.id === "medical"), "in the demo form");
+  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "Hospital Management"), "in the structured data");
+});
+
+test("the Key Capabilities box lists every module of a product", () => {
+  const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
+  assert.ok(!/modules\.slice\(/.test(showcase), "capabilities must not be cut short");
+});
