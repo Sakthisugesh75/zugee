@@ -207,7 +207,7 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
   const accent = getAccent(product.slug);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 lg:bg-black/80 backdrop-blur-md animate-fade-in">
       <div
         className="relative w-full max-w-2xl rounded-3xl p-6 sm:p-8 overflow-hidden border shadow-2xl"
         style={{
@@ -442,10 +442,10 @@ export default function ProductShowcase() {
       {/* Dynamic Ambient Background Glow that morphs with active product accent */}
       <div className="absolute inset-0 pointer-events-none">
         <div
-          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[550px] rounded-full blur-[80px] lg:blur-[190px] transition-colors duration-1000"
+          className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[700px] h-[550px] rounded-full ambient-glow lg:blur-[190px] transition-colors duration-1000"
           style={{ background: `${activeAccent.accent}14` }}
         />
-        <div className="absolute bottom-[10%] right-[15%] w-[450px] h-[450px] bg-indigo-600/[0.04] rounded-full blur-[80px] lg:blur-[160px]" />
+        <div className="absolute bottom-[10%] right-[15%] w-[450px] h-[450px] bg-indigo-600/[0.04] rounded-full ambient-glow lg:blur-[160px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">

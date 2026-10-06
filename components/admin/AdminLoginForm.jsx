@@ -59,7 +59,7 @@ export default function AdminLoginForm() {
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 bg-[#06090F] bg-cyber-grid text-white overflow-hidden">
       {/* Ambient center glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.1)_0%,transparent_70%)] pointer-events-none blur-3xl" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.1)_0%,transparent_70%)] pointer-events-none lg:blur-3xl" />
 
       <div
         className={`relative z-10 w-full max-w-md bg-[#0A0F1D]/90 backdrop-blur-2xl p-8 sm:p-10 rounded-3xl border border-white/[0.12] shadow-[0_20px_70px_rgba(0,0,0,0.8)] transition-transform ${

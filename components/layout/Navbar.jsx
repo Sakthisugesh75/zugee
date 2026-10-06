@@ -53,9 +53,9 @@ export default function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow,padding] duration-500 ${
         scrolled
-          ? "bg-[#05070B]/90 backdrop-blur-2xl border-b border-white/[0.12] shadow-[0_8px_40px_rgba(0,0,0,0.9),0_0_80px_rgba(6,182,212,0.08)] py-3.5"
+          ? "bg-[#05070B] lg:bg-[#05070B]/90 backdrop-blur-2xl border-b border-white/[0.12] shadow-[0_8px_40px_rgba(0,0,0,0.9),0_0_80px_rgba(6,182,212,0.08)] py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -127,7 +127,7 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
           <div
-            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto bg-[#05070B]/95 backdrop-blur-2xl border-b border-white/[0.15] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_100px_rgba(6,182,212,0.1)] text-white z-50"
+            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain bg-[#05070B]/[0.98] backdrop-blur-2xl border-b border-white/[0.15] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_100px_rgba(6,182,212,0.1)] text-white z-50"
           >
             <div className="flex flex-col gap-4">
 

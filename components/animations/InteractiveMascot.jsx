@@ -184,7 +184,7 @@ export default function InteractiveMascot({
     >
       {/* Ambient glow that pulses gently */}
       <div 
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-48 h-10 rounded-full bg-[#00F0FF]/20 blur-2xl animate-pulse"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 w-48 h-10 rounded-full bg-[#00F0FF]/20 lg:blur-2xl animate-pulse"
         style={{ 
           animationDuration: "4s",
           opacity: scale > 1 ? 0.4 : 0.2 

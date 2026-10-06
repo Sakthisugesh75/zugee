@@ -32,8 +32,8 @@ export default function FinalCTA() {
     <section className="section-wrapper bg-gradient-to-b from-[#05070B] via-[#06090F] to-[#04070D] border-t border-white/[0.08] relative overflow-hidden">
       {/* Background glow effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full blur-[80px] lg:blur-[120px]" />
-        <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[80px] lg:blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full ambient-glow lg:blur-[120px]" />
+        <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full ambient-glow lg:blur-[100px]" />
       </div>
 
       <div className="container relative z-10">
@@ -47,7 +47,7 @@ export default function FinalCTA() {
               {/* Left: Mascot */}
               <div className="shrink-0 hidden lg:block">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-cyan-500/20 rounded-full blur-3xl" />
+                  <div className="absolute inset-0 bg-cyan-500/20 rounded-full lg:blur-3xl" />
                   <InteractiveMascot
                     size={140}
                     className="relative z-10"

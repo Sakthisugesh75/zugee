@@ -116,8 +116,8 @@ export default function ComparisonSection() {
     <section className="py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] relative overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-rose-600/[0.03] rounded-full blur-[80px] lg:blur-[170px]" />
-        <div className="absolute top-[30%] right-[20%] w-[550px] h-[500px] bg-cyan-500/[0.05] rounded-full blur-[80px] lg:blur-[180px]" />
+        <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-rose-600/[0.03] rounded-full ambient-glow lg:blur-[170px]" />
+        <div className="absolute top-[30%] right-[20%] w-[550px] h-[500px] bg-cyan-500/[0.05] rounded-full ambient-glow lg:blur-[180px]" />
       </div>
 
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
