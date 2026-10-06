@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { availableProducts } from "@/lib/products";
 import { LEGAL_PAGES } from "@/lib/legal";
+import { SOCIAL_PROFILES } from "@/lib/site";
 import { ArrowUp } from "lucide-react";
 
 const SITE_LINKS = [
@@ -74,6 +75,24 @@ export default function Footer() {
               </svg>
               <span className="text-xs font-semibold text-cyan-400">Built for Indian SMEs</span>
             </div>
+
+            <nav aria-label="ZUGEE on social media" className="mt-2">
+              <p className="text-xs font-bold text-white uppercase tracking-wider mb-3">Follow ZUGEE</p>
+              <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+                {SOCIAL_PROFILES.map((profile) => (
+                  <li key={profile.url}>
+                    <a
+                      href={profile.url}
+                      target="_blank"
+                      rel="me noopener noreferrer"
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-white/[0.04] border border-white/[0.12] hover:text-[#00F0FF] hover:border-cyan-500/40 transition-colors"
+                    >
+                      {profile.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
 
           <nav aria-label="Site">

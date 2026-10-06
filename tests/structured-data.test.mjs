@@ -9,6 +9,7 @@ import { homePageSchema, organizationSchema, serializeJsonLd } from "../lib/stru
 import { FAQ_ITEMS } from "../lib/site-content.js";
 import { PRODUCTS, availableProducts, productAnchor } from "../lib/products.js";
 import { COMPANY } from "../lib/legal.js";
+import { SOCIAL_PROFILES } from "../lib/site.js";
 
 const SITE = "https://www.example.com";
 const organization = organizationSchema(SITE);
@@ -58,6 +59,15 @@ test("the Organization carries the company's real contact details, without a pho
   assert.equal(organization.address.addressLocality, "Coimbatore");
   assert.equal(organization.address.addressRegion, "Tamil Nadu");
   assert.equal(organization.address.addressCountry, "IN");
+});
+
+test("the Organization's sameAs lists exactly the social profiles the footer links to", () => {
+  assert.deepEqual(organization.sameAs, SOCIAL_PROFILES.map((p) => p.url));
+  for (const { label, url } of SOCIAL_PROFILES) {
+    assert.ok(label, "every profile needs a visible label");
+    assert.equal(new URL(url).protocol, "https:", `${url} must be an https URL`);
+  }
+  assert.equal(new Set(organization.sameAs).size, organization.sameAs.length, "duplicate profile URL");
 });
 
 test("the FAQPage matches the visible FAQ exactly", () => {
