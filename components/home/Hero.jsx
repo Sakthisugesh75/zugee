@@ -79,7 +79,7 @@ export default function Hero() {
   const activeTab = PREVIEW_TABS.find((t) => t.id === activeTabId) || PREVIEW_TABS[0];
 
   return (
-    <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-[#06060e] border-b border-white/[0.06]">
+    <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-canvas light-mesh border-b border-ink/[0.06]">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-cyan-500/[0.07] rounded-full ambient-glow lg:blur-[180px]" />
@@ -88,7 +88,7 @@ export default function Hero() {
         <div
           className="absolute inset-0 opacity-[0.14]"
           style={{
-            backgroundImage: "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(to right, color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 6%, transparent) 1px, transparent 1px)",
             backgroundSize: "28px 28px",
           }}
         />
@@ -97,7 +97,7 @@ export default function Hero() {
       <div className="container relative z-10 max-w-6xl mx-auto px-4 sm:px-6">
         {/* Top Eyebrow Badge */}
         <div className="flex justify-center mb-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.03] border border-cyan-400/30 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)]">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-ink/[0.03] border border-cyan-400/30 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)]">
             <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
             <span className="text-[11px] sm:text-xs font-mono font-bold uppercase tracking-[0.2em] text-cyan-300">
               INDUSTRY-SPECIFIC BUSINESS SOFTWARE
@@ -107,7 +107,7 @@ export default function Hero() {
 
         {/* Hero Headline */}
         <div className="max-w-4xl mx-auto text-center mb-6">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-white leading-[1.08] uppercase">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-fg leading-[1.08] uppercase">
             Specialised Software for Your Industry,{" "}
             <span
               className="inline-block"
@@ -144,14 +144,14 @@ export default function Hero() {
 
           <SmoothScrollLink
             targetId="contact"
-            className="w-full sm:w-auto px-7 py-3.5 rounded-full text-slate-200 hover:text-white text-sm font-semibold tracking-wide inline-flex items-center justify-center bg-white/[0.04] border border-white/[0.12] hover:border-cyan-400/40 hover:bg-white/[0.08] transition-all duration-300"
+            className="w-full sm:w-auto px-7 py-3.5 rounded-full text-slate-200 hover:text-fg text-sm font-semibold tracking-wide inline-flex items-center justify-center bg-ink/[0.04] light:bg-surface light:shadow-card border border-ink/[0.12] hover:border-cyan-400/40 hover:bg-ink/[0.08] transition-all duration-300"
           >
             Book a 1-on-1 Live Demo
           </SmoothScrollLink>
         </div>
 
         {/* Proof Checkpoints */}
-        <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8 mb-4 text-xs sm:text-sm text-slate-300">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 sm:gap-8 mb-5 text-sm text-slate-300">
           <span className="flex items-center gap-1.5 font-medium">
             <CheckCircle2 className="w-4 h-4 text-cyan-400" />
             Zero Double Data Entry
@@ -167,7 +167,7 @@ export default function Hero() {
         </div>
 
         {/* Each product is separate: own login, own database */}
-        <p className="text-center text-xs text-slate-500 mb-12 max-w-xl mx-auto">
+        <p className="text-center text-sm text-slate-400 leading-relaxed mb-12 max-w-xl mx-auto">
           Each ZUGEE product is separate software with its own login and its own data.
           Choose the one built for your business.
         </p>
@@ -179,27 +179,27 @@ export default function Hero() {
           <div
             className="rounded-3xl p-4 sm:p-6 md:p-8 relative overflow-hidden transition-all duration-500"
             style={{
-              background: "rgba(13, 13, 26, 0.75)",
+              background: "color-mix(in srgb, var(--color-surface) 75%, transparent)",
               border: `1px solid ${activeTab.accent}40`,
-              boxShadow: `0 24px 70px -15px ${activeTab.accent}20, 0 0 0 1px rgba(255,255,255,0.05)`,
+              boxShadow: `0 24px 70px -15px ${activeTab.accent}20, 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent), var(--theme-shadow-card-raised)`,
               backdropFilter: "blur(16px)",
             }}
           >
             {/* Top Bar: Live Status & Tabs */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/[0.08] mb-6">
-              <div className="flex items-center gap-3">
-                <div className="w-3 h-3 rounded-full bg-slate-500" />
-                <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+            <div className="pb-4 border-b border-ink/[0.08] mb-6 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-x-3 gap-y-1.5">
+                <span className="flex items-start sm:items-center gap-2.5 text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider text-slate-400">
+                  <span className="w-2.5 h-2.5 mt-[3px] sm:mt-0 rounded-full bg-slate-500 shrink-0" />
                   SAMPLE DASHBOARD VIEW — ILLUSTRATIVE DATA ONLY
                 </span>
-                <span className="text-white/20">|</span>
-                <span className="text-xs font-mono text-cyan-300">
+                <span className="hidden sm:inline text-ink/20">|</span>
+                <span className="text-xs sm:text-sm font-mono text-cyan-300">
                   {activeTab.stat}
                 </span>
               </div>
 
-              {/* Interactive Module Switchers */}
-              <div className="flex gap-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
+              {/* Interactive Module Switchers: a grid, so every module is visible at every width */}
+              <div role="tablist" aria-label="Sample modules" className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {PREVIEW_TABS.map((tab) => {
                   const isActive = tab.id === activeTabId;
                   const Icon = tab.icon;
@@ -207,15 +207,17 @@ export default function Hero() {
                     <button
                       key={tab.id}
                       type="button"
+                      role="tab"
+                      aria-selected={isActive}
                       onClick={() => setActiveTabId(tab.id)}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200"
+                      className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all duration-200 cursor-pointer"
                       style={{
-                        background: isActive ? `${tab.accent}20` : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${isActive ? `${tab.accent}60` : "rgba(255,255,255,0.06)"}`,
-                        color: isActive ? "#FFFFFF" : "#94A3B8",
+                        background: isActive ? `${tab.accent}20` : "color-mix(in srgb, var(--color-ink) 3%, transparent)",
+                        border: `1px solid ${isActive ? `${tab.accent}60` : "color-mix(in srgb, var(--color-ink) 6%, transparent)"}`,
+                        color: isActive ? "var(--color-fg)" : "var(--color-slate-400)",
                       }}
                     >
-                      <Icon className="w-3.5 h-3.5" style={{ color: isActive ? tab.accent : undefined }} />
+                      <Icon className="w-4 h-4 shrink-0" style={{ color: isActive ? tab.accent : undefined }} />
                       <span>{tab.label}</span>
                     </button>
                   );
@@ -228,24 +230,24 @@ export default function Hero() {
               {activeTab.sampleData.map((row, idx) => (
                 <div
                   key={idx}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:border-white/[0.12] transition-colors gap-2"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3.5 rounded-xl bg-card border border-line shadow-card hover:border-ink/[0.12] transition-colors gap-2"
                 >
                   <div className="flex items-center gap-3">
                     <span
                       className="w-2 h-2 rounded-full flex-shrink-0"
                       style={{ background: activeTab.accent, boxShadow: `0 0 8px ${activeTab.accent}` }}
                     />
-                    <span className="text-sm font-semibold text-white">{row.name}</span>
+                    <span className="text-sm sm:text-base font-semibold text-fg">{row.name}</span>
                   </div>
 
-                  <div className="flex items-center gap-4 text-xs">
-                    <span className="px-2 py-0.5 rounded-md bg-white/[0.05] text-slate-300 border border-white/[0.08]">
+                  <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pl-5 sm:pl-0 text-xs sm:text-sm">
+                    <span className="px-2 py-0.5 rounded-md bg-ink/[0.05] text-slate-300 border border-ink/[0.08]">
                       {row.stage}
                     </span>
-                    <span className="font-mono font-bold text-slate-200 min-w-[90px] text-right">
+                    <span className="font-mono font-bold text-slate-200 sm:min-w-[100px] sm:text-right">
                       {row.value}
                     </span>
-                    <span className="text-[11px] font-mono text-slate-500 min-w-[70px] text-right">
+                    <span className="text-xs font-mono text-slate-500 sm:min-w-[80px] sm:text-right">
                       {row.time}
                     </span>
                   </div>
@@ -254,9 +256,9 @@ export default function Hero() {
             </div>
 
             {/* Bottom Sync Bar */}
-            <div className="mt-5 pt-3.5 border-t border-white/[0.06] flex items-center justify-between text-xs text-slate-400">
-              <div className="flex items-center gap-2">
-                <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="mt-5 pt-3.5 border-t border-ink/[0.06] flex items-center justify-between gap-3 text-xs sm:text-sm text-slate-400">
+              <div className="flex items-start sm:items-center gap-2">
+                <Activity className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5 sm:mt-0" />
                 <span>Inside each product, an update in one module shows up in the others — no re-entry.</span>
               </div>
               <span className="hidden sm:inline font-mono text-slate-500 font-semibold">

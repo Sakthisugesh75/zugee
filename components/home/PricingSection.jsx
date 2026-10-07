@@ -73,7 +73,7 @@ export default function PricingSection({ plans }) {
   return (
     <section
       id="pricing"
-      className="relative overflow-hidden py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] scroll-mt-[80px]"
+      className="relative overflow-hidden py-20 sm:py-28 bg-canvas-alt border-b border-ink/[0.06] scroll-mt-[80px]"
     >
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
@@ -87,7 +87,7 @@ export default function PricingSection({ plans }) {
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
             Pricing
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-fg mb-4 leading-tight">
             Get the Best Price{" "}
             <span
               style={{
@@ -111,10 +111,10 @@ export default function PricingSection({ plans }) {
           {PRICE_FACTORS.map((factor) => {
             const Icon = factor.icon;
             return (
-              <div key={factor.title} className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
+              <div key={factor.title} className="p-4 rounded-2xl bg-card border border-line shadow-card text-center">
                 <Icon className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
-                <p className="text-xs font-bold text-white mb-0.5">{factor.title}</p>
-                <p className="text-[11px] text-slate-400">{factor.desc}</p>
+                <p className="text-sm font-bold text-fg mb-0.5">{factor.title}</p>
+                <p className="text-xs text-slate-400">{factor.desc}</p>
               </div>
             );
           })}
@@ -133,7 +133,7 @@ export default function PricingSection({ plans }) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto items-stretch mb-16">
           {/* 1. STARTER PLAN */}
           <article
-            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-[#080C16] border border-white/[0.10] hover:border-white/[0.20] shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-surface border border-ink/[0.10] hover:border-ink/[0.20] shadow-[0_10px_30px_color-mix(in_srgb,var(--color-shade)_50%,transparent)]"
           >
             <div>
               {/* Badge & Name */}
@@ -141,19 +141,19 @@ export default function PricingSection({ plans }) {
                 <h3 className="text-xs sm:text-sm font-bold uppercase tracking-[0.16em] text-slate-300">
                   Starter Plan
                 </h3>
-                <span className="px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
+                <span className="px-2.5 py-0.5 rounded-full bg-ink/[0.04] border border-ink/[0.08] text-[10px] font-semibold tracking-wider text-slate-400 uppercase">
                   Single Branch
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
+              <p className="text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
                 For independent businesses getting started with connected workflows.
               </p>
 
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
                 {starter.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-200">
                     <Check className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
@@ -167,7 +167,7 @@ export default function PricingSection({ plans }) {
                 <button
                   type="button"
                   onClick={() => toggleAccordion("starter")}
-                  className="w-full flex items-center justify-between text-xs font-semibold text-slate-300 hover:text-white py-2 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-fg py-2 transition-colors cursor-pointer"
                 >
                   <span>What white-glove setup covers</span>
                   <ChevronDown
@@ -177,7 +177,7 @@ export default function PricingSection({ plans }) {
                   />
                 </button>
                 {openAccordions.starter && (
-                  <ul className="p-3 mt-1.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-xs text-slate-300">
+                  <ul className="p-3 mt-1.5 rounded-xl bg-card border border-line shadow-card space-y-1.5 text-sm text-slate-300">
                     {starter.setupIncludes.slice(0, 5).map((item) => (
                       <li key={item} className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
@@ -197,7 +197,7 @@ export default function PricingSection({ plans }) {
 
           {/* 2. GROWTH PLAN */}
           <article
-            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-[#0C1222] border-2 border-cyan-400/60 shadow-[0_20px_60px_-15px_rgba(6,182,212,0.30)] hover:border-cyan-400"
+            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-surface-raised border-2 border-cyan-400/60 shadow-[0_20px_60px_-15px_rgba(6,182,212,0.30)] hover:border-cyan-400"
           >
             <div>
               {/* Badge & Name */}
@@ -210,14 +210,14 @@ export default function PricingSection({ plans }) {
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
+              <p className="text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
                 For expanding businesses with multiple branches, dispatch operations, or teams.
               </p>
 
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
                 {growth.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-100 font-medium">
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-100 font-medium">
                     <Check className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
@@ -231,7 +231,7 @@ export default function PricingSection({ plans }) {
                 <button
                   type="button"
                   onClick={() => toggleAccordion("growth")}
-                  className="w-full flex items-center justify-between text-xs font-semibold text-slate-300 hover:text-white py-2 transition-colors cursor-pointer"
+                  className="w-full flex items-center justify-between text-sm font-semibold text-slate-300 hover:text-fg py-2 transition-colors cursor-pointer"
                 >
                   <span>What white-glove setup covers</span>
                   <ChevronDown
@@ -241,7 +241,7 @@ export default function PricingSection({ plans }) {
                   />
                 </button>
                 {openAccordions.growth && (
-                  <ul className="p-3 mt-1.5 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-1.5 text-xs text-slate-300">
+                  <ul className="p-3 mt-1.5 rounded-xl bg-card border border-line shadow-card space-y-1.5 text-sm text-slate-300">
                     {growth.setupIncludes.slice(0, 6).map((item) => (
                       <li key={item} className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
@@ -261,7 +261,7 @@ export default function PricingSection({ plans }) {
 
           {/* 3. ENTERPRISE / SCALE */}
           <article
-            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-[#080C16] border border-white/[0.10] hover:border-white/[0.20] shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+            className="relative rounded-3xl p-7 sm:p-8 flex flex-col justify-between transition-all duration-300 bg-surface border border-ink/[0.10] hover:border-ink/[0.20] shadow-[0_10px_30px_color-mix(in_srgb,var(--color-shade)_50%,transparent)]"
           >
             <div>
               {/* Badge & Name */}
@@ -274,14 +274,14 @@ export default function PricingSection({ plans }) {
                 </span>
               </div>
 
-              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
+              <p className="text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
                 For corporations requiring 20+ users, custom ERP integrations, or dedicated cloud instances.
               </p>
 
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
                 {ENTERPRISE_FEATURES.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-200">
+                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-200">
                     <Check className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
                     <span>{f}</span>
                   </li>
@@ -291,19 +291,19 @@ export default function PricingSection({ plans }) {
 
             <div>
               {/* Value summary box */}
-              <div className="rounded-2xl p-4 mb-5 border border-white/[0.08] bg-white/[0.02]">
+              <div className="rounded-2xl p-4 mb-5 border border-line bg-card shadow-card">
                 <div className="flex items-baseline justify-between mb-1.5">
-                  <span className="text-xs text-slate-400">Implementation Scope</span>
-                  <span className="text-sm font-bold text-white font-mono">Dedicated Architect</span>
+                  <span className="text-sm text-slate-400">Implementation Scope</span>
+                  <span className="text-sm font-bold text-fg font-mono">Dedicated Architect</span>
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p className="text-xs text-slate-400">
                   Full custom legacy database bridge and tailored workflow design included.
                 </p>
               </div>
 
               <PricingCallButton
                 planName="Enterprise"
-                className="w-full py-3.5 px-6 rounded-xl font-bold text-sm tracking-wider uppercase text-white bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.15] hover:border-white/[0.30] transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-sm tracking-wider uppercase text-fg bg-ink/[0.08] hover:bg-ink/[0.15] light:bg-surface light:hover:bg-surface-hover light:shadow-card border border-ink/[0.15] hover:border-ink/[0.30] transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <span>Talk to Founders</span>
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -320,7 +320,7 @@ export default function PricingSection({ plans }) {
             <button
               type="button"
               onClick={() => setIsMatrixOpen(!isMatrixOpen)}
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 bg-white/[0.03] border border-white/[0.10] hover:border-cyan-400/50 hover:bg-white/[0.06] transition-all cursor-pointer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-200 bg-ink/[0.03] light:bg-surface light:shadow-card border border-ink/[0.10] hover:border-cyan-400/50 hover:bg-ink/[0.06] transition-all cursor-pointer"
             >
               <span>{isMatrixOpen ? "Hide Detailed Feature Matrix" : "Compare All Plan Features & Limits"}</span>
               <ChevronDown
@@ -332,17 +332,17 @@ export default function PricingSection({ plans }) {
           </div>
 
           {isMatrixOpen && (
-            <div className="rounded-3xl p-6 sm:p-8 bg-[#080C16] border border-white/[0.08] shadow-2xl overflow-x-auto animate-fade-in">
+            <div className="rounded-3xl p-6 sm:p-8 bg-surface border border-ink/[0.08] shadow-2xl overflow-x-auto animate-fade-in">
               <table className="w-full text-left text-xs sm:text-sm">
                 <thead>
-                  <tr className="border-b border-white/[0.10] text-slate-400">
+                  <tr className="border-b border-ink/[0.10] text-slate-400">
                     <th className="pb-4 font-bold uppercase tracking-wider text-[11px]">Feature Capability</th>
                     <th className="pb-4 font-bold uppercase tracking-wider text-[11px] text-slate-200">Starter</th>
                     <th className="pb-4 font-bold uppercase tracking-wider text-[11px] text-cyan-300">Growth</th>
                     <th className="pb-4 font-bold uppercase tracking-wider text-[11px] text-violet-300">Enterprise</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/[0.06]">
+                <tbody className="divide-y divide-ink/[0.06]">
                   {COMPARISON_MATRIX.map((group) => (
                     <tr key={group.category} className="group/row">
                       <td colSpan={4} className="pt-6 pb-2">
@@ -351,7 +351,7 @@ export default function PricingSection({ plans }) {
                         </span>
                         <div className="mt-2 space-y-2.5">
                           {group.features.map((feat) => (
-                            <div key={feat.name} className="grid grid-cols-4 py-2 border-b border-white/[0.04] text-xs">
+                            <div key={feat.name} className="grid grid-cols-4 py-2 border-b border-ink/[0.04] text-xs sm:text-sm">
                               <span className="text-slate-300 font-medium">{feat.name}</span>
                               <span className="text-slate-400">{feat.starter}</span>
                               <span className="text-slate-200 font-semibold">{feat.growth}</span>
@@ -372,20 +372,20 @@ export default function PricingSection({ plans }) {
             TRUST & SECURITY GUARANTEE BADGES
            ======================================================== */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto mb-16">
-          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
+          <div className="p-4 rounded-2xl bg-card border border-line shadow-card text-center">
             <ShieldCheck className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
-            <p className="text-xs font-bold text-white mb-0.5">GST ITC Invoices</p>
-            <p className="text-[11px] text-slate-400">GST-compliant billing</p>
+            <p className="text-sm font-bold text-fg mb-0.5">GST ITC Invoices</p>
+            <p className="text-xs text-slate-400">GST-compliant billing</p>
           </div>
-          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
+          <div className="p-4 rounded-2xl bg-card border border-line shadow-card text-center">
             <Clock className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
-            <p className="text-xs font-bold text-white mb-0.5">14-Day Setup Target</p>
-            <p className="text-[11px] text-slate-400">Typical white-glove setup timeline</p>
+            <p className="text-sm font-bold text-fg mb-0.5">14-Day Setup Target</p>
+            <p className="text-xs text-slate-400">Typical white-glove setup timeline</p>
           </div>
-          <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] text-center">
+          <div className="p-4 rounded-2xl bg-card border border-line shadow-card text-center">
             <Download className="w-5 h-5 text-cyan-400 mx-auto mb-2" aria-hidden="true" />
-            <p className="text-xs font-bold text-white mb-0.5">1-Click Data Export</p>
-            <p className="text-[11px] text-slate-400">Never locked in, own your data</p>
+            <p className="text-sm font-bold text-fg mb-0.5">1-Click Data Export</p>
+            <p className="text-xs text-slate-400">Never locked in, own your data</p>
           </div>
         </div>
 

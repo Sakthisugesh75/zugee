@@ -5,7 +5,7 @@
  * Smooth scroll to a section without changing the URL hash.
  * Automatically calculates navbar height for proper positioning.
  */
-export default function SmoothScrollLink({ targetId, className, children, onClick }) {
+export default function SmoothScrollLink({ targetId, className, style, children, onClick }) {
   const handleClick = (e) => {
     e.preventDefault();
     
@@ -41,6 +41,7 @@ export default function SmoothScrollLink({ targetId, className, children, onClic
       type="button"
       onClick={handleClick}
       className={className}
+      style={style}
     >
       {children}
     </button>

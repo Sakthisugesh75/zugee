@@ -16,6 +16,8 @@ import { useMediaQuery } from "@/lib/use-media-query";
  */
 export default function InteractiveMascot({
   src = "/zugee-mascot-cutout.webp",
+  // Opaque version for the light theme (scripts/make-light-mascot.mjs); the cutout fades on white.
+  lightSrc = "/zugee-mascot-cutout-light.webp",
   size = 300,
   className = ""
 }) {
@@ -199,14 +201,24 @@ export default function InteractiveMascot({
           transition: "filter 150ms ease-out"
         }}
       >
+        {/* One image per theme, swapped in CSS. Both are lazy, and a display:none image is never
+            loaded, so each visitor downloads only the one they see. In light mode a soft blue
+            drop shadow lifts the mascot off the white page. */}
         <Image
           src={src}
           alt="Zugee Mascot"
           fill
           sizes={`${size}px`}
-          className="object-contain select-none"
+          className="object-contain select-none light:hidden"
           draggable={false}
-          priority
+        />
+        <Image
+          src={lightSrc}
+          alt="Zugee Mascot"
+          fill
+          sizes={`${size}px`}
+          className="object-contain select-none hidden light:block drop-shadow-[0_22px_28px_rgba(37,99,235,0.28)]"
+          draggable={false}
         />
       </div>
 

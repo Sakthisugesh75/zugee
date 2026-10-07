@@ -22,6 +22,8 @@ import {
   ShoppingBag,
   Wrench,
 } from "lucide-react";
+import ScrollRow from "@/components/ui/ScrollRow";
+import { accentInk } from "@/lib/theme";
 
 // Four Core Infrastructure Pillars for Indian Enterprises
 const FOUNDATION_PILLARS = [
@@ -142,7 +144,7 @@ export default function IndustryShowcase() {
   };
 
   return (
-    <section id="industries" className="py-20 sm:py-28 bg-[#05070E] border-b border-white/[0.06] relative overflow-hidden scroll-mt-[80px]">
+    <section id="industries" className="py-20 sm:py-28 bg-canvas border-b border-ink/[0.06] relative overflow-hidden scroll-mt-[80px]">
       {/* Background ambient glow */}
       <div className="absolute inset-0 pointer-events-none">
         <div
@@ -157,7 +159,7 @@ export default function IndustryShowcase() {
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
             Engineered For India
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-fg mb-4 leading-tight">
             Built For The Way Indian Businesses{" "}
             <span
               style={{
@@ -181,31 +183,32 @@ export default function IndustryShowcase() {
             return (
               <div
                 key={pillar.title}
-                className="h-full p-5 rounded-2xl bg-white/[0.02] border border-white/[0.08] hover:border-white/[0.16] transition-colors flex flex-col justify-between"
+                className="h-full p-6 rounded-2xl bg-card border border-line shadow-card hover:border-ink/[0.16] transition-colors flex flex-col"
               >
-                <div>
+                {/* Icon row; the status badge sits here so every card's title is styled the same */}
+                <div className="flex items-center justify-between gap-3 mb-4">
                   <div
-                    className="w-10 h-10 rounded-xl flex items-center justify-center mb-4 border"
+                    className="w-11 h-11 rounded-xl flex items-center justify-center border shrink-0"
                     style={{
                       background: `${pillar.accent}15`,
                       borderColor: `${pillar.accent}35`,
-                      color: pillar.accent,
+                      color: accentInk(pillar.accent),
                     }}
                   >
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="text-sm font-bold text-white mb-2 leading-snug flex items-center gap-2">
-                    <span>{pillar.title}</span>
-                    {pillar.badge && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30 whitespace-nowrap">
-                        {pillar.badge}
-                      </span>
-                    )}
-                  </h3>
-                  <p className="text-xs leading-relaxed text-slate-300">
-                    {pillar.desc}
-                  </p>
+                  {pillar.badge && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30 whitespace-nowrap">
+                      {pillar.badge}
+                    </span>
+                  )}
                 </div>
+                <h3 className="text-base sm:text-lg font-bold text-fg mb-2 leading-snug">
+                  {pillar.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-slate-300">
+                  {pillar.desc}
+                </p>
               </div>
             );
           })}
@@ -215,8 +218,10 @@ export default function IndustryShowcase() {
             INTERACTIVE OPERATIONAL WORKFLOW SHOWCASE
            ======================================================== */}
         <div className="max-w-4xl mx-auto">
-          {/* Industry Tab Triggers */}
-          <div className="flex gap-2 overflow-x-auto no-scrollbar pb-2 mb-8 justify-start sm:justify-center">
+          {/* Industry Tab Triggers: wrap and centre from md up; on phones, a scroll row with edge arrows.
+              (A centred row that overflows clips its first items out of reach, so never combine the two.) */}
+          <div className="mb-8">
+            <ScrollRow label="Industries" className="gap-2 pb-2 md:flex-wrap md:justify-center md:overflow-visible">
             {INDUSTRY_WORKFLOWS.map((wf) => {
               const isActive = wf.id === activeWorkflowId;
               const Icon = wf.icon;
@@ -224,12 +229,16 @@ export default function IndustryShowcase() {
                 <button
                   key={wf.id}
                   type="button"
-                  onClick={() => setActiveWorkflowId(wf.id)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer"
+                  aria-pressed={isActive}
+                  onClick={(e) => {
+                    setActiveWorkflowId(wf.id);
+                    e.currentTarget.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                  }}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer shrink-0"
                   style={{
-                    background: isActive ? `${wf.accent}20` : "rgba(255,255,255,0.03)",
-                    border: `1px solid ${isActive ? `${wf.accent}60` : "rgba(255,255,255,0.08)"}`,
-                    color: isActive ? "#FFFFFF" : "#94A3B8",
+                    background: isActive ? `${wf.accent}20` : "color-mix(in srgb, var(--color-ink) 3%, transparent)",
+                    border: `1px solid ${isActive ? `${wf.accent}60` : "color-mix(in srgb, var(--color-ink) 8%, transparent)"}`,
+                    color: isActive ? "var(--color-fg)" : "var(--color-slate-400)",
                     boxShadow: isActive ? `0 0 20px ${wf.accent}25` : "none",
                   }}
                 >
@@ -238,15 +247,16 @@ export default function IndustryShowcase() {
                 </button>
               );
             })}
+            </ScrollRow>
           </div>
 
           {/* Workflow Stage Container */}
           <div
             className="rounded-3xl p-6 sm:p-8 md:p-10 relative overflow-hidden transition-all duration-500"
             style={{
-              background: "#080c16",
+              background: "var(--color-surface)",
               border: `1px solid ${activeWorkflow.accent}45`,
-              boxShadow: `0 24px 60px -15px ${activeWorkflow.accent}20, 0 0 0 1px rgba(255,255,255,0.05)`,
+              boxShadow: `0 24px 60px -15px ${activeWorkflow.accent}20, 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent), var(--theme-shadow-card-raised)`,
             }}
           >
             {/* Top highlight bar */}
@@ -256,30 +266,30 @@ export default function IndustryShowcase() {
             />
 
             {/* Workflow Header */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-white/[0.07]">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 mb-8 border-b border-ink/[0.07]">
               <div>
                 <span
                   className="text-xs font-mono font-bold uppercase tracking-wider block mb-1"
-                  style={{ color: activeWorkflow.accent }}
+                  style={{ color: accentInk(activeWorkflow.accent) }}
                 >
                   DAILY OPERATIONAL LIFECYCLE
                 </span>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
                   {activeWorkflow.name}
                 </h3>
                 {activeWorkflow.tagline && (
-                  <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                  <p className="text-sm sm:text-base text-slate-300 mt-1">
                     {activeWorkflow.tagline}
                   </p>
                 )}
               </div>
 
               <div
-                className="px-3.5 py-1.5 rounded-full text-xs font-semibold flex items-center gap-1.5 border"
+                className="px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold flex items-center gap-1.5 border"
                 style={{
                   background: `${activeWorkflow.accent}15`,
                   borderColor: `${activeWorkflow.accent}40`,
-                  color: activeWorkflow.accent,
+                  color: accentInk(activeWorkflow.accent),
                 }}
               >
                 <Sparkles className="w-3.5 h-3.5" />
@@ -292,22 +302,22 @@ export default function IndustryShowcase() {
               {activeWorkflow.steps.map((st, idx) => (
                 <div
                   key={idx}
-                  className="p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:border-white/[0.12] transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                  className="p-4 sm:p-5 rounded-2xl bg-card border border-line shadow-card hover:border-ink/[0.12] transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
                 >
                   <div className="flex items-center gap-3">
                     <span
                       className="w-7 h-7 rounded-lg flex items-center justify-center font-mono text-xs font-bold shrink-0"
                       style={{
                         background: `${activeWorkflow.accent}20`,
-                        color: activeWorkflow.accent,
+                        color: accentInk(activeWorkflow.accent),
                         border: `1px solid ${activeWorkflow.accent}40`,
                       }}
                     >
                       {idx + 1}
                     </span>
-                    <span className="text-sm font-bold text-white">{st.step}</span>
+                    <span className="text-sm sm:text-base font-bold text-fg">{st.step}</span>
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-300 sm:max-w-md">
+                  <p className="text-sm text-slate-300 leading-relaxed sm:max-w-md">
                     {st.detail}
                   </p>
                 </div>
@@ -315,8 +325,8 @@ export default function IndustryShowcase() {
             </div>
 
             {/* Bottom CTA */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-white/[0.07]">
-              <span className="text-xs text-slate-400">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-6 border-t border-ink/[0.07]">
+              <span className="text-sm text-slate-400">
                 Customized for your business structure during the 14-day setup.
               </span>
               <button

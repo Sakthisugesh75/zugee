@@ -29,7 +29,7 @@ export default function FinalCTA() {
   ];
 
   return (
-    <section className="section-wrapper bg-gradient-to-b from-[#05070B] via-[#06090F] to-[#04070D] border-t border-white/[0.08] relative overflow-hidden">
+    <section className="section-wrapper bg-gradient-to-b from-canvas via-canvas to-canvas-alt border-t border-ink/[0.08] relative overflow-hidden">
       {/* Background glow effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-cyan-500/5 rounded-full ambient-glow lg:blur-[120px]" />
@@ -60,7 +60,7 @@ export default function FinalCTA() {
               {/* Right: Content */}
               <div className="flex-1 text-center lg:text-left">
                 {/* Heading */}
-                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-fg mb-4 leading-tight">
                   Ready to transform your business?
                 </h2>
                 
@@ -76,7 +76,7 @@ export default function FinalCTA() {
                     return (
                       <div
                         key={benefit.text}
-                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:border-cyan-500/30 transition-colors"
+                        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-card border border-line shadow-card hover:border-cyan-500/30 transition-colors"
                       >
                         <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center shrink-0">
                           <Icon className="w-4 h-4 text-cyan-400" />

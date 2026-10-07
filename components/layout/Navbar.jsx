@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
@@ -55,7 +56,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-[background-color,border-color,box-shadow,padding] duration-500 ${
         scrolled
-          ? "bg-[#05070B] lg:bg-[#05070B]/90 backdrop-blur-2xl border-b border-white/[0.12] shadow-[0_8px_40px_rgba(0,0,0,0.9),0_0_80px_rgba(6,182,212,0.08)] py-3.5"
+          ? "bg-canvas lg:bg-canvas/90 backdrop-blur-2xl border-b border-ink/[0.12] shadow-[0_8px_40px_color-mix(in_srgb,var(--color-shade)_90%,transparent),0_0_80px_rgba(6,182,212,0.08)] py-3.5"
           : "bg-transparent py-5"
       }`}
     >
@@ -76,15 +77,15 @@ export default function Navbar() {
         {/* Desktop Navigation Links */}
         <nav className={`hidden lg:flex items-center gap-0.5 xl:gap-1 px-2 xl:px-3 py-1.5 rounded-full border backdrop-blur-md shrink-0 transition-all duration-500 ${
           scrolled 
-            ? "bg-white/[0.05] border-white/[0.12]" 
-            : "bg-white/[0.03] border-white/[0.06]"
+            ? "bg-ink/[0.05] border-ink/[0.12] light:bg-surface/80 light:shadow-card" 
+            : "bg-ink/[0.03] border-ink/[0.06] light:bg-surface/70 light:shadow-card"
         }`}>
           {navLinks.map((link) => (
             <button
               key={link.label}
               type="button"
               onClick={() => scrollToSection(link.targetId)}
-              className="text-[13px] font-medium text-slate-300 hover:text-white px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
+              className="text-[13px] font-medium text-slate-300 hover:text-fg px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
             >
               {link.label}
             </button>
@@ -93,7 +94,7 @@ export default function Navbar() {
 
         {/* Action CTAs & Live Badge */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
-
+          <ThemeToggle className="w-10 h-10" />
           <button
             type="button"
             onClick={() => scrollToSection("contact")}
@@ -106,6 +107,10 @@ export default function Navbar() {
 
         {/* Mobile Hamburger Toggle */}
         <div className="flex items-center gap-2.5 lg:hidden">
+          {/* No room beside the logo on small phones; there it lives in the menu drawer instead. */}
+          <div className="hidden sm:flex">
+            <ThemeToggle className="w-[42px] h-[42px]" />
+          </div>
           <button
             type="button"
             onClick={() => scrollToSection("contact")}
@@ -115,7 +120,7 @@ export default function Navbar() {
           </button>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2.5 rounded-xl bg-white/[0.05] border border-white/[0.1] text-white hover:border-[#00F0FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF] transition-colors"
+            className="p-2.5 rounded-xl bg-ink/[0.05] border border-ink/[0.1] light:bg-surface light:shadow-card text-fg hover:border-[#00F0FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF] transition-colors"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -127,7 +132,7 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
           <div
-            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain bg-[#05070B]/[0.98] backdrop-blur-2xl border-b border-white/[0.15] p-6 shadow-[0_20px_60px_rgba(0,0,0,0.95),0_0_100px_rgba(6,182,212,0.1)] text-white z-50"
+            className="animate-fade-in lg:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain bg-canvas backdrop-blur-2xl border-b border-ink/[0.15] p-6 shadow-[0_20px_60px_color-mix(in_srgb,var(--color-shade)_95%,transparent),0_0_100px_rgba(6,182,212,0.1)] text-fg z-50"
           >
             <div className="flex flex-col gap-4">
 
@@ -136,12 +141,17 @@ export default function Navbar() {
                   key={link.label}
                   type="button"
                   onClick={() => scrollToSection(link.targetId)}
-                  className="text-base font-medium text-slate-300 hover:text-[#00F0FF] py-2.5 border-b border-white/[0.05] flex items-center justify-between w-full text-left bg-transparent border-none cursor-pointer"
+                  className="text-base font-medium text-slate-300 hover:text-brand py-2.5 border-b border-ink/[0.05] flex items-center justify-between w-full text-left bg-transparent border-none cursor-pointer"
                 >
                   <span>{link.label}</span>
                   <ArrowRight className="w-4 h-4 text-slate-500" />
                 </button>
               ))}
+
+              <div className="sm:hidden flex items-center justify-between py-1">
+                <span className="text-base font-medium text-slate-300">Theme</span>
+                <ThemeToggle className="w-10 h-10" />
+              </div>
 
               <div className="pt-4 flex flex-col gap-3">
                 <button
@@ -152,7 +162,7 @@ export default function Navbar() {
                   Book a Demo
                 </button>
                 <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-mono">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#00F0FF]" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-brand" />
                   <span>Zugee Systems Technologies Pvt. Ltd.</span>
                 </div>
               </div>

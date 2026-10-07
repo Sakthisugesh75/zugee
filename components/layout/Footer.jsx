@@ -23,7 +23,7 @@ const SITE_LINKS = [
   { label: "Book a demo", targetId: "contact" }
 ];
 
-const linkClass = "text-slate-400 hover:text-[#00F0FF] transition-colors cursor-pointer bg-transparent border-none text-left p-0";
+const linkClass = "text-slate-400 hover:text-brand transition-colors cursor-pointer bg-transparent border-none text-left p-0";
 
 export default function Footer() {
   const router = useRouter();
@@ -56,12 +56,12 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative bg-gradient-to-b from-[#05070B] via-[#04070D] to-[#03060C] border-t border-white/[0.12] pt-16 pb-12 text-slate-400 overflow-hidden">
+    <footer className="relative bg-gradient-to-b from-canvas via-canvas-alt to-canvas-alt border-t border-ink/[0.12] pt-16 pb-12 text-slate-400 overflow-hidden">
       {/* Subtle glow effect */}
       <div className="absolute inset-0 bg-gradient-to-t from-cyan-500/[0.02] via-transparent to-transparent pointer-events-none" />
       
       <div className="container relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/[0.15]">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-ink/[0.15]">
           <div className="lg:col-span-2 flex flex-col gap-4">
             <MascotLogo size={44} showWordmark={true} showSubline={true} />
             <p className="text-sm text-slate-300 max-w-sm mt-2 leading-relaxed">
@@ -77,7 +77,7 @@ export default function Footer() {
             </div>
 
             <nav aria-label="ZUGEE on social media" className="mt-2">
-              <p className="text-xs font-bold text-white uppercase tracking-wider mb-3">Follow ZUGEE</p>
+              <p className="text-xs font-bold text-fg uppercase tracking-wider mb-3">Follow ZUGEE</p>
               <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
                 {SOCIAL_PROFILES.map((profile) => (
                   <li key={profile.url}>
@@ -85,7 +85,7 @@ export default function Footer() {
                       href={profile.url}
                       target="_blank"
                       rel="me noopener noreferrer"
-                      className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-white/[0.04] border border-white/[0.12] hover:text-[#00F0FF] hover:border-cyan-500/40 transition-colors"
+                      className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-ink/[0.04] border border-ink/[0.12] hover:text-brand hover:border-cyan-500/40 transition-colors"
                     >
                       {profile.label}
                     </a>
@@ -96,7 +96,7 @@ export default function Footer() {
           </div>
 
           <nav aria-label="Site">
-            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Quick Links</p>
+            <p className="text-xs font-bold text-fg uppercase tracking-wider mb-5">Quick Links</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
               {SITE_LINKS.map((l) => (
                 <li key={l.targetId}>
@@ -113,7 +113,7 @@ export default function Footer() {
           </nav>
 
           <nav aria-label="Products">
-            <p className="text-xs font-bold text-white uppercase tracking-wider mb-5">Products</p>
+            <p className="text-xs font-bold text-fg uppercase tracking-wider mb-5">Products</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
               {listedProducts.slice(0, 6).map((p) => (
                 <li key={p.slug}>
@@ -146,7 +146,7 @@ export default function Footer() {
               <ul className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 list-none p-0 m-0">
                 {LEGAL_PAGES.map((page) => (
                   <li key={page.href}>
-                    <Link href={page.href} className="text-slate-400 hover:text-[#00F0FF] transition-colors">
+                    <Link href={page.href} className="text-slate-400 hover:text-brand transition-colors">
                       {page.label}
                     </Link>
                   </li>
@@ -157,7 +157,7 @@ export default function Footer() {
           <button
             type="button"
             onClick={scrollToTop}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] border border-white/[0.15] text-slate-300 hover:text-white hover:bg-cyan-500/10 hover:border-cyan-500/30 transition-all duration-200 cursor-pointer group"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-ink/[0.05] border border-ink/[0.15] text-slate-300 hover:text-fg hover:bg-cyan-500/10 hover:border-cyan-500/30 transition-all duration-200 cursor-pointer group"
           >
             <span className="text-sm font-medium">Back to top</span>
             <ArrowUp className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true" />

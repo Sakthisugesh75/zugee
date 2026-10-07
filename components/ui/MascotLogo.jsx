@@ -21,7 +21,7 @@ export default function MascotLogo({
 
         {/* The mascot art sits on pure black, so a black tile makes the crop edge invisible */}
         <div
-          className="relative overflow-hidden rounded-xl bg-black border border-white/[0.12] shadow-lg shadow-black/50"
+          className="relative overflow-hidden rounded-xl bg-black border border-ink/[0.12] shadow-lg shadow-shade/50"
           style={{ width: size + 12, height: size + 12 }}
         >
           <Image
@@ -38,8 +38,8 @@ export default function MascotLogo({
       {showWordmark && (
         <div className="flex flex-col justify-center leading-none">
           <span className="text-2xl font-extrabold tracking-tight font-sans flex items-center select-none">
-            <span className="text-white">ZUG</span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#00F0FF] to-[#38BDF8] ml-[0.5px]">
+            <span className="text-fg">ZUG</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-fg via-brand to-[#38BDF8] ml-[0.5px]">
               EE
             </span>
           </span>

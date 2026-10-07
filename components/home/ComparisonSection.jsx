@@ -113,7 +113,7 @@ export default function ComparisonSection() {
   const activeCategory = COMPARISON_CATEGORIES.find((c) => c.id === activeTabId) || COMPARISON_CATEGORIES[0];
 
   return (
-    <section className="py-20 sm:py-28 bg-[#04060C] border-b border-white/[0.06] relative overflow-hidden">
+    <section className="py-20 sm:py-28 bg-canvas-alt border-b border-ink/[0.06] relative overflow-hidden">
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-[30%] left-[20%] w-[500px] h-[500px] bg-rose-600/[0.03] rounded-full ambient-glow lg:blur-[170px]" />
@@ -126,7 +126,7 @@ export default function ComparisonSection() {
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
             Why Businesses Switch
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-white mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-fg mb-4 leading-tight">
             The Chaos of 5 Apps vs.{" "}
             <span
               style={{
@@ -145,7 +145,7 @@ export default function ComparisonSection() {
 
         {/* Category Switcher Tabs */}
         <div className="flex justify-center mb-10 sm:mb-12">
-          <div className="inline-flex gap-1.5 p-1.5 rounded-2xl bg-white/[0.03] border border-white/[0.08] backdrop-blur-md overflow-x-auto max-w-full">
+          <div className="inline-flex gap-1.5 p-1.5 rounded-2xl bg-card border border-line shadow-card backdrop-blur-md overflow-x-auto max-w-full">
             {COMPARISON_CATEGORIES.map((cat) => {
               const isActive = cat.id === activeTabId;
               return (
@@ -156,7 +156,7 @@ export default function ComparisonSection() {
                   className="px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 whitespace-nowrap cursor-pointer"
                   style={{
                     background: isActive ? "linear-gradient(135deg, rgba(6,182,212,0.20), rgba(59,130,246,0.15))" : "transparent",
-                    color: isActive ? "#FFFFFF" : "#94A3B8",
+                    color: isActive ? "var(--color-fg)" : "var(--color-slate-400)",
                     border: isActive ? "1px solid rgba(6,182,212,0.40)" : "1px solid transparent",
                     boxShadow: isActive ? "0 0 20px rgba(6,182,212,0.15)" : "none",
                   }}
@@ -174,9 +174,9 @@ export default function ComparisonSection() {
           <div
             className="rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden"
             style={{
-              background: "rgba(22, 10, 15, 0.65)",
+              background: "color-mix(in srgb, #F43F5E 7%, var(--color-surface))",
               border: "1px solid rgba(244, 63, 94, 0.25)",
-              boxShadow: "0 16px 40px -15px rgba(244, 63, 94, 0.12)",
+              boxShadow: "0 16px 40px -15px rgba(244, 63, 94, 0.12), var(--theme-shadow-card)",
               backdropFilter: "blur(14px)",
             }}
           >
@@ -192,7 +192,7 @@ export default function ComparisonSection() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-fg mb-6">
                 {activeCategory.legacy.title}
               </h3>
 
@@ -202,7 +202,7 @@ export default function ComparisonSection() {
                     <div className="w-5 h-5 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center shrink-0 mt-0.5">
                       <X className="w-3 h-3 text-rose-400" />
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+                    <p className="text-sm text-slate-300 leading-relaxed font-normal">
                       {pt}
                     </p>
                   </div>
@@ -211,7 +211,7 @@ export default function ComparisonSection() {
             </div>
 
             {/* Pain Point Impact Box */}
-            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-xs text-rose-300 font-medium flex items-start gap-2">
+            <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-sm text-rose-300 font-medium flex items-start gap-2">
               <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-px" aria-hidden="true" />
               <span>{activeCategory.legacy.impact}</span>
             </div>
@@ -221,9 +221,9 @@ export default function ComparisonSection() {
           <div
             className="rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden"
             style={{
-              background: "rgba(8, 16, 28, 0.85)",
+              background: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
               border: "1px solid rgba(6, 182, 212, 0.45)",
-              boxShadow: "0 24px 60px -15px rgba(6, 182, 212, 0.22), 0 0 0 1px rgba(255,255,255,0.06)",
+              boxShadow: "0 24px 60px -15px rgba(6, 182, 212, 0.22), 0 0 0 1px color-mix(in srgb, var(--color-ink) 6%, transparent), var(--theme-shadow-card-raised)",
               backdropFilter: "blur(14px)",
             }}
           >
@@ -244,7 +244,7 @@ export default function ComparisonSection() {
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-white mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold text-fg mb-6">
                 {activeCategory.zugee.title}
               </h3>
 
@@ -254,7 +254,7 @@ export default function ComparisonSection() {
                     <div className="w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center shrink-0 mt-0.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     </div>
-                    <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-normal">
+                    <p className="text-sm text-slate-200 leading-relaxed font-normal">
                       {pt}
                     </p>
                   </div>
@@ -263,7 +263,7 @@ export default function ComparisonSection() {
             </div>
 
             {/* ZUGEE Result Callout Box */}
-            <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-300 font-medium flex items-start gap-2">
+            <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-sm text-cyan-300 font-medium flex items-start gap-2">
               <Sparkles className="w-3.5 h-3.5 shrink-0 mt-px" aria-hidden="true" />
               <span>{activeCategory.zugee.impact}</span>
             </div>
@@ -272,13 +272,13 @@ export default function ComparisonSection() {
 
         {/* Bottom CTA & Reassurance */}
         <div className="mt-12 text-center">
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-4 sm:px-8 sm:py-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.08]">
-            <span className="text-xs sm:text-sm text-slate-300">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-4 p-4 sm:px-8 sm:py-3.5 rounded-2xl bg-card border border-line shadow-card">
+            <span className="text-sm text-slate-300">
               Ready to move off scattered apps without disrupting daily operations?
             </span>
             <SmoothScrollLink
               targetId="contact"
-              className="text-xs sm:text-sm font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1.5 cursor-pointer underline underline-offset-4"
+              className="text-sm font-bold text-cyan-400 hover:text-cyan-300 inline-flex items-center gap-1.5 cursor-pointer underline underline-offset-4"
             >
               <span>Book a Migration Consultation</span>
               <ArrowRight className="w-3.5 h-3.5" />

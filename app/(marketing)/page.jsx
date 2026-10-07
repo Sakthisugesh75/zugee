@@ -68,7 +68,7 @@ export default function HomePage() {
       <PricingSection plans={PLAN_SUMMARIES} />
 
       {/* 7. FAQ — "Common questions answered" */}
-      <section className="section-wrapper bg-[#06090F] border-b border-white/[0.08]">
+      <section className="section-wrapper bg-canvas border-b border-ink/[0.08]">
         <div className="container">
           <FAQSection />
         </div>

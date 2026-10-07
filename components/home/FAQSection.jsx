@@ -13,7 +13,7 @@ export default function FAQSection() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 mb-4">
           <HelpCircle className="w-7 h-7 text-cyan-400" aria-hidden="true" />
         </div>
-        <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+        <h2 className="text-3xl sm:text-4xl font-extrabold text-fg tracking-tight mb-3">
           Frequently Asked Questions
         </h2>
         <p className="text-base text-slate-300">
@@ -27,10 +27,10 @@ export default function FAQSection() {
           <details
             key={faq.question}
             open={idx === 0}
-            className="group glass-card border-white/[0.12] open:border-cyan-500/30 open:glow-cyan-soft transition-all duration-300 hover:border-white/[0.18]"
+            className="group glass-card border-ink/[0.12] open:border-cyan-500/30 open:glow-cyan-soft transition-all duration-300 hover:border-ink/[0.18]"
           >
-            <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50 [&::-webkit-details-marker]:hidden hover:bg-white/[0.02] transition-colors rounded-2xl">
-              <span className="text-sm sm:text-base font-bold text-white pr-2">{faq.question}</span>
+            <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50 [&::-webkit-details-marker]:hidden hover:bg-ink/[0.02] transition-colors rounded-2xl">
+              <span className="text-sm sm:text-base font-bold text-fg pr-2">{faq.question}</span>
               <div className="w-8 h-8 rounded-lg bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center shrink-0 group-open:bg-cyan-500/10 group-open:border-cyan-500/30 transition-all">
                 <ChevronDown className="w-4 h-4 text-slate-400 transition-all duration-300 group-open:rotate-180 group-open:text-cyan-400" />
               </div>

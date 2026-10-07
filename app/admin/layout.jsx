@@ -12,7 +12,8 @@ export const metadata = {
 
 export default function AdminLayout({ children }) {
   return (
-    <div className="min-h-screen bg-[#070A0F] text-[#F4F1EA]">
+    // The admin portal isn't themed: data-theme="dark" keeps it dark even when the public site is light.
+    <div data-theme="dark" className="min-h-screen bg-[#070A0F] text-[#F4F1EA]">
       {children}
     </div>
   );

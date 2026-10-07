@@ -29,6 +29,7 @@ import {
 } from "lucide-react";
 import { availableProducts } from "@/lib/products";
 import { useMediaQuery } from "@/lib/use-media-query";
+import { accentInk } from "@/lib/theme";
 
 // Only products a business can use today. Coming Soon products stay in lib/products.js and appear
 // here automatically once their status changes to "available".
@@ -50,7 +51,7 @@ const PRODUCT_ACCENTS = {
   "gym":           { accent: "#10B981", accent2: "#059669", glow: "rgba(168,185,129,0.25)",  label: "FITNESS & WELLNESS", icon: Activity, replaces: "Card-based membership logs" },
   "salon":         { accent: "#EC4899", accent2: "#DB2777", glow: "rgba(236,72,153,0.25)",  label: "BEAUTY & SALON",    icon: Users, replaces: "Paper appointment books" },
   "medical":       { accent: "#EF4444", accent2: "#DC2626", glow: "rgba(239,68,68,0.25)",   label: "HEALTHCARE",        icon: Shield, replaces: "Paper OP registers + manual billing" },
-  "construction":  { accent: "#94A3B8", accent2: "#64748B", glow: "rgba(148,163,184,0.25)", label: "CONSTRUCTION",      icon: Layers, replaces: "Site notebook muster rolls" },
+  "construction":  { accent: "var(--color-slate-400)", accent2: "var(--color-slate-500)", glow: "rgba(148,163,184,0.25)", label: "CONSTRUCTION",      icon: Layers, replaces: "Site notebook muster rolls" },
   "warehouse":     { accent: "#6366F1", accent2: "#4F46E5", glow: "rgba(99,102,241,0.25)",  label: "WAREHOUSING",       icon: Layers, replaces: "Bin cards + manual tallying" },
   "tasks":         { accent: "#06B6D4", accent2: "#0284C7", glow: "rgba(6,182,212,0.25)",   label: "PRODUCTIVITY",      icon: TrendingUp, replaces: "Scattered WhatsApp task reminders" },
 };
@@ -66,7 +67,7 @@ const DEFAULT_ACCENT = {
 
 // Shared look for the previous/next buttons (beside the stage on desktop, under it on mobile)
 const ARROW_BUTTON_CLASS =
-  "w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center bg-[#0d0d1a]/90 border border-white/[0.12] hover:border-cyan-400/50 hover:bg-[#15152a] hover:shadow-[0_0_24px_rgba(0,240,255,0.25)] transition-all duration-300 text-slate-300 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer";
+  "w-11 h-11 sm:w-12 sm:h-12 rounded-full items-center justify-center bg-surface/90 border border-ink/[0.12] hover:border-cyan-400/50 hover:bg-surface-hover hover:shadow-[0_0_24px_rgba(0,240,255,0.25)] transition-all duration-300 text-slate-300 hover:text-fg focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 cursor-pointer";
 
 function getAccent(slug) {
   return PRODUCT_ACCENTS[slug] || DEFAULT_ACCENT;
@@ -83,7 +84,7 @@ function ZenXProductHero({ product, onExplore }) {
       <div className="flex flex-wrap items-center justify-center gap-3 mb-3">
         <span
           className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em]"
-          style={{ color: accent.accent }}
+          style={{ color: accentInk(accent.accent) }}
         >
           {accent.label}
         </span>
@@ -93,7 +94,7 @@ function ZenXProductHero({ product, onExplore }) {
       <h2
         className="text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight mb-8 sm:mb-10 leading-[1.08] max-w-4xl"
         style={{
-          backgroundImage: `linear-gradient(135deg, #FFFFFF 40%, ${accent.accent} 140%)`,
+          backgroundImage: `linear-gradient(135deg, var(--color-fg) 40%, ${accent.accent} 140%)`,
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}
@@ -107,16 +108,16 @@ function ZenXProductHero({ product, onExplore }) {
         <div
           className="p-6 sm:p-8 rounded-2xl flex flex-col justify-between transition-all duration-300"
           style={{
-            background: "rgba(255, 255, 255, 0.03)",
+            background: "var(--color-card)",
             border: `1px solid ${accent.accent}40`,
-            boxShadow: `0 12px 36px -10px ${accent.glow}`,
+            boxShadow: `0 12px 36px -10px ${accent.glow}, var(--theme-shadow-card)`,
           }}
         >
           <div>
             <div
               className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4 select-none"
               style={{
-                color: accent.accent,
+                color: accentInk(accent.accent),
                 borderBottom: `1px solid ${accent.accent}30`,
               }}
             >
@@ -128,10 +129,10 @@ function ZenXProductHero({ product, onExplore }) {
           </div>
 
           {/* The product slug stays in the data and anchors; it is not shown on the card. */}
-          <div className="pt-4 mt-6 border-t border-white/[0.06] flex flex-col gap-2 text-xs text-slate-400">
+          <div className="pt-4 mt-6 border-t border-ink/[0.06] flex flex-col gap-2 text-sm text-slate-400">
             <p>Tailored for {product.industry}</p>
             {accent.replaces && (
-              <p className="text-[11px] text-rose-300/80 font-mono leading-relaxed">
+              <p className="text-xs text-rose-300/80 font-mono leading-relaxed">
                 Replaces: {accent.replaces}
               </p>
             )}
@@ -142,16 +143,16 @@ function ZenXProductHero({ product, onExplore }) {
         <div
           className="p-6 sm:p-8 rounded-2xl flex flex-col justify-between transition-all duration-300"
           style={{
-            background: "rgba(255, 255, 255, 0.03)",
+            background: "var(--color-card)",
             border: `1px solid ${accent.accent}40`,
-            boxShadow: `0 12px 36px -10px ${accent.glow}`,
+            boxShadow: `0 12px 36px -10px ${accent.glow}, var(--theme-shadow-card)`,
           }}
         >
           <div>
             <div
               className="text-[11px] sm:text-xs font-extrabold uppercase tracking-[0.18em] pb-3 mb-4 select-none"
               style={{
-                color: accent.accent,
+                color: accentInk(accent.accent),
                 borderBottom: `1px solid ${accent.accent}30`,
               }}
             >
@@ -177,7 +178,7 @@ function ZenXProductHero({ product, onExplore }) {
             </ul>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-white/[0.06] flex items-center gap-2 text-xs" style={{ color: accent.accent }}>
+          <div className="pt-4 mt-6 border-t border-ink/[0.06] flex items-center gap-2 text-sm" style={{ color: accentInk(accent.accent) }}>
             <Sparkles className="w-3.5 h-3.5" />
             <span>Runs as its own system, with its own login and data</span>
           </div>
@@ -207,20 +208,20 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
   const accent = getAccent(product.slug);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 lg:bg-black/80 backdrop-blur-md animate-fade-in">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-scrim backdrop-blur-md animate-fade-in">
       <div
         className="relative w-full max-w-2xl rounded-3xl p-6 sm:p-8 overflow-hidden border shadow-2xl"
         style={{
-          background: "#080c16",
+          background: "var(--color-surface)",
           borderColor: `${accent.accent}50`,
-          boxShadow: `0 20px 60px -10px ${accent.glow}`,
+          boxShadow: `0 20px 60px -10px ${accent.glow}, var(--theme-shadow-card-raised)`,
         }}
       >
         {/* Close Button */}
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
+          className="absolute top-5 right-5 w-9 h-9 rounded-full bg-ink/10 hover:bg-ink/20 text-slate-300 hover:text-fg flex items-center justify-center transition-colors"
           aria-label="Close dialog"
         >
           <X className="w-5 h-5" />
@@ -231,14 +232,14 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
           <div className="flex items-center gap-2 mb-2">
             <span
               className="text-xs font-mono font-bold uppercase tracking-wider"
-              style={{ color: accent.accent }}
+              style={{ color: accentInk(accent.accent) }}
             >
               {accent.label}
             </span>
-            <span className="text-white/20">•</span>
-            <span className="text-xs text-slate-400">Industry: {product.industry}</span>
+            <span className="text-ink/20">•</span>
+            <span className="text-sm text-slate-400">Industry: {product.industry}</span>
           </div>
-          <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h3 className="text-2xl sm:text-3xl font-extrabold text-fg tracking-tight">
             {product.name}
           </h3>
           <p className="text-sm text-slate-300 mt-2 leading-relaxed">
@@ -248,7 +249,7 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
 
         {/* What it replaces */}
         {accent.replaces && (
-          <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.08] mb-6">
+          <div className="p-4 rounded-xl bg-card border border-line shadow-card mb-6">
             <p className="text-xs font-mono uppercase tracking-wider text-rose-300/90 mb-1">
               Replaces Legacy Tools
             </p>
@@ -267,9 +268,9 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
             {product.modules.map((m) => (
               <div
                 key={m}
-                className="flex items-center gap-2 p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.06] text-xs text-slate-200"
+                className="flex items-center gap-2 p-2.5 rounded-lg bg-card border border-line shadow-card text-xs sm:text-sm text-slate-200"
               >
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: accent.accent }} />
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: accentInk(accent.accent) }} />
                 <span>{m}</span>
               </div>
             ))}
@@ -277,7 +278,7 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
         </div>
 
         {/* Implementation guarantee */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-300 mb-6">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 gap-3 text-xs sm:text-sm text-emerald-300 mb-6">
           <span className="flex items-center gap-2">
             <Clock className="w-4 h-4" />
             White-glove data migration &amp; live setup — typically within 14 days
@@ -302,7 +303,7 @@ function ProductDeepDiveModal({ product, onClose, onBookDemo }) {
           <button
             type="button"
             onClick={onClose}
-            className="w-full sm:w-auto py-3.5 px-6 rounded-full text-slate-300 hover:text-white text-sm font-medium border border-white/10 hover:bg-white/5 transition-colors"
+            className="w-full sm:w-auto py-3.5 px-6 rounded-full text-slate-300 hover:text-fg text-sm font-medium border border-ink/10 hover:bg-ink/5 transition-colors"
           >
             Close
           </button>
@@ -408,10 +409,10 @@ export default function ProductShowcase() {
   // Counter + progress bar, shown above the cards on mobile and below them on desktop
   const counter = (
     <div className="flex items-center gap-3 select-none">
-      <span className="text-sm font-mono font-bold text-white min-w-[2ch] text-right">
+      <span className="text-sm font-mono font-bold text-fg min-w-[2ch] text-right">
         {String(activeIndex + 1).padStart(2, "0")}
       </span>
-      <div className="w-20 h-1 bg-white/[0.10] relative overflow-hidden rounded-full">
+      <div className="w-20 h-1 bg-ink/[0.10] relative overflow-hidden rounded-full">
         <div
           className="absolute inset-y-0 left-0 rounded-full transition-all duration-500"
           style={{
@@ -430,7 +431,7 @@ export default function ProductShowcase() {
     <section
       ref={sectionRef}
       id="products"
-      className="relative overflow-x-clip py-20 sm:py-28 bg-[#06060e] border-b border-white/[0.05] scroll-mt-[80px]"
+      className="relative overflow-x-clip py-20 sm:py-28 bg-canvas border-b border-ink/[0.05] scroll-mt-[80px]"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
@@ -454,7 +455,7 @@ export default function ProductShowcase() {
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
             Our Products
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4 leading-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-fg tracking-tight mb-4 leading-tight">
             Software built around your business
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto mb-4">
@@ -536,7 +537,7 @@ export default function ProductShowcase() {
                 style={{
                   width: i === activeIndex ? "24px" : "6px",
                   height: "6px",
-                  background: i === activeIndex ? activeAccent.accent : "rgba(255,255,255,0.18)",
+                  background: i === activeIndex ? activeAccent.accent : "color-mix(in srgb, var(--color-ink) 18%, transparent)",
                   boxShadow: i === activeIndex ? `0 0 12px ${activeAccent.accent}` : "none",
                 }}
               />

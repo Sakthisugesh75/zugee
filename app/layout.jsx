@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/site";
 import { organizationSchema, serializeJsonLd } from "@/lib/structured-data";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -55,11 +56,17 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
+    // data-theme is replaced before first paint by THEME_INIT_SCRIPT, hence suppressHydrationWarning.
     <html
       lang="en-IN"
-      className={`dark ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
+      data-theme="dark"
+      suppressHydrationWarning
+      className={`${plusJakartaSans.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="antialiased bg-[#06090F] text-white selection:bg-[#00F0FF]/30 selection:text-white">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
+      <body className="antialiased bg-canvas text-fg selection:bg-[#00F0FF]/30 selection:text-fg">
         {/* Organization JSON-LD on every page; page-specific schema is added by each page. */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationSchema()) }} />
         <a

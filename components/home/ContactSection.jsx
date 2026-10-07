@@ -17,7 +17,7 @@ const MAX_LENGTHS = { name: 120, phone: 25, email: 254, company: 160, message: 2
 const EMPTY_FORM = { name: "", phone: "", industry: "", requestType: DEFAULT_REQUEST_TYPE, email: "", company: "", message: "" };
 
 const inputClass =
-  "w-full bg-[#06090F] border border-white/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors";
+  "w-full bg-canvas border border-ink/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-fg text-sm outline-none transition-colors";
 const labelClass = "block text-sm font-medium text-slate-200 mb-2";
 
 export default function ContactSection({ businessTypes }) {
@@ -107,12 +107,12 @@ export default function ContactSection({ businessTypes }) {
   const busy = submitStatus === "loading";
 
   return (
-    <section id="contact" className="section-wrapper bg-[#06090F] border-b border-white/[0.08] relative overflow-hidden scroll-mt-[80px]">
+    <section id="contact" className="section-wrapper bg-canvas light-mesh border-b border-ink/[0.08] relative overflow-hidden scroll-mt-[80px]">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[850px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.06)_0%,transparent_70%)] pointer-events-none" />
 
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-10">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-fg tracking-tight mb-4">
             Book a demo
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
@@ -135,19 +135,19 @@ export default function ContactSection({ businessTypes }) {
             {submitStatus === "success" && confirmed ? (
               <div
                 role="status"
-                className="rounded-3xl border border-[#00F0FF]/40 bg-[#0A0F1D]/90 p-8 sm:p-10 text-center space-y-5"
+                className="rounded-3xl border border-[#00F0FF]/40 bg-surface/90 p-8 sm:p-10 text-center space-y-5"
               >
-                <div className="w-14 h-14 rounded-2xl bg-[#00F0FF]/15 text-[#00F0FF] flex items-center justify-center mx-auto border border-[#00F0FF]/40">
+                <div className="w-14 h-14 rounded-2xl bg-[#00F0FF]/15 text-brand flex items-center justify-center mx-auto border border-[#00F0FF]/40">
                   <CheckCircle2 className="w-8 h-8" aria-hidden="true" />
                 </div>
-                <h3 className="text-2xl font-bold text-white">Thanks, {confirmed.name}.</h3>
+                <h3 className="text-2xl font-bold text-fg">Thanks, {confirmed.name}.</h3>
                 <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
                   We&apos;ll contact you on{" "}
-                  <strong className="text-white">{confirmed.phone}</strong> to arrange your{" "}
+                  <strong className="text-fg">{confirmed.phone}</strong> to arrange your{" "}
                   {confirmed.isPricingCall ? "pricing call" : "demo"}.
                 </p>
                 {confirmed.referenceId && (
-                  <p className="text-xs text-slate-400">
+                  <p className="text-sm text-slate-400">
                     Your reference: <span className="text-slate-200 font-semibold">{confirmed.referenceId}</span>
                   </p>
                 )}
@@ -158,7 +158,7 @@ export default function ContactSection({ businessTypes }) {
             ) : (
               <form
                 onSubmit={handleSubmit}
-                className="rounded-3xl border border-white/[0.12] bg-[#0A0F1D]/85 p-5 sm:p-10 space-y-5"
+                className="rounded-3xl border border-ink/[0.12] bg-surface/85 shadow-card-raised p-5 sm:p-10 space-y-5"
               >
                 {/* Honeypot: hidden from people and assistive tech, bots tend to fill it */}
                 <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
@@ -176,7 +176,7 @@ export default function ContactSection({ businessTypes }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="contact-name" className={labelClass}>
-                      Your name <span className="text-[#00F0FF]">*</span>
+                      Your name <span className="text-brand">*</span>
                     </label>
                     <input
                       id="contact-name"
@@ -193,7 +193,7 @@ export default function ContactSection({ businessTypes }) {
                   </div>
                   <div>
                     <label htmlFor="contact-phone" className={labelClass}>
-                      Mobile / WhatsApp <span className="text-[#00F0FF]">*</span>
+                      Mobile / WhatsApp <span className="text-brand">*</span>
                     </label>
                     <input
                       id="contact-phone"
@@ -214,7 +214,7 @@ export default function ContactSection({ businessTypes }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                   <div>
                     <label htmlFor="contact-industry" className={labelClass}>
-                      Business type <span className="text-[#00F0FF]">*</span>
+                      Business type <span className="text-brand">*</span>
                     </label>
                     <select
                       id="contact-industry"
@@ -224,11 +224,11 @@ export default function ContactSection({ businessTypes }) {
                       className={`${inputClass} cursor-pointer`}
                       disabled={busy}
                     >
-                      <option value="" disabled className="bg-[#0A0F1D] text-slate-400">
+                      <option value="" disabled className="bg-surface text-slate-400">
                         Choose your business type…
                       </option>
                       {businessTypes.map((b) => (
-                        <option key={b.id} value={b.id} className="bg-[#0A0F1D] text-white">
+                        <option key={b.id} value={b.id} className="bg-surface text-fg">
                           {b.label}
                         </option>
                       ))}
@@ -236,7 +236,7 @@ export default function ContactSection({ businessTypes }) {
                   </div>
                   <div>
                     <label htmlFor="contact-request-type" className={labelClass}>
-                      What would you like? <span className="text-[#00F0FF]">*</span>
+                      What would you like? <span className="text-brand">*</span>
                     </label>
                     <select
                       id="contact-request-type"
@@ -247,7 +247,7 @@ export default function ContactSection({ businessTypes }) {
                       disabled={busy}
                     >
                       {REQUEST_TYPES.map((t) => (
-                        <option key={t.id} value={t.id} className="bg-[#0A0F1D] text-white">
+                        <option key={t.id} value={t.id} className="bg-surface text-fg">
                           {t.label}
                         </option>
                       ))}
@@ -329,7 +329,7 @@ export default function ContactSection({ businessTypes }) {
                   )}
                 </button>
 
-                <p className="text-xs text-slate-400 text-center">
+                <p className="text-sm text-slate-400 text-center">
                   We only use these details to contact you about ZUGEE. See our{" "}
                   <Link href="/privacy" className="text-cyan-400 hover:text-cyan-300 underline underline-offset-2">
                     Privacy Policy
