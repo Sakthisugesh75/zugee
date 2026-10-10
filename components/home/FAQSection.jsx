@@ -1,11 +1,22 @@
 // components/home/FAQSection.jsx
 // Server component using native <details>: no JavaScript needed, fully readable by crawlers,
 // and the visible answers are the same strings emitted in the FAQPage schema.
+// The homepage uses the defaults; product pages pass their own questions and heading.
 
 import { FAQ_ITEMS } from "@/lib/site-content";
 import { ChevronDown, HelpCircle } from "lucide-react";
 
-export default function FAQSection() {
+const DEFAULT_ITEMS = FAQ_ITEMS.map((faq) => ({ q: faq.question, a: faq.answer }));
+
+/**
+ * @param {{ items?: { q: string, a: string }[], title?: string, subtitle?: string, showRoadmapNote?: boolean }} props
+ */
+export default function FAQSection({
+  items = DEFAULT_ITEMS,
+  title = "Frequently Asked Questions",
+  subtitle = "Everything you need to know about ZUGEE",
+  showRoadmapNote = true
+}) {
   return (
     <div id="faq" className="max-w-3xl mx-auto scroll-mt-[80px]">
       {/* Section Header */}
@@ -14,30 +25,30 @@ export default function FAQSection() {
           <HelpCircle className="w-7 h-7 text-cyan-400" aria-hidden="true" />
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-fg tracking-tight mb-3">
-          Frequently Asked Questions
+          {title}
         </h2>
         <p className="text-base text-slate-300">
-          Everything you need to know about ZUGEE
+          {subtitle}
         </p>
       </div>
 
       {/* FAQ Accordion */}
       <div className="space-y-4">
-        {FAQ_ITEMS.map((faq, idx) => (
+        {items.map((faq, idx) => (
           <details
-            key={faq.question}
+            key={faq.q}
             open={idx === 0}
             className="group glass-card border-ink/[0.12] open:border-cyan-500/30 open:glow-cyan-soft transition-all duration-300 hover:border-ink/[0.18]"
           >
             <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500/50 [&::-webkit-details-marker]:hidden hover:bg-ink/[0.02] transition-colors rounded-2xl">
-              <span className="text-sm sm:text-base font-bold text-fg pr-2">{faq.question}</span>
+              <span className="text-sm sm:text-base font-bold text-fg pr-2">{faq.q}</span>
               <div className="w-8 h-8 rounded-lg bg-cyan-500/5 border border-cyan-500/20 flex items-center justify-center shrink-0 group-open:bg-cyan-500/10 group-open:border-cyan-500/30 transition-all">
                 <ChevronDown className="w-4 h-4 text-slate-400 transition-all duration-300 group-open:rotate-180 group-open:text-cyan-400" />
               </div>
             </summary>
             <div className="px-6 pb-6 pt-1">
               <div className="pl-4 border-l-2 border-cyan-500/20">
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed">{faq.answer}</p>
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed">{faq.a}</p>
               </div>
             </div>
           </details>
@@ -45,9 +56,11 @@ export default function FAQSection() {
       </div>
 
       {/* Roadmap freshness note (item #10) */}
-      <p className="mt-8 text-center text-[11px] text-slate-600 font-mono tracking-wider uppercase">
-        Feature roadmap updated September 2026
-      </p>
+      {showRoadmapNote && (
+        <p className="mt-8 text-center text-[11px] text-slate-600 font-mono tracking-wider uppercase">
+          Feature roadmap updated September 2026
+        </p>
+      )}
 
       {/* Still have questions CTA */}
       <div className="mt-10 text-center">

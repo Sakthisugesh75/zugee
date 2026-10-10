@@ -352,7 +352,7 @@ const sections = [
           enquiries from children.
         </p>
         <p>
-          Some products hold data about children because of what they are for, such as School ERP. That data is entered
+          Some products hold data about children because of what they are for, such as Scholora, our school software. That data is entered
           by the school, which is responsible for telling parents and getting any consent the law requires. We process
           it only for the school.
         </p>

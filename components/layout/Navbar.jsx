@@ -3,13 +3,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 import { Menu, X, ArrowRight, ShieldCheck } from "lucide-react";
 
 export default function Navbar() {
-  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -29,14 +27,15 @@ export default function Navbar() {
     { label: "FAQ", targetId: "faq" }
   ];
 
-  const scrollToSection = (targetId) => {
+  // Nav items are real links to the homepage sections (/#pricing), so crawlers can follow them.
+  // When the section is on the current page, scroll to it smoothly instead of navigating.
+  const scrollToSection = (event, targetId) => {
     const section = document.getElementById(targetId);
-    // The sections live on the homepage. From any other page (the legal pages), go there.
     if (!section) {
       setMobileMenuOpen(false);
-      router.push(`/#${targetId}`);
       return;
     }
+    event.preventDefault();
 
     const navbar = document.querySelector("header");
     const navbarHeight = navbar?.getBoundingClientRect().height || 0;
@@ -81,28 +80,28 @@ export default function Navbar() {
             : "bg-ink/[0.03] border-ink/[0.06] light:bg-surface/70 light:shadow-card"
         }`}>
           {navLinks.map((link) => (
-            <button
+            <Link
               key={link.label}
-              type="button"
-              onClick={() => scrollToSection(link.targetId)}
-              className="text-[13px] font-medium text-slate-300 hover:text-fg px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap bg-transparent border-none cursor-pointer"
+              href={`/#${link.targetId}`}
+              onClick={(e) => scrollToSection(e, link.targetId)}
+              className="text-[13px] font-medium text-slate-300 hover:text-fg px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap"
             >
               {link.label}
-            </button>
+            </Link>
           ))}
         </nav>
 
         {/* Action CTAs & Live Badge */}
         <div className="hidden lg:flex items-center gap-3 shrink-0">
           <ThemeToggle className="w-10 h-10" />
-          <button
-            type="button"
-            onClick={() => scrollToSection("contact")}
+          <Link
+            href="/#contact"
+            onClick={(e) => scrollToSection(e, "contact")}
             className="btn-primary text-sm !py-2.5 !px-5 whitespace-nowrap cursor-pointer"
           >
             <span>Book a Demo</span>
             <ArrowRight className="w-3.5 h-3.5 shrink-0" />
-          </button>
+          </Link>
         </div>
 
         {/* Mobile Hamburger Toggle */}
@@ -111,13 +110,13 @@ export default function Navbar() {
           <div className="hidden sm:flex">
             <ThemeToggle className="w-[42px] h-[42px]" />
           </div>
-          <button
-            type="button"
-            onClick={() => scrollToSection("contact")}
+          <Link
+            href="/#contact"
+            onClick={(e) => scrollToSection(e, "contact")}
             className="btn-primary text-xs !py-2 !px-3.5"
           >
             Book a Demo
-          </button>
+          </Link>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2.5 rounded-xl bg-ink/[0.05] border border-ink/[0.1] light:bg-surface light:shadow-card text-fg hover:border-[#00F0FF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#00F0FF] transition-colors"
@@ -137,15 +136,15 @@ export default function Navbar() {
             <div className="flex flex-col gap-4">
 
               {navLinks.map((link) => (
-                <button
+                <Link
                   key={link.label}
-                  type="button"
-                  onClick={() => scrollToSection(link.targetId)}
-                  className="text-base font-medium text-slate-300 hover:text-brand py-2.5 border-b border-ink/[0.05] flex items-center justify-between w-full text-left bg-transparent border-none cursor-pointer"
+                  href={`/#${link.targetId}`}
+                  onClick={(e) => scrollToSection(e, link.targetId)}
+                  className="text-base font-medium text-slate-300 hover:text-brand py-2.5 flex items-center justify-between w-full text-left"
                 >
                   <span>{link.label}</span>
                   <ArrowRight className="w-4 h-4 text-slate-500" />
-                </button>
+                </Link>
               ))}
 
               <div className="sm:hidden flex items-center justify-between py-1">
@@ -154,13 +153,13 @@ export default function Navbar() {
               </div>
 
               <div className="pt-4 flex flex-col gap-3">
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("contact")}
+                <Link
+                  href="/#contact"
+                  onClick={(e) => scrollToSection(e, "contact")}
                   className="btn-primary w-full text-center justify-center text-sm !py-3.5"
                 >
                   Book a Demo
-                </button>
+                </Link>
                 <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-mono">
                   <ShieldCheck className="w-3.5 h-3.5 text-brand" />
                   <span>Zugee Systems Technologies Pvt. Ltd.</span>
