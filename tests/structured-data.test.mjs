@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { homePageSchema, organizationSchema, serializeJsonLd } from "../lib/structured-data.js";
 import { FAQ_ITEMS } from "../lib/site-content.js";
-import { PRODUCTS, availableProducts, productAnchor } from "../lib/products.js";
+import { PRODUCTS, availableProducts, productAnchor, productFullName } from "../lib/products.js";
 import { COMPANY } from "../lib/legal.js";
 import { SOCIAL_PROFILES } from "../lib/site.js";
 
@@ -82,9 +82,9 @@ test("the FAQPage matches the visible FAQ exactly", () => {
 test("every available product, and only those, is a SoftwareApplication", () => {
   const apps = home["@graph"].filter((node) => node["@type"] === "SoftwareApplication");
   const available = PRODUCTS.filter((p) => p.status === "available");
-  assert.deepEqual(apps.map((a) => a.name), available.map((p) => p.name));
+  assert.deepEqual(apps.map((a) => a.name), available.map(productFullName));
   for (const app of apps) {
-    const product = available.find((p) => p.name === app.name);
+    const product = available.find((p) => productFullName(p) === app.name);
     assert.equal(app.description, product.description);
     assert.equal(app.applicationCategory, "BusinessApplication");
     assert.equal(app.operatingSystem, "Web");
@@ -102,8 +102,8 @@ test("every SoftwareApplication is a product the showcase renders, with its name
   assert.equal(apps.length, available.length);
   available.forEach((product, i) => {
     assert.equal(apps[i]["@id"], `${SITE}/#${productAnchor(product.slug)}`);
-    // No url: the showcase has no per-product anchor to point at.
-    assert.ok(!("url" in apps[i]), `${product.name} points at an anchor that doesn't exist`);
+    // The url is the product's landing page (/fleet-management-software), never a #fragment.
+    assert.equal(apps[i].url, `${SITE}/${product.pageSlug}`, `${product.name} url`);
   });
 
   // The showcase renders exactly the Available products (all of them in the HTML, the active one
@@ -123,10 +123,10 @@ test("the footer lists only Available products", () => {
   assert.ok(!/coming_soon/.test(footer));
 });
 
-test("Hospital Management is Available, as approved, everywhere Available products appear", async () => {
+test("Clinivance (hospital management) is Available, as approved, everywhere Available products appear", async () => {
   const { DEMO_FORM_BUSINESS_TYPES, availableProducts: available } = await import("../lib/products.js");
   const hospital = PRODUCTS.find((p) => p.slug === "medical");
-  assert.equal(hospital.name, "Hospital Management");
+  assert.equal(hospital.name, "Clinivance");
   assert.equal(hospital.industry, "Hospitals & clinics");
   assert.equal(hospital.status, "available");
   assert.equal(
@@ -144,7 +144,7 @@ test("Hospital Management is Available, as approved, everywhere Available produc
   ]);
   assert.ok(available().some((p) => p.slug === "medical"), "in the carousel");
   assert.ok(DEMO_FORM_BUSINESS_TYPES.some((b) => b.id === "medical"), "in the demo form");
-  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "Hospital Management"), "in the structured data");
+  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "Clinivance by ZUGEE"), "in the structured data");
 });
 
 test("the Key Capabilities box lists every module of a product", () => {
@@ -156,5 +156,5 @@ test("product cards don't show the internal slug", () => {
   const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
   assert.ok(!/Module #\{product\.slug\}/.test(showcase));
   assert.match(showcase, /Tailored for \{product\.industry\}/);
-  assert.match(showcase, /Replaces: \{accent\.replaces\}/);
+  assert.match(showcase, /Replaces: \{product\.replaces\}/);
 });

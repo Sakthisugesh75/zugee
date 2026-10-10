@@ -23,6 +23,7 @@ import {
   Wrench,
 } from "lucide-react";
 import ScrollRow from "@/components/ui/ScrollRow";
+import { getProduct } from "@/lib/products";
 import { accentInk } from "@/lib/theme";
 
 // Four Core Infrastructure Pillars for Indian Enterprises
@@ -48,14 +49,17 @@ const FOUNDATION_PILLARS = [
   },
 ];
 
-// Industry Day-in-the-Life Operational Workflows
+// Industry Day-in-the-Life Operational Workflows. Product names come from the catalog, so a rename
+// in lib/products.js shows up here too.
+const productName = (slug) => getProduct(slug).name;
+
 const INDUSTRY_WORKFLOWS = [
   {
     id: "fleet",
     name: "Fleet & Logistics",
     icon: Truck,
     accent: "#F97316",
-    product: "Transposs",
+    product: productName("transposs"),
     steps: [
       { step: "01. Order & Route Booking", detail: "Consignment booked, vehicle assigned, and route planned with live driver availability." },
       { step: "02. Live Dispatch & GPS Logs", detail: "Driver logs trips via mobile; fuel expenses, toll slips, and odometer readings auto-tracked." },
@@ -67,7 +71,7 @@ const INDUSTRY_WORKFLOWS = [
     name: "Manufacturing & Production",
     icon: Layers,
     accent: "#3B82F6",
-    product: "ManuFlow",
+    product: productName("manuflow"),
     tagline: "Raw materials tracking, Bills of Materials (BOM) & finished goods",
     steps: [
       { step: "01. Work Order & BOM Creation", detail: "Sales order auto-generates bill of materials and verifies raw stock across warehouses." },
@@ -80,7 +84,7 @@ const INDUSTRY_WORKFLOWS = [
     name: "Retail & Distribution",
     icon: ShoppingBag,
     accent: "#10B981",
-    product: "ZUGEE ERP / CRM",
+    product: productName("core-erp"),
     tagline: "Multi-branch point of sale, stock re-orders & vendor ledgers",
     steps: [
       { step: "01. Rapid Barcode Billing", detail: "Fast POS checkout with GST calculation, split UPI/cash payments, and digital receipts." },
@@ -93,7 +97,7 @@ const INDUSTRY_WORKFLOWS = [
     name: "Real Estate & Builders",
     icon: Building,
     accent: "#A855F7",
-    product: "Real Estate ERP",
+    product: productName("real-estate"),
     tagline: "Property unit inventories, broker commissions & payment schedules",
     steps: [
       { step: "01. Inquiry & Site Visit", detail: "Buyer leads captured automatically; site visits scheduled with automated SMS/WhatsApp alerts." },
@@ -106,7 +110,7 @@ const INDUSTRY_WORKFLOWS = [
     name: "Travel & Tour Operators",
     icon: Plane,
     accent: "#8B5CF6",
-    product: "Tours & Travels CRM",
+    product: productName("tours-travels"),
     tagline: "Custom holiday packages, instant itineraries & client bookings",
     steps: [
       { step: "01. Dynamic Quotation", detail: "Assemble hotels, flights, and sightseeing into branded PDF itineraries in minutes." },
@@ -119,7 +123,7 @@ const INDUSTRY_WORKFLOWS = [
     name: "Schools & Educational Institutes",
     icon: School,
     accent: "#6366F1",
-    product: "School & College ERP",
+    product: `${productName("school-erp")} & ${productName("college")}`,
     tagline: "Student lifecycle, attendance rosters & automated fee collections",
     steps: [
       { step: "01. Admissions & Enrollment", detail: "Digital student registration, roll number allocation, and parent portal profile creation." },

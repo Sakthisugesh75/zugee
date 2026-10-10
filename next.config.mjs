@@ -42,6 +42,10 @@ const nextConfig = {
   // LAN IPs for same-Wi-Fi phone testing, plus quick-tunnel hosts for testing from anywhere.
   allowedDevOrigins: [...lanAddresses, "*.trycloudflare.com", "*.loca.lt"],
   poweredByHeader: false,
+  // Product pages that moved. Permanent (308), so any link or bookmark to the old path keeps working.
+  async redirects() {
+    return [{ source: "/manufacturing-erp", destination: "/garment-manufacturing-erp", permanent: true }];
+  },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   }

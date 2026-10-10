@@ -1,5 +1,6 @@
 // components/layout/Footer.jsx
-// Footer with smooth scroll navigation (no URL hash changes)
+// Footer. Links are real links (crawlable); a link to a section on the current page scrolls to it
+// smoothly instead of navigating.
 //
 // TODO(founder): add real trust details here once confirmed — registered address, phone,
 // WhatsApp, support email and founder/team names (Phase 3). Never add a CIN, GSTIN, address or
@@ -8,9 +9,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import MascotLogo from "@/components/ui/MascotLogo";
-import { availableProducts } from "@/lib/products";
+import { availableProducts, productPagePath } from "@/lib/products";
 import { LEGAL_PAGES } from "@/lib/legal";
 import { SOCIAL_PROFILES } from "@/lib/site";
 import { ArrowUp } from "lucide-react";
@@ -26,16 +26,13 @@ const SITE_LINKS = [
 const linkClass = "text-slate-400 hover:text-brand transition-colors cursor-pointer bg-transparent border-none text-left p-0";
 
 export default function Footer() {
-  const router = useRouter();
   const listedProducts = availableProducts();
 
-  const scrollToSection = (targetId) => {
+  const scrollToSection = (event, targetId) => {
     const section = document.getElementById(targetId);
-    // The sections live on the homepage. From any other page (the legal pages), go there.
-    if (!section) {
-      router.push(`/#${targetId}`);
-      return;
-    }
+    // Not on this page: let the link navigate to the homepage section.
+    if (!section) return;
+    event.preventDefault();
 
     const navbar = document.querySelector("header");
     const navbarHeight = navbar?.getBoundingClientRect().height || 0;
@@ -100,13 +97,13 @@ export default function Footer() {
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
               {SITE_LINKS.map((l) => (
                 <li key={l.targetId}>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection(l.targetId)}
+                  <Link
+                    href={`/#${l.targetId}`}
+                    onClick={(e) => scrollToSection(e, l.targetId)}
                     className={linkClass}
                   >
                     {l.label}
-                  </button>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -115,25 +112,18 @@ export default function Footer() {
           <nav aria-label="Products">
             <p className="text-xs font-bold text-fg uppercase tracking-wider mb-5">Products</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
-              {listedProducts.slice(0, 6).map((p) => (
+              {/* Every Available product, linked to its own page. */}
+              {listedProducts.map((p) => (
                 <li key={p.slug}>
-                  <button
-                    type="button"
-                    onClick={() => scrollToSection("products")}
-                    className={linkClass}
-                  >
+                  <Link href={productPagePath(p) || "/#products"} className={linkClass}>
                     {p.name}
-                  </button>
+                  </Link>
                 </li>
               ))}
               <li>
-                <button
-                  type="button"
-                  onClick={() => scrollToSection("products")}
-                  className="text-cyan-400 hover:text-cyan-300 transition-colors cursor-pointer bg-transparent border-none text-left p-0 font-medium"
-                >
+                <Link href="/products" className="text-cyan-400 hover:text-cyan-300 transition-colors font-medium">
                   View all products →
-                </button>
+                </Link>
               </li>
             </ul>
           </nav>

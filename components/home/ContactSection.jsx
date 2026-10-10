@@ -20,8 +20,19 @@ const inputClass =
   "w-full bg-canvas border border-ink/[0.12] focus:border-[#00F0FF] rounded-xl px-4 py-3 text-fg text-sm outline-none transition-colors";
 const labelClass = "block text-sm font-medium text-slate-200 mb-2";
 
-export default function ContactSection({ businessTypes }) {
-  const [formData, setFormData] = useState(EMPTY_FORM);
+/**
+ * @param {{ businessTypes: { id: string, label: string }[], initialIndustry?: string,
+ *           title?: string, intro?: string }} props
+ * initialIndustry preselects the business type (a product page passes its own product).
+ */
+export default function ContactSection({
+  businessTypes,
+  initialIndustry = "",
+  title = "Book a demo",
+  intro = "Tell us about your business. We'll call or WhatsApp you to fix a time and show you the product live."
+}) {
+  const emptyForm = { ...EMPTY_FORM, industry: initialIndustry };
+  const [formData, setFormData] = useState(emptyForm);
   const [honeypot, setHoneypot] = useState("");
   const [submitStatus, setSubmitStatus] = useState("idle"); // idle | loading | success | error
   const [errorMessage, setErrorMessage] = useState("");
@@ -99,7 +110,7 @@ export default function ContactSection({ businessTypes }) {
   };
 
   const resetForm = () => {
-    setFormData(EMPTY_FORM);
+    setFormData(emptyForm);
     setSubmitStatus("idle");
     setConfirmed(null);
   };
@@ -113,10 +124,10 @@ export default function ContactSection({ businessTypes }) {
       <div className="container relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-10">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-fg tracking-tight mb-4">
-            Book a demo
+            {title}
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed">
-            Tell us about your business. We&apos;ll call or WhatsApp you to fix a time and show you the product live.
+            {intro}
           </p>
         </div>
 

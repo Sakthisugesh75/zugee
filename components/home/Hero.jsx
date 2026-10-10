@@ -67,7 +67,7 @@ const PREVIEW_TABS = [
     trend: "0 Low-Stock Breaches",
     accent: "#8B5CF6",
     sampleData: [
-      { name: "Raw Material Batch #A44", stage: "BOM Allocated: ManuFlow", value: "1,200 Units", time: "Floor Ready" },
+      { name: "Raw Material Batch #A44", stage: "BOM Allocated: Fabrova", value: "1,200 Units", time: "Floor Ready" },
       { name: "Packaged 20L Water Cans", stage: "Dispatched to Route 4", value: "480 Cans", time: "Van Loaded" },
       { name: "Finished Product SKUs", stage: "Auto-Reconciled with Sales", value: "Stock Value: ₹48L", time: "Live" },
     ],

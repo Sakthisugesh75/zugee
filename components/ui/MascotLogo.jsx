@@ -26,7 +26,7 @@ export default function MascotLogo({
         >
           <Image
             src="/zugee-mascot-icon.png"
-            alt="Zugee"
+            alt={showWordmark ? "" : "Zugee"}
             fill
             sizes={`${size + 12}px`}
             className="object-cover"
