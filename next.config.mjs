@@ -43,8 +43,23 @@ const nextConfig = {
   allowedDevOrigins: [...lanAddresses, "*.trycloudflare.com", "*.loca.lt"],
   poweredByHeader: false,
   // Product pages that moved. Permanent (308), so any link or bookmark to the old path keeps working.
+  // Domain consolidation: zugee.in → www.getzugee.com (permanent 301).
   async redirects() {
-    return [{ source: "/manufacturing-erp", destination: "/garment-manufacturing-erp", permanent: true }];
+    return [
+      { source: "/manufacturing-erp", destination: "/garment-manufacturing-erp", permanent: true },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "zugee.in" }],
+        destination: "https://www.getzugee.com/:path*",
+        permanent: true
+      },
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.zugee.in" }],
+        destination: "https://www.getzugee.com/:path*",
+        permanent: true
+      }
+    ];
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

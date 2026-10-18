@@ -6,7 +6,7 @@
 import Link from "next/link";
 import LegalPage, { ContactLines, KeyPoint } from "@/components/legal/LegalPage";
 import { COMPANY, legalMetadata } from "@/lib/legal";
-import { PRODUCTS } from "@/lib/products";
+import { PRODUCTS, availableProducts } from "@/lib/products";
 
 export const metadata = legalMetadata({
   path: "/terms",
@@ -73,7 +73,7 @@ const sections = [
     body: (
       <>
         <p>
-          {COMPANY.brand} makes {PRODUCTS.length} products, each for one kind of business. Every product is separate
+          {COMPANY.brand} makes {availableProducts().length} products, each for one kind of business. Every product is separate
           software with its own login and its own data. There is no shared login across products. If you use two
           products, you have two subscriptions.
         </p>

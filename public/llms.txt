@@ -1,0 +1,95 @@
+# Zugee Systems Technologies Pvt. Ltd.
+
+> Industry-specific business operations, CRM, ERP, and GST billing software
+> for Indian SMEs with 14-day white-glove onboarding, data migration, staff
+> training, and Tally-compatible data exports.
+
+## Company
+
+- **Legal name:** Zugee Systems Technologies Pvt. Ltd.
+- **Brand:** ZUGEE
+- **Headquarters:** Coimbatore, Tamil Nadu, India
+- **Email:** support@getzugee.com
+- **Website:** https://www.getzugee.com
+
+## Products (11 available)
+
+Each product is separate software with its own login, database and codebase,
+built for one kind of business. All names below are ZUGEE products — they are
+not related to any other company or global brand.
+
+1. **ZUGEE Omni** — General Business CRM, Billing & Inventory
+   https://www.getzugee.com/erp-crm-software
+
+2. **ZUGEE Fleetova** — Fleet & Transport Management
+   https://www.getzugee.com/fleet-management-software
+
+3. **ZUGEE Tourvana** — Travel Agency & Tour Operator CRM
+   https://www.getzugee.com/tours-and-travels-crm
+
+4. **ZUGEE Aqurix** — Packaged Drinking Water & Can Delivery Operations
+   https://www.getzugee.com/water-supply-erp
+
+5. **ZUGEE Estatova** — Real Estate & Builders CRM
+   https://www.getzugee.com/real-estate-crm
+
+6. **ZUGEE Fabrova** — Garment, Textile & Manufacturing ERP
+   https://www.getzugee.com/garment-manufacturing-erp
+
+7. **ZUGEE Scholora** — School Management ERP
+   https://www.getzugee.com/school-management-software
+
+8. **ZUGEE Campora** — College ERP
+   https://www.getzugee.com/college-management-software
+
+9. **ZUGEE Roomora** — PG & Hostel Management
+   https://www.getzugee.com/pg-management-software
+
+10. **ZUGEE Resortique** — Resort & Hospitality Suite
+    https://www.getzugee.com/resort-management-software
+
+11. **ZUGEE Clinivance** — Hospital & Clinic Management Software
+    https://www.getzugee.com/hospital-management-software
+
+## Pricing Model
+
+Custom scope-based pricing determined through a 1-on-1 pricing consultation
+call. Pricing depends on:
+
+- **Chosen product** — each product is priced independently
+- **Number of branches:**
+  - Starter: 1 branch, up to 5 users
+  - Growth: Multiple branches, up to 20 users
+  - Enterprise: 20+ users with dedicated cloud
+- **One-time white-glove setup fee** — covers business discovery, account
+  configuration, data migration (Excel, Tally), staff training and go-live
+  support (typically 14 days)
+
+No prices are published. All pricing is confirmed on a call before any
+commitment.
+
+## Onboarding (White-Glove Setup)
+
+Every customer gets hands-on onboarding:
+
+1. Business discovery session
+2. Account configuration (GST settings, branches, users, workflows)
+3. Data migration from Excel, Tally or other systems
+4. Staff walkthrough and training
+5. Go-live support during first days of use
+
+## Key Facts
+
+- Sold to businesses in India, for business use only
+- No auto-renewal, no card on file — each month is paid by UPI or bank transfer
+- Monthly price is fixed for the life of a subscription
+- Customers own their data and can export it at any time
+- Tally-compatible data exports for chartered accountants
+- Support: Monday–Saturday, 10 am–6 pm IST, by email and WhatsApp
+- No lock-in: cancel any month with 7 days' notice
+
+## Legal
+
+- [Terms of Service](https://www.getzugee.com/terms)
+- [Privacy Policy](https://www.getzugee.com/privacy)
+- [Refund & Cancellation Policy](https://www.getzugee.com/refund)

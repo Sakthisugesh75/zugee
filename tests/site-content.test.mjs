@@ -166,15 +166,16 @@ test("every legal page linked from the footer exists", () => {
   }
 });
 
-test("legal pages stay unindexed while any [CONFIRM] placeholder is left", () => {
+test("legal pages are always noindex so RAG crawlers skip legal disclaimers", () => {
   const placeholders = legalSources.reduce((n, page) => n + (page.source.match(/<Confirm[\s>]/g) || []).length, 0);
   if (placeholders > 0) {
     assert.equal(LEGAL_DRAFT, true, `${placeholders} unconfirmed placeholders remain: LEGAL_DRAFT must stay true`);
   }
 
   const metadata = legalMetadata({ path: "/privacy", title: "Privacy Policy", description: "x" });
-  if (LEGAL_DRAFT) assert.equal(metadata.robots.index, false);
-  else assert.ok(!("robots" in metadata));
+  assert.equal(metadata.robots.index, false, "legal pages must be noindex");
+  assert.equal(metadata.robots.follow, true, "legal pages must be follow so link equity flows");
+  assert.equal(metadata.robots.nocache, true, "legal pages must be nocache");
 });
 
 test("legal pages publish no price and no promise the company cannot keep", () => {

@@ -87,7 +87,7 @@ test("every available product, and only those, is a SoftwareApplication", () => 
     const product = available.find((p) => productFullName(p) === app.name);
     assert.equal(app.description, product.description);
     assert.equal(app.applicationCategory, "BusinessApplication");
-    assert.equal(app.operatingSystem, "Web");
+    assert.equal(app.operatingSystem, "Web, Android, iOS");
     assert.equal(app.publisher["@id"], organization["@id"]);
   }
 });
