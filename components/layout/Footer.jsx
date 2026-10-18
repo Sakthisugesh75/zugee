@@ -114,6 +114,7 @@ export default function Footer() {
                       href={profile.url}
                       target="_blank"
                       rel="me noopener noreferrer"
+                      aria-label={`Follow ZUGEE on ${profile.label}`}
                       className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-ink/[0.04] border border-ink/[0.12] hover:text-brand hover:border-cyan-500/40 transition-colors"
                     >
                       {profile.label}
