@@ -132,9 +132,10 @@ function ZenXProductHero({ product }) {
             </ul>
           </div>
 
-          <div className="pt-4 mt-6 border-t border-ink/[0.06] flex items-center gap-2 text-sm" style={{ color: accentInk(accent.accent) }}>
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Runs as its own system, with its own login and data</span>
+          {/* What this product does for the business. That each product is separate is said once, in the section intro. */}
+          <div className="pt-4 mt-6 border-t border-ink/[0.06] flex items-start gap-2 text-sm" style={{ color: accentInk(accent.accent) }}>
+            <Sparkles className="w-3.5 h-3.5 shrink-0 mt-[3px]" aria-hidden="true" />
+            <span>{product.outcome}</span>
           </div>
         </div>
       </div>
@@ -279,6 +280,7 @@ export default function ProductShowcase() {
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto mb-4">
             From CRM and billing to fleet, travel, education and operations — pick the ZUGEE product built for your kind of business.
+            Each one runs as its own system, with its own login and data.
           </p>
 
         </div>

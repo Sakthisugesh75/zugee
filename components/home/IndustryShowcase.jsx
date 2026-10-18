@@ -63,7 +63,7 @@ const INDUSTRY_WORKFLOWS = [
     steps: [
       { step: "01. Order & Route Booking", detail: "Consignment booked, vehicle assigned, and route planned with live driver availability." },
       { step: "02. Live Dispatch & GPS Logs", detail: "Driver logs trips via mobile; fuel expenses, toll slips, and odometer readings auto-tracked." },
-      { step: "03. Delivery & Fast Settlement", detail: "Digital proof of delivery triggers instant GST invoice and automated WhatsApp payment link to client." },
+      { step: "03. Delivery & Fast Settlement", detail: "Digital proof of delivery triggers an instant GST invoice in the office ledger and generates a digital payment link for fast settlement (automated WhatsApp Cloud API delivery rolling out)." },
     ],
   },
   {

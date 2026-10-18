@@ -21,34 +21,34 @@ not related to any other company or global brand.
 1. **ZUGEE Omni** — General Business CRM, Billing & Inventory
    https://www.getzugee.com/erp-crm-software
 
-2. **ZUGEE Fleetova** — Fleet & Transport Management
+2. **ZUGEE Fleet** — Fleet & Transport Management
    https://www.getzugee.com/fleet-management-software
 
-3. **ZUGEE Tourvana** — Travel Agency & Tour Operator CRM
+3. **ZUGEE Tours** — Travel Agency & Tour Operator CRM
    https://www.getzugee.com/tours-and-travels-crm
 
-4. **ZUGEE Aqurix** — Packaged Drinking Water & Can Delivery Operations
+4. **ZUGEE Water** — Packaged Drinking Water & Can Delivery Operations
    https://www.getzugee.com/water-supply-erp
 
-5. **ZUGEE Estatova** — Real Estate & Builders CRM
+5. **ZUGEE Estates** — Real Estate & Builders CRM
    https://www.getzugee.com/real-estate-crm
 
-6. **ZUGEE Fabrova** — Garment, Textile & Manufacturing ERP
+6. **ZUGEE Factory** — Garment, Textile & Manufacturing ERP
    https://www.getzugee.com/garment-manufacturing-erp
 
-7. **ZUGEE Scholora** — School Management ERP
+7. **ZUGEE Schools** — School Management ERP
    https://www.getzugee.com/school-management-software
 
-8. **ZUGEE Campora** — College ERP
+8. **ZUGEE Campus** — College ERP
    https://www.getzugee.com/college-management-software
 
-9. **ZUGEE Roomora** — PG & Hostel Management
+9. **ZUGEE Hostels** — PG & Hostel Management
    https://www.getzugee.com/pg-management-software
 
-10. **ZUGEE Resortique** — Resort & Hospitality Suite
+10. **ZUGEE Resorts** — Resort & Hospitality Suite
     https://www.getzugee.com/resort-management-software
 
-11. **ZUGEE Clinivance** — Hospital & Clinic Management Software
+11. **ZUGEE Care** — Hospital & Clinic Management Software
     https://www.getzugee.com/hospital-management-software
 
 ## Pricing Model

@@ -123,10 +123,10 @@ test("the footer lists only Available products", () => {
   assert.ok(!/coming_soon/.test(footer));
 });
 
-test("Clinivance (hospital management) is Available, as approved, everywhere Available products appear", async () => {
+test("ZUGEE Care (hospital management) is Available, as approved, everywhere Available products appear", async () => {
   const { DEMO_FORM_BUSINESS_TYPES, availableProducts: available } = await import("../lib/products.js");
   const hospital = PRODUCTS.find((p) => p.slug === "medical");
-  assert.equal(hospital.name, "Clinivance");
+  assert.equal(hospital.name, "ZUGEE Care");
   assert.equal(hospital.industry, "Hospitals & clinics");
   assert.equal(hospital.status, "available");
   assert.equal(
@@ -144,7 +144,7 @@ test("Clinivance (hospital management) is Available, as approved, everywhere Ava
   ]);
   assert.ok(available().some((p) => p.slug === "medical"), "in the carousel");
   assert.ok(DEMO_FORM_BUSINESS_TYPES.some((b) => b.id === "medical"), "in the demo form");
-  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "Clinivance by ZUGEE"), "in the structured data");
+  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "ZUGEE Care"), "in the structured data");
 });
 
 test("the Key Capabilities box lists every module of a product", () => {
