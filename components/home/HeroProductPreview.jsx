@@ -169,31 +169,37 @@ export default function HeroProductPreview() {
         hidden={activeTab !== "owner"}
       >
         {/* Status strip */}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 pb-4 mb-5 border-b border-ink/[0.08] text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider">
+        {/* The separator dot is desktop-only, so a wrapped second line never leaves it orphaned. */}
+        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 sm:gap-x-3 pb-4 mb-5 border-b border-ink/[0.08] text-[11px] sm:text-xs font-mono font-bold uppercase tracking-wider">
           <span className="flex items-center gap-2 text-emerald-400">
             <LiveDot />
             Live Sync Active
           </span>
-          <span className="text-ink/20" aria-hidden="true">•</span>
-          <span className="text-cyan-400">CA Tally Export Ready</span>
+          <span className="hidden sm:inline text-ink/20" aria-hidden="true">•</span>
+          {/* The icon separates the two labels on phones, where the dot is hidden. */}
+          <span className="flex items-center gap-1.5 text-cyan-400">
+            <CheckCircle2 className="w-3.5 h-3.5 sm:hidden" aria-hidden="true" />
+            CA Tally Export Ready
+          </span>
         </div>
 
         {/* KPI boxes */}
-        <dl className="grid grid-cols-3 gap-2 sm:gap-3 mb-5" aria-live="polite">
-          {kpis.map((kpi) => {
+        {/* Phones: billing spans the full width on top, the other two sit side by side below it. */}
+        <dl className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-3 mb-5" aria-live="polite">
+          {kpis.map((kpi, index) => {
             const Icon = kpi.icon;
             return (
               <div
                 key={kpi.label}
                 className={`p-3 sm:p-4 rounded-xl bg-card border shadow-card transition-colors duration-500 ${
-                  kpi.updated ? "border-emerald-400/50" : "border-line"
-                }`}
+                  index === 0 ? "col-span-2 sm:col-span-1" : ""
+                } ${kpi.updated ? "border-emerald-400/50" : "border-line"}`}
               >
                 <dt className="flex items-center gap-1.5 text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1.5">
                   <Icon className="w-3.5 h-3.5 text-cyan-400 shrink-0" aria-hidden="true" />
                   <span>{kpi.label}</span>
                 </dt>
-                <dd className={`text-base sm:text-xl font-black font-mono transition-colors duration-500 ${kpi.updated ? "text-emerald-400" : "text-fg"}`}>
+                <dd className={`text-base sm:text-xl font-black font-mono whitespace-nowrap tabular-nums transition-colors duration-500 ${kpi.updated ? "text-emerald-400" : "text-fg"}`}>
                   {kpi.value}
                 </dd>
                 {kpi.updated && (
@@ -237,8 +243,8 @@ export default function HeroProductPreview() {
                     </div>
 
                     {/* Right-aligned metadata */}
-                    <div className="flex items-center gap-2 sm:gap-3 pl-11 sm:pl-0 shrink-0 text-xs">
-                      <span className={`font-mono font-bold text-sm ${AMOUNT_TONE[row.amountTone]}`}>{row.amount}</span>
+                    <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 pl-11 sm:pl-0 shrink-0 text-xs">
+                      <span className={`font-mono font-semibold text-sm whitespace-nowrap tabular-nums ${AMOUNT_TONE[row.amountTone]}`}>{row.amount}</span>
                       <span className={`px-2 py-0.5 rounded-full border text-[10px] sm:text-[11px] font-semibold whitespace-nowrap ${PILL_TONE[row.pillTone]}`}>
                         {row.pill}
                       </span>
@@ -258,10 +264,11 @@ export default function HeroProductPreview() {
                         {row.chain.map((step, i) => (
                           <span key={step}>
                             {i > 0 && <span className="text-cyan-400" aria-hidden="true"> → </span>}
-                            {step}
+                            {/* Each step wraps as a unit, so "#INV-892" never splits at the hyphen. */}
+                            <span className="whitespace-nowrap">{step}</span>
                           </span>
                         ))}
-                        {row.chainNote && <span className="text-emerald-400 font-semibold"> • {row.chainNote}</span>}
+                        {row.chainNote && <span className="text-emerald-400 font-semibold"> • <span className="whitespace-nowrap">{row.chainNote}</span></span>}
                       </p>
                     </div>
                   </div>
