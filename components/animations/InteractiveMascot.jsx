@@ -16,8 +16,9 @@ import { useMediaQuery } from "@/lib/use-media-query";
  */
 export default function InteractiveMascot({
   src = "/zugee-mascot-cutout.webp",
-  // Opaque version for the light theme (scripts/make-light-mascot.mjs); the cutout fades on white.
-  lightSrc = "/zugee-mascot-cutout-light.webp",
+  // Light-theme version (scripts/make-light-mascot.mjs): the cutout's visor and chest are
+  // transparent and turn white on a light page, so this one has them filled with dark navy.
+  lightSrc = "/zugee-mascot-light.webp",
   size = 300,
   className = ""
 }) {
