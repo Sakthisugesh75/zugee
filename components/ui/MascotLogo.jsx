@@ -39,7 +39,7 @@ export default function MascotLogo({
         <div className="absolute -inset-1 rounded-xl bg-gradient-to-br from-cyan-400/20 to-blue-500/20 opacity-0 group-hover:opacity-100 blur-lg transition-opacity duration-500 light:opacity-0" />
 
         {/* Logo Container with Glass Effect - theme adaptive */}
-        <div className="relative flex items-center justify-center p-1.5 rounded-xl bg-gradient-to-br from-white/[0.03] to-white/[0.01] backdrop-blur-sm border border-white/[0.08] group-hover:border-cyan-500/30 transition-all duration-300 group-hover:scale-105 light:bg-white light:border-slate-200 light:shadow-sm light:group-hover:border-cyan-400">
+        <div className="relative flex items-center justify-center p-1.5 rounded-xl bg-gradient-to-br from-ink/[0.03] to-ink/[0.01] backdrop-blur-sm border border-ink/[0.08] group-hover:border-cyan-500/30 transition-all duration-300 group-hover:scale-105 light:bg-white light:border-slate-200 light:shadow-sm light:group-hover:border-cyan-400">
           <div
             className="relative flex items-center justify-center"
             style={{ width: logoSize, height: logoSize }}
