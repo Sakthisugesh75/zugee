@@ -46,7 +46,7 @@ const PILL_TONE = {
 const ACTIVITY = [
   {
     icon: FileText,
-    source: "Trip #TR-408 (Coimbatore → Chennai)",
+    source: "Trip #TR-408 (Salem → Chennai)",
     event: "POD Uploaded by Driver",
     result: "GST Invoice #INV-892 Ready",
     amount: "+ ₹42,000",
@@ -314,7 +314,7 @@ export default function HeroProductPreview() {
                     <MapPin className="w-3.5 h-3.5" aria-hidden="true" />
                     Today&apos;s Route
                   </p>
-                  <p className="text-sm font-semibold text-fg">Coimbatore → Tiruppur</p>
+                  <p className="text-sm font-semibold text-fg">Salem → Tiruppur</p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-card border border-line shadow-card">

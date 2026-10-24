@@ -11,10 +11,11 @@ import { WHATSAPP_CHAT_URL } from "@/lib/site";
 export default function Hero() {
   return (
     <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 overflow-hidden bg-canvas light-mesh border-b border-ink/[0.06]">
-      {/* Background ambient lighting */}
+      {/* Background ambient lighting. Fixed px offsets, not % of the section: the section grows while
+          the page streams in, and %-positioned glows moved with it (counted as layout shift, CLS). */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-[10%] left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-cyan-500/[0.07] rounded-full ambient-glow lg:blur-[180px]" />
-        <div className="absolute top-[40%] right-[10%] w-[450px] h-[400px] bg-violet-600/[0.04] rounded-full ambient-glow lg:blur-[160px]" />
+        <div className="absolute top-[120px] left-1/2 -translate-x-1/2 w-[850px] h-[500px] bg-cyan-500/[0.07] rounded-full ambient-glow lg:blur-[180px]" />
+        <div className="absolute top-[520px] right-[10%] w-[450px] h-[400px] bg-violet-600/[0.04] rounded-full ambient-glow lg:blur-[160px]" />
         {/* Subtle cyber grid */}
         <div
           className="absolute inset-0 opacity-[0.14]"

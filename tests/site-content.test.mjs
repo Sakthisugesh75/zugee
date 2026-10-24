@@ -176,6 +176,30 @@ test("legal pages are always noindex so RAG crawlers skip legal disclaimers", ()
   assert.equal(metadata.robots.index, false, "legal pages must be noindex");
   assert.equal(metadata.robots.follow, true, "legal pages must be follow so link equity flows");
   assert.equal(metadata.robots.nocache, true, "legal pages must be nocache");
+  // Shared legal links show their own title and URL, not the homepage's.
+  assert.equal(metadata.openGraph.url, "/privacy");
+  assert.equal(metadata.openGraph.title, "Privacy Policy | ZUGEE");
+});
+
+test("the sitemap never lists a noindex page", () => {
+  const sitemap = fs.readFileSync(path.join(import.meta.dirname, "..", "app", "sitemap.js"), "utf8");
+  assert.ok(!/LEGAL_PAGES|\/privacy|\/terms|\/refund/.test(sitemap), "legal pages are noindex: keep them out of the sitemap");
+  // lastmod dates are fixed strings, so they only change when the content does.
+  for (const [, date] of sitemap.matchAll(/_UPDATED = "([^"]+)"/g)) assert.match(date, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+test("IndexNow key file and search verification tags", async () => {
+  const { INDEXNOW_KEY, searchVerification } = await import("../lib/site.js");
+  assert.match(INDEXNOW_KEY, /^[a-f0-9]{32}$/);
+  const keyFile = path.join(import.meta.dirname, "..", "public", `${INDEXNOW_KEY}.txt`);
+  assert.equal(fs.readFileSync(keyFile, "utf8").trim(), INDEXNOW_KEY, "public/<key>.txt must hold exactly the key");
+
+  assert.deepEqual(searchVerification({}), {}, "no tags when nothing is configured");
+  assert.deepEqual(searchVerification({ GOOGLE_SITE_VERIFICATION: "g", BING_SITE_VERIFICATION: "b", YANDEX_SITE_VERIFICATION: "y" }), {
+    google: "g",
+    yandex: "y",
+    other: { "msvalidate.01": "b" }
+  });
 });
 
 test("legal pages publish no price and no promise the company cannot keep", () => {
@@ -188,7 +212,7 @@ test("legal pages publish no price and no promise the company cannot keep", () =
   const terms = legalSources.find((p) => p.href === "/terms").source;
   assert.match(terms, /No uptime guarantee/);
   assert.match(terms, /No 24\/7 support on standard plans/);
-  assert.match(terms, /Coimbatore, Tamil Nadu/);
+  assert.match(terms, /Salem, Tamil Nadu/);
   const privacy = legalSources.find((p) => p.href === "/privacy").source;
   assert.match(privacy, /We do not promise that your data never leaves India/);
   assert.match(privacy, /sets no cookies for visitors/);

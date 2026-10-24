@@ -131,7 +131,9 @@ test("the structured data matches the page: product, FAQ word for word, breadcru
     assert.equal(app.name, productFullName(product));
     assert.equal(app.url, `${SITE}/${product.pageSlug}`);
     assert.equal(app.applicationCategory, "BusinessApplication");
-    assert.equal(app.provider["@id"], `${SITE}/#organization`);
+    assert.equal(app.publisher["@id"], `${SITE}/#organization`);
+    // One entity per product: the homepage uses the same @id.
+    assert.equal(app["@id"], `${SITE}/${product.pageSlug}#software`);
     assert.ok(!("offers" in app) && !("aggregateRating" in app));
 
     const faq = graph.find((n) => n["@type"] === "FAQPage");

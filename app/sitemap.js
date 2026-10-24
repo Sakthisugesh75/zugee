@@ -1,28 +1,21 @@
 // app/sitemap.js
 // Next.js sitemap generator for SEO.
 // Search engines ignore #fragment URLs, so only real routes are listed: the homepage, the products
-// hub, the product landing pages, and the legal pages once they are final.
+// hub and the product landing pages.
+//
+// The legal pages are left out on purpose: they are always noindex (lib/legal.js), and listing a
+// noindex URL in the sitemap is a contradiction Search Console reports as an error.
 
 import { SITE_URL } from "@/lib/site";
-import { LEGAL_DRAFT, LEGAL_LAST_UPDATED_ISO, LEGAL_PAGES } from "@/lib/legal";
 import { productPages } from "@/lib/product-pages";
 
-// Bump when the homepage content changes. A fixed date (not new Date()) keeps lastModified meaningful.
-const HOMEPAGE_UPDATED = "2026-10-04";
+// Bump when the homepage content changes. A fixed date (not new Date()) keeps lastModified
+// meaningful: search engines stop trusting lastmod on sites where it changes on every build.
+export const HOMEPAGE_UPDATED = "2026-10-25";
 // Bump when any product page's copy changes.
-const PRODUCT_PAGES_UPDATED = "2026-10-10";
+export const PRODUCT_PAGES_UPDATED = "2026-10-25";
 
 export default function sitemap() {
-  // While the legal pages still hold unconfirmed placeholders they are unindexed and left out.
-  const legalPages = LEGAL_DRAFT
-    ? []
-    : LEGAL_PAGES.map((page) => ({
-        url: `${SITE_URL}${page.href}`,
-        lastModified: LEGAL_LAST_UPDATED_ISO,
-        changeFrequency: "yearly",
-        priority: 0.3
-      }));
-
   return [
     {
       url: `${SITE_URL}/`,
@@ -41,7 +34,6 @@ export default function sitemap() {
       lastModified: PRODUCT_PAGES_UPDATED,
       changeFrequency: "monthly",
       priority: 0.8
-    })),
-    ...legalPages
+    }))
   ];
 }

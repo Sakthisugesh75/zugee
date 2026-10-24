@@ -1,7 +1,7 @@
 // app/layout.jsx
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { SITE_URL } from "@/lib/site";
+import { searchVerification, SITE_URL } from "@/lib/site";
 import { organizationSchema, serializeJsonLd } from "@/lib/structured-data";
 import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
@@ -47,6 +47,8 @@ export const metadata = {
     description: SHARE_DESCRIPTION,
     images: ["/og.jpg"]
   },
+  // Google / Bing / Yandex webmaster-tools ownership tags, from env vars (.env.example).
+  verification: searchVerification(),
   // Mascot head crop. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
   icons: {
     icon: [{ url: "/icon-192.png", type: "image/png", sizes: "192x192" }],
