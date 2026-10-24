@@ -59,6 +59,13 @@ const sections = [
             qualified or archived).
           </li>
         </ul>
+        <h3>When you use the chat assistant</h3>
+        <p>
+          The questions you type into the &ldquo;Ask ZUGEE&rdquo; chat assistant on this website, and its answers. We
+          do not save chats: a conversation is kept only in your browser tab and is gone when you close it. To write
+          each answer, your messages are sent to Google&apos;s Gemini service (see the providers below). Please do not
+          type personal, health or payment details into the chat.
+        </p>
         <h3>When we talk to you</h3>
         <p>
           What you tell us on a call, in a demo, on WhatsApp or by email, so that we can show you the right product and
@@ -86,7 +93,8 @@ const sections = [
             the page requested and the time.
           </li>
           <li>
-            We use your IP address for a few minutes to limit repeated form submissions and failed sign-in attempts.
+            We use your IP address for up to an hour to limit repeated form submissions, chat messages and failed
+            sign-in attempts.
             This counter is held in memory only. We do not save it with your enquiry.
           </li>
         </ul>
@@ -168,6 +176,11 @@ const sections = [
               "Zoho Mail",
               "Sends and stores our email",
               "The notice our team receives for each enquiry, which contains the form details, and the confirmation email sent to you. Also any email you exchange with us."
+            ],
+            [
+              "Google (Gemini API)",
+              "Writes the answers of the chat assistant on this website",
+              "The messages you type into the chat assistant and the conversation so far. We use Google's free plan, under which Google may keep these messages, have people review them, and use them to improve its products. Google handles them under its own terms and privacy policy."
             ],
             [
               "WhatsApp (Meta)",
