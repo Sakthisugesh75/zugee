@@ -1,4 +1,4 @@
-// tests/structured-data.test.mjs
+﻿// tests/structured-data.test.mjs
 // JSON-LD must describe only what the visible site shows: no ratings, reviews or prices (ZUGEE has
 // none published), the FAQ word for word, and only products a business can use today.
 import test from "node:test";
@@ -29,7 +29,7 @@ test("no rating, review or price appears in any structured data", () => {
     for (const key of allKeys(schema)) {
       assert.ok(!BANNED_KEYS.test(key), `structured data contains "${key}"`);
     }
-    assert.ok(!/₹|\bINR\b|"Rating"|"Review"|"Offer"/.test(JSON.stringify(schema)));
+    assert.ok(!/â‚¹|\bINR\b|"Rating"|"Review"|"Offer"/.test(JSON.stringify(schema)));
   }
 });
 
@@ -52,7 +52,7 @@ test("the Organization carries the company's real contact details, without a pho
   assert.equal(organization["@type"], "Organization");
   assert.equal(organization.name, "ZUGEE");
   assert.equal(organization.url, `${SITE}/`);
-  assert.equal(organization.logo, `${SITE}/zugee-mascot-icon.png`);
+  assert.equal(organization.logo, `${SITE}/icon-512.png`);
   assert.equal(organization.email, COMPANY.email);
   // The site publishes no phone number (tests/public-contact.test.mjs).
   assert.ok(!("telephone" in organization));
@@ -167,3 +167,4 @@ test("product cards don't show the internal slug", () => {
   assert.match(showcase, /Tailored for \{product\.industry\}/);
   assert.match(showcase, /Replaces: \{product\.replaces\}/);
 });
+

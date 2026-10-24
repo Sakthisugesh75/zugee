@@ -1,4 +1,4 @@
-// app/layout.jsx
+﻿// app/layout.jsx
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { searchVerification, SITE_URL } from "@/lib/site";
@@ -19,14 +19,14 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"]
 });
 
-const SHARE_TITLE = "ZUGEE — Business software built for the way your business operates";
+const SHARE_TITLE = "ZUGEE â€” Business software built for the way your business operates";
 const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
 
 export const metadata = {
   // Relative URLs below (canonical, og:url, og:image, twitter:image) resolve against this.
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "ZUGEE — Business Software for Indian Businesses",
+    default: "ZUGEE â€” Business Software for Indian Businesses",
     template: "%s | ZUGEE"
   },
   description: SHARE_DESCRIPTION,
@@ -36,7 +36,7 @@ export const metadata = {
     description: SHARE_DESCRIPTION,
     url: "/",
     siteName: "ZUGEE",
-    // 1200×630 JPEG under 60 KB: WhatsApp and LinkedIn drop previews for large images.
+    // 1200Ã—630 JPEG under 60 KB: WhatsApp and LinkedIn drop previews for large images.
     images: [{ url: "/og.jpg", width: 1200, height: 630, alt: SHARE_TITLE }],
     locale: "en_IN",
     type: "website"
@@ -49,9 +49,12 @@ export const metadata = {
   },
   // Google / Bing / Yandex webmaster-tools ownership tags, from env vars (.env.example).
   verification: searchVerification(),
-  // Mascot head crop. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
+  // Rounded Z icon. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
   icons: {
-    icon: [{ url: "/icon-192.png", type: "image/png", sizes: "192x192" }],
+    icon: [
+      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon-512.png", type: "image/png", sizes: "512x512" }
+    ],
     apple: "/apple-touch-icon.png"
   }
 };
@@ -82,3 +85,4 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
