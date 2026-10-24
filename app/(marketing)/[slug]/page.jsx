@@ -6,7 +6,7 @@
 import { notFound } from "next/navigation";
 import ProductPage from "@/components/product/ProductPage";
 import { getProductPage, productPages } from "@/lib/product-pages";
-import { productPageSchema, serializeJsonLd } from "@/lib/structured-data";
+import { ProductPageJsonLd } from "@/components/JsonLdSchema";
 
 export const dynamicParams = false;
 
@@ -52,10 +52,8 @@ export default async function ProductLandingPage({ params }) {
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(productPageSchema(entry.product, entry.page)) }}
-      />
+      {/* SoftwareApplication + FAQPage (this page's FAQs) + BreadcrumbList */}
+      <ProductPageJsonLd product={entry.product} page={entry.page} />
       <ProductPage product={entry.product} page={entry.page} />
     </>
   );

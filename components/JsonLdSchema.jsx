@@ -3,12 +3,11 @@
 // lib/structured-data.js into drop-in React components that pages can compose.
 //
 // Usage:
-//   <OrganizationJsonLd />                        — already in app/layout.jsx
-//   <HomePageJsonLd />                             — homepage
-//   <ProductPageJsonLd product={…} page={…} />     — vertical product pages
-//   <FaqJsonLd faqs={[{ question, answer }]} />    — any page with an FAQ section
+//   <ProductPageJsonLd product={…} page={…} />     — every vertical product page
+//   <FaqJsonLd faqs={[{ question, answer }]} />    — any other page with an FAQ section
+// The Organization is emitted by the root layout and the homepage writes its own graph.
 
-import { serializeJsonLd } from "@/lib/structured-data";
+import { productPageSchema, serializeJsonLd } from "@/lib/structured-data";
 
 /**
  * Low-level renderer: turns any JSON-LD object into a <script type="application/ld+json">.
@@ -43,4 +42,12 @@ export function FaqJsonLd({ faqs = [] }) {
     }))
   };
   return <JsonLdScript schema={schema} />;
+}
+
+/**
+ * A vertical product page's graph: SoftwareApplication (the product), FAQPage (the page's own
+ * FAQs, word for word) and BreadcrumbList. Don't add a FaqJsonLd beside it: the FAQ is already in.
+ */
+export function ProductPageJsonLd({ product, page }) {
+  return <JsonLdScript schema={productPageSchema(product, page)} />;
 }

@@ -27,9 +27,10 @@ import { PLANS } from "@/lib/pricing";
 import { homePageSchema, serializeJsonLd } from "@/lib/structured-data";
 
 export const metadata = {
-  title: { absolute: "ZUGEE — Business Software for Indian Businesses" },
+  // The search terms people use (CRM, ERP, GST billing software) in the title, within 60 characters.
+  title: { absolute: "ZUGEE — CRM, ERP & GST Billing Software for Indian SMEs" },
   description:
-    "ZUGEE makes industry-focused CRM, ERP, billing and operations software for Indian businesses: fleet, travel, water supply, real estate, manufacturing and more.",
+    "ZUGEE makes industry-specific CRM, ERP and billing software for Indian SMEs: fleet, travel, water, real estate, schools, hospitals and more. Book a demo.",
   alternates: {
     canonical: "/"
   }

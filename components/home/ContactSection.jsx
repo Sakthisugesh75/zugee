@@ -171,12 +171,15 @@ export default function ContactSection({
                 onSubmit={handleSubmit}
                 className="rounded-3xl border border-ink/[0.12] bg-surface/85 shadow-card-raised p-5 sm:p-10 space-y-5"
               >
-                {/* Honeypot: hidden from people and assistive tech, bots tend to fill it */}
-                <div aria-hidden="true" className="absolute -left-[9999px] w-px h-px overflow-hidden">
+                {/* Honeypot: offscreen and hidden from assistive tech (aria-hidden) and search snippets
+                    (data-nosnippet); bots tend to fill it */}
+                <div aria-hidden="true" data-nosnippet="" className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden">
                   <label htmlFor="contact-company-website">Company website</label>
                   <input
                     id="contact-company-website"
+                    name="company_website"
                     type="text"
+                    aria-hidden="true"
                     tabIndex={-1}
                     autoComplete="off"
                     value={honeypot}

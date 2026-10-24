@@ -2,9 +2,9 @@
 // Footer. Links are real links (crawlable); a link to a section on the current page scrolls to it
 // smoothly instead of navigating.
 //
-// TODO(founder): add real trust details here once confirmed — registered address, phone,
-// WhatsApp, support email and founder/team names (Phase 3). Never add a CIN, GSTIN, address or
-// number that isn't real.
+// Contact details (location, phone/WhatsApp, support email) come from lib/site.js.
+// TODO(founder): add the registered address and founder/team names once confirmed (Phase 3).
+// Never add a CIN, GSTIN, address or number that isn't real.
 
 "use client";
 
@@ -12,8 +12,8 @@ import Link from "next/link";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { availableProducts, productPagePath } from "@/lib/products";
 import { LEGAL_PAGES } from "@/lib/legal";
-import { SOCIAL_PROFILES } from "@/lib/site";
-import { ArrowUp } from "lucide-react";
+import { LOCATION_DISPLAY, PHONE_DISPLAY, PHONE_E164, SOCIAL_PROFILES, SUPPORT_EMAIL, WHATSAPP_CHAT_URL } from "@/lib/site";
+import { ArrowUp, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
 const SITE_LINKS = [
   { label: "Products", targetId: "products" },
@@ -73,6 +73,38 @@ export default function Footer() {
               <span className="text-xs font-semibold text-cyan-400">Built for Indian SMEs</span>
             </div>
 
+            <address className="not-italic mt-2">
+              <p className="text-xs font-bold text-fg uppercase tracking-wider mb-3">Contact</p>
+              <ul className="flex flex-col gap-2.5 list-none p-0 m-0 text-sm">
+                <li className="flex items-center gap-2 text-slate-300">
+                  <MapPin className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
+                  <span>{LOCATION_DISPLAY}</span>
+                </li>
+                <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                  <Phone className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
+                  <a href={`tel:${PHONE_E164}`} className={linkClass}>
+                    {PHONE_DISPLAY}
+                  </a>
+                  <span className="text-slate-500" aria-hidden="true">·</span>
+                  <a
+                    href={WHATSAPP_CHAT_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-slate-400 hover:text-[#25D366] transition-colors"
+                  >
+                    <MessageCircle className="w-3.5 h-3.5" aria-hidden="true" />
+                    WhatsApp
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
+                  <a href={`mailto:${SUPPORT_EMAIL}`} className={linkClass}>
+                    {SUPPORT_EMAIL}
+                  </a>
+                </li>
+              </ul>
+            </address>
+
             <nav aria-label="ZUGEE on social media" className="mt-2">
               <p className="text-xs font-bold text-fg uppercase tracking-wider mb-3">Follow ZUGEE</p>
               <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
@@ -82,6 +114,7 @@ export default function Footer() {
                       href={profile.url}
                       target="_blank"
                       rel="me noopener noreferrer"
+                      aria-label={`Follow ZUGEE on ${profile.label}`}
                       className="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-medium text-slate-300 bg-ink/[0.04] border border-ink/[0.12] hover:text-brand hover:border-cyan-500/40 transition-colors"
                     >
                       {profile.label}

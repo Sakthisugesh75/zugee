@@ -1,6 +1,8 @@
 // tests/public-contact.test.mjs
-// The public site publishes no phone number: contact is by email and the demo form. The company
-// number, tel: links and wa.me links must not appear on any public page or in the structured data.
+// The public site publishes exactly one phone number: the company's own, written once in lib/site.js
+// (PHONE_DISPLAY, PHONE_E164, WHATSAPP_CHAT_URL) and shown through those constants in the hero and
+// footer. Any other number, tel: link or wa.me link in public source fails, and the structured data
+// still carries no telephone.
 //
 // Not covered, on purpose: the admin portal (app/admin, components/admin), the API routes
 // (app/api), the email templates (lib/email.js) and the server-only database code (lib/supabase.js,
@@ -11,6 +13,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { homePageSchema, organizationSchema } from "../lib/structured-data.js";
+import { PHONE_DISPLAY, PHONE_E164, WHATSAPP_CHAT_URL } from "../lib/site.js";
 
 const REPO_ROOT = path.resolve(import.meta.dirname, "..");
 
@@ -47,11 +50,22 @@ function publicSourceFiles() {
     .filter((file) => !NOT_PUBLIC.some((p) => path.relative(REPO_ROOT, file).startsWith(p)));
 }
 
-test("no public page, component or shared library contains a phone number or phone link", () => {
+// The only allowed forms: the constants' own values (in lib/site.js) and a tel: link built from them.
+const ALLOWED_COMPANY_CONTACT = [WHATSAPP_CHAT_URL, PHONE_DISPLAY, PHONE_E164, "tel:${PHONE_E164}"];
+
+function withoutCompanyContact(source, file) {
+  let text = source.split("tel:${PHONE_E164}").join("");
+  if (path.relative(REPO_ROOT, file) === path.join("lib", "site.js")) {
+    for (const value of ALLOWED_COMPANY_CONTACT) text = text.split(`"${value}"`).join('""');
+  }
+  return text;
+}
+
+test("no public page, component or shared library contains a phone number or phone link except the company's", () => {
   const files = publicSourceFiles();
   assert.ok(files.length > 20, "expected to scan the site source");
   for (const file of files) {
-    const source = fs.readFileSync(file, "utf8");
+    const source = withoutCompanyContact(fs.readFileSync(file, "utf8"), file);
     // A form field's placeholder may show a sample number format (the restored demo form shows
     // "+91 98765 43210"). It is skipped for the generic "+91 number" check only; the company
     // number, tel: and wa.me checks still cover the whole file, placeholders included.

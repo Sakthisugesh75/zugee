@@ -5,7 +5,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { PRODUCTS, productFullName } from "../lib/products.js";
+import { PRODUCTS, availableProducts, productFullName } from "../lib/products.js";
 import { PRODUCT_PAGES, getProductPage, productPages } from "../lib/product-pages.js";
 import { productPageSchema } from "../lib/structured-data.js";
 
@@ -38,7 +38,7 @@ test("every page belongs to an Available product with a unique page slug", () =>
 test("titles, descriptions and H1s meet the SEO brief", () => {
   for (const { product, page } of pages) {
     assert.ok(page.title.length <= 60, `${product.name} title is ${page.title.length} chars`);
-    // "[Primary keyword] | Fleetova by ZUGEE"; Zugee Omni carries the brand in its name.
+    // "[Primary keyword] | ZUGEE Fleet": every suite name carries the brand.
     assert.ok(page.title.endsWith(` | ${productFullName(product)}`), `${product.name} title format`);
     const len = page.metaDescription.length;
     assert.ok(len >= 140 && len <= 155, `${product.name} meta description is ${len} chars`);
@@ -131,7 +131,9 @@ test("the structured data matches the page: product, FAQ word for word, breadcru
     assert.equal(app.name, productFullName(product));
     assert.equal(app.url, `${SITE}/${product.pageSlug}`);
     assert.equal(app.applicationCategory, "BusinessApplication");
-    assert.equal(app.provider["@id"], `${SITE}/#organization`);
+    assert.equal(app.publisher["@id"], `${SITE}/#organization`);
+    // One entity per product: the homepage uses the same @id.
+    assert.equal(app["@id"], `${SITE}/${product.pageSlug}#software`);
     assert.ok(!("offers" in app) && !("aggregateRating" in app));
 
     const faq = graph.find((n) => n["@type"] === "FAQPage");
@@ -174,41 +176,86 @@ function siteSource() {
   }));
 }
 
-test("the catalog uses the new product names", () => {
+test("the catalog uses the ZUGEE suite names (2026-10-18)", () => {
   const names = Object.fromEntries(PRODUCTS.filter((p) => p.pageSlug).map((p) => [p.slug, p.name]));
   assert.deepEqual(names, {
-    "core-erp": "Zugee Omni",
-    transposs: "Fleetova",
-    "tours-travels": "Tourvana",
-    "aqua-erp": "Aqurix",
-    "real-estate": "Estatova",
-    manuflow: "Fabrova",
-    "school-erp": "Scholora",
-    college: "Campora",
-    "pg-management": "Roomora",
-    resort: "Resortique",
-    medical: "Clinivance"
+    "core-erp": "ZUGEE Omni",
+    transposs: "ZUGEE Fleet",
+    "tours-travels": "ZUGEE Tours",
+    "aqua-erp": "ZUGEE Water",
+    "real-estate": "ZUGEE Estates",
+    manuflow: "ZUGEE Factory",
+    "school-erp": "ZUGEE Schools",
+    college: "ZUGEE Campus",
+    "pg-management": "ZUGEE Hostels",
+    resort: "ZUGEE Resorts",
+    medical: "ZUGEE Care"
   });
+  // The rebrand changed names only: every page keeps its URL.
+  assert.deepEqual(PRODUCTS.filter((p) => p.pageSlug).map((p) => p.pageSlug), [
+    "erp-crm-software",
+    "fleet-management-software",
+    "tours-and-travels-crm",
+    "water-supply-erp",
+    "real-estate-crm",
+    "garment-manufacturing-erp",
+    "school-management-software",
+    "college-management-software",
+    "pg-management-software",
+    "resort-management-software",
+    "hospital-management-software"
+  ]);
+  for (const { product, page } of pages) {
+    assert.ok(page.title.endsWith(` | ${product.name}`), `${product.name} title`);
+    assert.equal(productFullName(product), product.name);
+  }
+});
+
+test("each homepage product card has its own outcome line", () => {
+  const outcomes = availableProducts().map((p) => p.outcome);
+  assert.ok(outcomes.every((o) => typeof o === "string" && o.length > 20), "every Available product needs an outcome");
+  assert.equal(new Set(outcomes).size, outcomes.length, "outcomes repeat");
+  const showcase = fs.readFileSync(path.join(import.meta.dirname, "..", "components", "home", "ProductShowcase.jsx"), "utf8");
+  assert.match(showcase, /\{product\.outcome\}/);
+  // "Own login and data" is said once, in the section intro, not on every card.
+  assert.equal(showcase.match(/own login and data/g)?.length, 1);
+});
+
+test("every product page renders ProductPageJsonLd", () => {
+  const route = fs.readFileSync(path.join(import.meta.dirname, "..", "app", "(marketing)", "[slug]", "page.jsx"), "utf8");
+  assert.match(route, /<ProductPageJsonLd product=\{entry\.product\} page=\{entry\.page\} \/>/);
 });
 
 test("no retired product name appears on the site", () => {
   // Names that were only ever brand names. Generic ones ("Hospital Management") also occur as plain
   // keyword phrases in page copy, so the catalog test above covers those. Case-sensitive: the lead
   // ids "transposs" and "manuflow" stay, because stored leads use them.
-  const RETIRED = [/Transposs/, /ManuFlow|Manuflow/, /Aqua ERP/, /ZUGEE ERP \/ CRM/, /Tours & Travels CRM/, /School & College ERP/];
-  for (const { file, code } of siteSource()) {
+  const RETIRED = [
+    /Transposs/, /ManuFlow|Manuflow/, /Aqua ERP/, /ZUGEE ERP \/ CRM/, /Tours & Travels CRM/, /School & College ERP/,
+    // Retired by the 2026-10-18 suite rebrand.
+    /Fleetova|Tourvana|Aqurix|Estatova|Fabrova|Scholora|Campora|Roomora|Resortique|Clinivance/, /Zugee Omni/
+  ];
+  const llms = fs.readFileSync(path.join(import.meta.dirname, "..", "public", "llms.txt"), "utf8");
+  for (const { file, code } of [...siteSource(), { file: "public/llms.txt", code: llms }]) {
     for (const name of RETIRED) assert.ok(!name.test(code), `${file} still says ${name}`);
   }
 });
 
-test("Zugee Omni is always written in full", () => {
+test("ZUGEE Omni is always written in full", () => {
   for (const { file, code } of siteSource()) {
-    assert.ok(!/(?<!Zugee )\bOmni\b/.test(code), `${file} says "Omni" without "Zugee"`);
+    assert.ok(!/(?<!ZUGEE )\bOmni\b/.test(code), `${file} says "Omni" without "ZUGEE"`);
+  }
+});
+
+test("public/llms.txt lists every product page under its suite name", () => {
+  const llms = fs.readFileSync(path.join(import.meta.dirname, "..", "public", "llms.txt"), "utf8").replace(/\r\n/g, "\n");
+  for (const { product } of pages) {
+    assert.match(llms, new RegExp(`\\*\\*${product.name}\\*\\* — .+\\n\\s+https://www\\.getzugee\\.com/${product.pageSlug}\\n`), product.name);
   }
 });
 
 // ---------------------------------------------------------------------------
-// All 11 pages, drafts, Fabrova's limits and the site-wide links (2026-10-10)
+// All 11 pages, drafts, ZUGEE Factory's limits and the site-wide links (2026-10-10)
 // ---------------------------------------------------------------------------
 test("every Available product with a page slug has its page", () => {
   const withSlug = PRODUCTS.filter((p) => p.status === "available" && p.pageSlug);
@@ -232,7 +279,7 @@ test("a section that still holds a TODO is a hidden draft", () => {
   assert.match(template, /extraSections\?\.filter\(\(section\) => !section\.draft\)/, "the template must skip drafts");
 });
 
-test("Clinivance has its security section (draft) and the patient data FAQ", () => {
+test("ZUGEE Care has its security section (draft) and the patient data FAQ", () => {
   const { page } = productPages().find(({ product }) => product.slug === "medical");
   const security = page.extraSections.find((s) => s.heading === "Patient data security and privacy");
   assert.ok(security, "security section missing");
@@ -242,13 +289,13 @@ test("Clinivance has its security section (draft) and the patient data FAQ", () 
   assert.ok(!/\bISO\b|HIPAA|ABDM|certified/i.test(allStrings(page).join("\n")));
 });
 
-test("Fabrova's copy stays inside what Fabrova does today", () => {
+test("ZUGEE Factory's copy stays inside what it does today", () => {
   const { page } = productPages().find(({ product }) => product.slug === "manuflow");
   const copy = allStrings(page).join("\n");
   assert.ok(!/\bAI\b|artificial intelligence/i.test(copy), 'say "cost insights", never "AI"');
-  // Most Fabrova modules keep data in the browser: no shared data, cloud or role claims.
-  assert.ok(!/\brole|cloud|shared|multi-user|everyone sees|same records|from any desk/i.test(copy), "Fabrova claims shared or cloud data");
-  for (const term of ["cost insights", "11 languages", "proforma", "GRN", "HR"]) assert.ok(copy.includes(term), `Fabrova lacks "${term}"`);
+  // Most ZUGEE Factory modules keep data in the browser: no shared data, cloud or role claims.
+  assert.ok(!/\brole|cloud|shared|multi-user|everyone sees|same records|from any desk/i.test(copy), "ZUGEE Factory claims shared or cloud data");
+  for (const term of ["cost insights", "11 languages", "proforma", "GRN", "HR"]) assert.ok(copy.includes(term), `ZUGEE Factory lacks "${term}"`);
 });
 
 test("the homepage showcase and the footer link to every product page", () => {
@@ -263,9 +310,9 @@ test("the homepage showcase and the footer link to every product page", () => {
 });
 
 // ---------------------------------------------------------------------------
-// Fabrova's slug move and the /products hub (2026-10-10)
+// ZUGEE Factory's slug move and the /products hub (2026-10-10)
 // ---------------------------------------------------------------------------
-test("Fabrova lives at /garment-manufacturing-erp and the old path redirects permanently", async () => {
+test("ZUGEE Factory lives at /garment-manufacturing-erp and the old path redirects permanently", async () => {
   const fabrova = PRODUCTS.find((p) => p.slug === "manuflow");
   assert.equal(fabrova.pageSlug, "garment-manufacturing-erp");
   for (const { page } of pages) assert.ok(!page.related.includes("manufacturing-erp"), "a related link uses the old path");

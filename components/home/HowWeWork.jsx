@@ -1,6 +1,6 @@
 // components/home/HowWeWork.jsx
-// Complete 4-step onboarding timeline with horizontal connected desktop process,
-// responsive vertical mobile timeline, interactive hover/active states, and staggered scroll reveal.
+// Complete 4-step onboarding timeline: one responsive list (vertical on phones, a connected
+// four-column process from lg), interactive hover/active states, and staggered scroll reveal.
 // Elevated to frame 14-day setup as a premier white-glove onboarding advantage.
 
 "use client";
@@ -110,17 +110,24 @@ export default function HowWeWork() {
           </p>
         </div>
 
-        {/* Desktop Process Timeline */}
-        <div className="hidden lg:block relative mb-16">
-          {/* Horizontal Connection Beam */}
-          <div className="absolute top-[36px] left-[6%] right-[6%] h-[2px] bg-ink/[0.08] z-0">
+        {/* Process timeline: one list for every width (vertical on phones, four columns from lg),
+            so each step's text appears in the DOM once. */}
+        <div className="relative mb-12 lg:mb-16">
+          {/* Connectors (decorative): vertical stem on phones, horizontal beam from lg */}
+          <div aria-hidden="true" className="lg:hidden absolute top-4 bottom-4 left-[15px] w-[2px] bg-ink/[0.08] z-0">
+            <div
+              className="w-full bg-gradient-to-b from-cyan-400 to-blue-500 transition-all duration-500 rounded-full"
+              style={{ height: `${(activeStep / (STEPS.length - 1)) * 100}%` }}
+            />
+          </div>
+          <div aria-hidden="true" className="hidden lg:block absolute top-[36px] left-[6%] right-[6%] h-[2px] bg-ink/[0.08] z-0">
             <div
               className="h-full bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500 transition-all duration-700 rounded-full"
               style={{ width: `${(activeStep / (STEPS.length - 1)) * 100}%` }}
             />
           </div>
 
-          <div className="grid grid-cols-4 gap-6 relative z-10">
+          <ol className="grid grid-cols-1 lg:grid-cols-4 gap-6 relative z-10 list-none p-0 m-0">
             {STEPS.map((step, index) => {
               const isVisible = visibleSteps.includes(index);
               const isActive = activeStep === index;
@@ -128,116 +135,58 @@ export default function HowWeWork() {
               const Icon = step.icon;
 
               return (
-                <div
+                <li
                   key={step.number}
                   onClick={() => handleStepClick(index)}
-                  className={`group h-full cursor-pointer transition-all duration-500 transform ${
-                    isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                  className={`group h-full cursor-pointer flex gap-4 lg:gap-0 lg:flex-col lg:items-center lg:text-center transition-all duration-500 transform ${
+                    isVisible ? "lg:opacity-100 lg:translate-y-0" : "lg:opacity-0 lg:translate-y-8"
                   }`}
                 >
-                  <div className="h-full flex flex-col items-center text-center">
-                    {/* Step Node */}
-                    <div
-                      className={`w-[72px] h-[72px] rounded-2xl flex items-center justify-center transition-all duration-500 mb-6 relative ${
-                        isActive
-                          ? "bg-tint-cyan border-2 border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.4)] scale-110"
-                          : isPast
-                          ? "bg-tint-blue border border-blue-400/40 text-blue-400"
-                          : "bg-surface border border-ink/[0.12] text-slate-400 hover:border-ink/[0.25]"
+                  {/* Step Node */}
+                  <div
+                    className={`w-8 h-8 rounded-xl mt-1 lg:mt-0 lg:w-[72px] lg:h-[72px] lg:rounded-2xl lg:mb-6 shrink-0 flex items-center justify-center transition-all duration-500 ${
+                      isActive
+                        ? "bg-tint-cyan border-2 border-cyan-400 shadow-[0_0_30px_rgba(6,182,212,0.4)] lg:scale-110"
+                        : isPast
+                        ? "bg-tint-blue border border-blue-400/40 text-blue-400"
+                        : "bg-surface border border-ink/[0.12] text-slate-400 hover:border-ink/[0.25]"
+                    }`}
+                  >
+                    <Icon
+                      aria-hidden="true"
+                      className={`w-4 h-4 lg:w-7 lg:h-7 transition-colors duration-300 ${
+                        isActive ? "text-cyan-400" : isPast ? "text-blue-400" : "text-slate-400 group-hover:text-slate-200"
                       }`}
-                    >
-                      <Icon
-                        className={`w-7 h-7 transition-colors duration-300 ${
-                          isActive ? "text-cyan-400" : isPast ? "text-blue-400" : "text-slate-400 group-hover:text-slate-200"
-                        }`}
-                      />
-                      <span className="absolute -top-2.5 -right-2.5 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-canvas border border-ink/[0.15] text-fg">
-                        {step.number}
-                      </span>
-                    </div>
+                    />
+                  </div>
 
-                    {/* Step Card Body */}
-                    <div
-                      className={`p-5 rounded-2xl w-full flex-1 flex flex-col transition-all duration-300 ${
-                        isActive
-                          ? "bg-card border border-cyan-500/40 shadow-[0_10px_30px_rgba(6,182,212,0.12)]"
-                          : "bg-card border border-line shadow-card hover:border-ink/[0.12]"
-                      }`}
-                    >
-                      <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-2">
-                        {step.label}
+                  {/* Step Card Body */}
+                  <div
+                    className={`p-5 rounded-2xl w-full flex-1 flex flex-col transition-all duration-300 ${
+                      isActive
+                        ? "bg-card border border-cyan-500/40 shadow-[0_10px_30px_rgba(6,182,212,0.12)]"
+                        : "bg-card border border-line shadow-card hover:border-ink/[0.12]"
+                    }`}
+                  >
+                    <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-2">
+                      {step.number} • {step.label}
+                    </span>
+                    <h3 className="text-base font-bold text-fg mb-2 leading-snug">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed mb-4">
+                      {step.description}
+                    </p>
+                    <div className="mt-auto pt-3 border-t border-ink/[0.06]">
+                      <span className="text-xs font-medium text-slate-400">
+                        {step.tag}
                       </span>
-                      <h3 className="text-base font-bold text-fg mb-2 leading-snug">
-                        {step.title}
-                      </h3>
-                      <p className="text-sm text-slate-300 leading-relaxed mb-4">
-                        {step.description}
-                      </p>
-                      <div className="mt-auto pt-3 border-t border-ink/[0.06]">
-                        <span className="text-xs font-medium text-slate-400">
-                          {step.tag}
-                        </span>
-                      </div>
                     </div>
                   </div>
-                </div>
+                </li>
               );
             })}
-          </div>
-        </div>
-
-        {/* Mobile Vertical Timeline */}
-        <div className="lg:hidden relative pl-6 space-y-6 mb-12">
-          {/* Vertical Connecting Stem */}
-          <div className="absolute top-4 bottom-4 left-[15px] w-[2px] bg-ink/[0.08] z-0">
-            <div
-              className="w-full bg-gradient-to-b from-cyan-400 to-blue-500 transition-all duration-500 rounded-full"
-              style={{ height: `${(activeStep / (STEPS.length - 1)) * 100}%` }}
-            />
-          </div>
-
-          {STEPS.map((step, index) => {
-            const isActive = activeStep === index;
-            const Icon = step.icon;
-            return (
-              <div
-                key={step.number}
-                onClick={() => handleStepClick(index)}
-                className="relative z-10 flex gap-4 cursor-pointer"
-              >
-                <div
-                  className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-1 transition-all ${
-                    isActive
-                      ? "bg-cyan-500 border border-cyan-300 text-black shadow-[0_0_16px_rgba(6,182,212,0.6)]"
-                      : "bg-surface border border-ink/[0.15] text-slate-300"
-                  }`}
-                >
-                  <Icon className="w-4 h-4" />
-                </div>
-
-                <div
-                  className={`p-5 rounded-2xl flex-1 transition-all ${
-                    isActive
-                      ? "bg-ink/[0.05] border border-cyan-500/40"
-                      : "bg-card border border-line shadow-card"
-                  }`}
-                >
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-cyan-400 block mb-1">
-                    {step.number} • {step.label}
-                  </span>
-                  <h3 className="text-base font-bold text-fg mb-1.5">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm text-slate-300 leading-relaxed mb-3">
-                    {step.description}
-                  </p>
-                  <span className="text-xs font-medium text-slate-400">
-                    {step.tag}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          </ol>
         </div>
 
         {/* Bottom Guarantee Banner */}

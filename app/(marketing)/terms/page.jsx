@@ -12,7 +12,7 @@ export const metadata = legalMetadata({
   path: "/terms",
   title: "Terms of Service",
   description:
-    "The terms on which ZUGEE supplies its business software: the one-time setup fee, the monthly subscription, payment, your data, support, liability and how either side can end the agreement."
+    "The terms for ZUGEE's business software: the one-time setup fee, monthly subscription, payment, your data, support, liability and how to end the agreement."
 });
 
 const sections = [
@@ -458,7 +458,7 @@ const sections = [
             days.
           </li>
           <li>
-            If it is not settled, the courts at <strong>Coimbatore, Tamil Nadu</strong> have exclusive jurisdiction.
+            If it is not settled, the courts at <strong>Salem, Tamil Nadu</strong> have exclusive jurisdiction.
           </li>
         </ul>
       </>

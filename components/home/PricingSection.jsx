@@ -56,6 +56,26 @@ const ENTERPRISE_FEATURES = [
   "Priority support — direct founder line, business hours",
 ];
 
+// The headline limits of each plan, shown as a short structured list at the top of each card.
+const PLAN_LIMITS = {
+  starter: ["1 Branch", "Up to 5 Staff Logins", "14-Day White-Glove Setup"],
+  growth: ["Multiple Branches", "Up to 20 Staff Logins", "Role-Based Mobile Access & Approvals"],
+  enterprise: ["Unlimited Branches & Users", "Dedicated Cloud Database", "Custom ERP Integrations"],
+};
+
+function PlanLimits({ planKey, accentClass = "text-cyan-400" }) {
+  return (
+    <ul aria-label="Plan limits" className="mb-6 rounded-xl border border-line bg-card shadow-card divide-y divide-ink/[0.06] list-none p-0">
+      {PLAN_LIMITS[planKey].map((limit) => (
+        <li key={limit} className="flex items-center gap-2 px-3.5 py-2 text-sm font-semibold text-fg">
+          <span className={`w-1.5 h-1.5 rounded-full bg-current shrink-0 ${accentClass}`} aria-hidden="true" />
+          <span>{limit}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 export default function PricingSection({ plans }) {
   const [openAccordions, setOpenAccordions] = useState({ starter: false, growth: false });
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
@@ -120,11 +140,15 @@ export default function PricingSection({ plans }) {
           })}
         </div>
 
-        <div className="flex justify-center mb-12 sm:mb-16">
+        <div className="flex flex-col items-center gap-3 mb-12 sm:mb-16">
           <PricingCallButton className="px-7 sm:px-9 py-3.5 rounded-full text-sm font-bold tracking-wide text-white bg-gradient-to-r from-cyan-500 to-blue-600 shadow-[0_4px_20px_rgba(6,182,212,0.35)] hover:scale-105 transition-all duration-300 inline-flex items-center gap-2 cursor-pointer">
             <span>Schedule a pricing call</span>
             <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </PricingCallButton>
+          <p className="flex items-start gap-2 max-w-xl text-center text-sm text-slate-300 leading-relaxed">
+            <Clock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" aria-hidden="true" />
+            <span>10-minute scope call to check your branches &amp; staff count — receive a clear written quote on WhatsApp/Email the same day.</span>
+          </p>
         </div>
 
         {/* ========================================================
@@ -149,6 +173,8 @@ export default function PricingSection({ plans }) {
               <p className="text-sm text-slate-300 leading-relaxed mb-6 min-h-[40px]">
                 For independent businesses getting started with connected workflows.
               </p>
+
+              <PlanLimits planKey="starter" />
 
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
@@ -214,6 +240,8 @@ export default function PricingSection({ plans }) {
                 For expanding businesses with multiple branches, dispatch operations, or teams.
               </p>
 
+              <PlanLimits planKey="growth" />
+
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
                 {growth.features.map((f) => (
@@ -278,6 +306,8 @@ export default function PricingSection({ plans }) {
                 For corporations requiring 20+ users, custom ERP integrations, or dedicated cloud instances.
               </p>
 
+              <PlanLimits planKey="enterprise" accentClass="text-violet-400" />
+
               {/* Key Features */}
               <ul className="space-y-3 mb-8">
                 {ENTERPRISE_FEATURES.map((f) => (
@@ -311,6 +341,14 @@ export default function PricingSection({ plans }) {
             </div>
           </article>
         </div>
+
+        {/* How pricing works */}
+        <aside className="max-w-4xl mx-auto -mt-6 mb-16 p-5 sm:p-6 rounded-2xl bg-card border border-cyan-400/30 shadow-card flex items-start gap-3">
+          <Wrench className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" aria-hidden="true" />
+          <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+            <strong className="text-fg">How our pricing works:</strong> You pay a one-time setup fee (covering data migration from Excel/Tally, workflow mapping, and staff training) plus a simple subscription based on your product, branches, and user count. No hidden AMC charges and 1-click data export anytime.
+          </p>
+        </aside>
 
         {/* ========================================================
             INTERACTIVE FULL FEATURE COMPARISON MATRIX

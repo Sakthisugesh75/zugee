@@ -7,7 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { homePageSchema, organizationSchema, serializeJsonLd } from "../lib/structured-data.js";
 import { FAQ_ITEMS } from "../lib/site-content.js";
-import { PRODUCTS, availableProducts, productAnchor, productFullName } from "../lib/products.js";
+import { PRODUCTS, availableProducts, productFullName } from "../lib/products.js";
 import { COMPANY } from "../lib/legal.js";
 import { SOCIAL_PROFILES } from "../lib/site.js";
 
@@ -56,7 +56,7 @@ test("the Organization carries the company's real contact details, without a pho
   assert.equal(organization.email, COMPANY.email);
   // The site publishes no phone number (tests/public-contact.test.mjs).
   assert.ok(!("telephone" in organization));
-  assert.equal(organization.address.addressLocality, "Coimbatore");
+  assert.equal(organization.address.addressLocality, "Salem");
   assert.equal(organization.address.addressRegion, "Tamil Nadu");
   assert.equal(organization.address.addressCountry, "IN");
 });
@@ -68,6 +68,14 @@ test("the Organization's sameAs lists exactly the social profiles the footer lin
     assert.equal(new URL(url).protocol, "https:", `${url} must be an https URL`);
   }
   assert.equal(new Set(organization.sameAs).size, organization.sameAs.length, "duplicate profile URL");
+});
+
+test("the homepage declares the WebSite, published by the Organization", () => {
+  const site = home["@graph"].find((node) => node["@type"] === "WebSite");
+  assert.ok(site, "WebSite node missing");
+  assert.equal(site.name, "ZUGEE");
+  assert.equal(site.url, `${SITE}/`);
+  assert.equal(site.publisher["@id"], organization["@id"]);
 });
 
 test("the FAQPage matches the visible FAQ exactly", () => {
@@ -101,7 +109,8 @@ test("every SoftwareApplication is a product the showcase renders, with its name
   const available = availableProducts();
   assert.equal(apps.length, available.length);
   available.forEach((product, i) => {
-    assert.equal(apps[i]["@id"], `${SITE}/#${productAnchor(product.slug)}`);
+    // The same @id as the product page, so the homepage and the page describe one entity.
+    assert.equal(apps[i]["@id"], `${SITE}/${product.pageSlug}#software`);
     // The url is the product's landing page (/fleet-management-software), never a #fragment.
     assert.equal(apps[i].url, `${SITE}/${product.pageSlug}`, `${product.name} url`);
   });
@@ -123,10 +132,10 @@ test("the footer lists only Available products", () => {
   assert.ok(!/coming_soon/.test(footer));
 });
 
-test("Clinivance (hospital management) is Available, as approved, everywhere Available products appear", async () => {
+test("ZUGEE Care (hospital management) is Available, as approved, everywhere Available products appear", async () => {
   const { DEMO_FORM_BUSINESS_TYPES, availableProducts: available } = await import("../lib/products.js");
   const hospital = PRODUCTS.find((p) => p.slug === "medical");
-  assert.equal(hospital.name, "Clinivance");
+  assert.equal(hospital.name, "ZUGEE Care");
   assert.equal(hospital.industry, "Hospitals & clinics");
   assert.equal(hospital.status, "available");
   assert.equal(
@@ -144,7 +153,7 @@ test("Clinivance (hospital management) is Available, as approved, everywhere Ava
   ]);
   assert.ok(available().some((p) => p.slug === "medical"), "in the carousel");
   assert.ok(DEMO_FORM_BUSINESS_TYPES.some((b) => b.id === "medical"), "in the demo form");
-  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "Clinivance by ZUGEE"), "in the structured data");
+  assert.ok(home["@graph"].some((n) => n["@type"] === "SoftwareApplication" && n.name === "ZUGEE Care"), "in the structured data");
 });
 
 test("the Key Capabilities box lists every module of a product", () => {
