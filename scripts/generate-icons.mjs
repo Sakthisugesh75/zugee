@@ -29,26 +29,15 @@ async function createRoundedTile(zLogoBuffer, size, zScale, addInnerEdge = false
   const radius = Math.round(size * 0.225); // 22.5% corner radius
   const zSize = Math.round(size * zScale);
   
-  // Create navy background
-  let tile = sharp({
-    create: {
-      width: size,
-      height: size,
-      channels: 4,
-      background: BRAND_NAVY
-    }
-  });
-  
-  // Resize and composite the Z logo
+  // Resize the Z logo
   const resizedZ = await sharp(zLogoBuffer)
     .resize(zSize, zSize, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .toBuffer();
-  
-  tile = tile.composite([{
-    input: resizedZ,
-    gravity: 'center'
-  }]);
-  
+
+  // All layers go into ONE composite() call: sharp keeps only the last composite() of a pipeline,
+  // so separate calls left just the corner mask and produced a blank navy tile.
+  const layers = [{ input: resizedZ, gravity: 'center' }];
+
   // Add inner edge stroke if requested (for sizes >= 192px)
   if (addInnerEdge && size >= 192) {
     const strokeWidth = Math.max(2, Math.round(size / 96)); // 2px-equivalent, scales with size
@@ -63,20 +52,20 @@ async function createRoundedTile(zLogoBuffer, size, zScale, addInnerEdge = false
       </svg>
     `);
     
-    tile = tile.composite([{
-      input: stroke,
-      gravity: 'center'
-    }]);
+    layers.push({ input: stroke, gravity: 'center' });
   }
-  
-  // Apply rounded mask (transparent corners)
-  const mask = createRoundedMask(size, radius);
-  tile = tile.composite([{
-    input: mask,
-    blend: 'dest-in'
-  }]);
-  
-  return tile;
+
+  // Rounded mask last (transparent corners)
+  layers.push({ input: createRoundedMask(size, radius), blend: 'dest-in' });
+
+  return sharp({
+    create: {
+      width: size,
+      height: size,
+      channels: 4,
+      background: BRAND_NAVY
+    }
+  }).composite(layers);
 }
 
 async function main() {

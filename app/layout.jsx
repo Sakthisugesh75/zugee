@@ -49,7 +49,7 @@ export const metadata = {
   },
   // Google / Bing / Yandex webmaster-tools ownership tags, from env vars (.env.example).
   verification: searchVerification(),
-  // Rounded Z icon. app/favicon.ico (16 + 32px) is picked up automatically by Next.js.
+  // Rounded Z icon (the browser tab uses these). All icons come from scripts/generate-icons.mjs.
   icons: {
     icon: [
       { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
