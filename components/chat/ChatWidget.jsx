@@ -1,6 +1,6 @@
 // components/chat/ChatWidget.jsx
-// "Ask Tutu": the website chat assistant (Tutu is the ZUGEE mascot). The launcher
-// (components/chat/TutuLauncher.jsx) in the bottom corner opens a panel; replies
+// "Ask Tutu": the website chat assistant (Tutu is the ZUGEE mascot). The live mascot
+// (components/chat/TutuCompanion.jsx) in the bottom corner opens a panel; replies
 // stream in from /api/chat. The conversation lives in this browser tab only (sessionStorage) and is
 // gone when the tab closes: nothing is saved on our side (see the Privacy Policy).
 //
@@ -14,7 +14,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { MessageCircle, Send, X, CalendarCheck } from "lucide-react";
-import TutuLauncher from "@/components/chat/TutuLauncher";
+import TutuCompanion from "@/components/chat/TutuCompanion";
 import { PHONE_DISPLAY, WHATSAPP_CHAT_URL } from "@/lib/site";
 import { getProduct } from "@/lib/products";
 import { richSegments, splitReply } from "@/lib/chatbot/format";
@@ -72,8 +72,9 @@ export default function ChatWidget() {
   const inputRef = useRef(null);
   const abortRef = useRef(null);
   const panelRef = useRef(null);
-  // The "Ask Tutu" button: focus returns to it when the panel closes.
-  const launcherRef = useRef(null);
+  // The live mascot (<tutu-companion>): its moods follow the chat, and focus returns to its
+  // "Ask Tutu" pill when the panel closes.
+  const tutuRef = useRef(null);
   const returnFocusRef = useRef(false);
   // The saved conversation is read when the panel first opens, and saved only after that, so the
   // empty initial state never overwrites a chat kept from before a reload.
@@ -124,11 +125,15 @@ export default function ChatWidget() {
   }
 
   useEffect(() => {
+    const pill = tutuRef.current?.shadowRoot?.querySelector(".pill");
+    pill?.setAttribute("aria-expanded", String(open));
+    // Opening the chat dismisses Tutu's greeting bubble, which would otherwise peek out under the panel.
+    if (open) tutuRef.current?.shadowRoot?.querySelector(".bubble")?.classList.remove("show");
     if (!open) {
-      // Back to the "Ask Tutu" button after the panel closes (Esc, ×, or a link on a phone).
+      // Back to the "Ask Tutu" pill after the panel closes (Esc, ×, or a link on a phone).
       if (returnFocusRef.current) {
         returnFocusRef.current = false;
-        launcherRef.current?.focus();
+        pill?.focus();
       }
       return;
     }
@@ -184,6 +189,8 @@ export default function ChatWidget() {
 
     const controller = new AbortController();
     abortRef.current = controller;
+    const tutu = tutuRef.current;
+    tutu?.setMood?.("thinking"); // held until the reply ends
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -211,8 +218,12 @@ export default function ChatWidget() {
         setMessages([...history, { role: "assistant", content: reply }]);
       }
       if (!reply.trim()) throw Object.assign(new Error("No answer came back."), { status: 502 });
+      tutu?.clearMood?.();
+      tutu?.setMood?.("happy", 1500);
     } catch (err) {
+      tutu?.clearMood?.();
       if (err.name === "AbortError") return;
+      tutu?.setMood?.("sad", 2000);
       setMessages(history.slice(0, -1)); // drop the unanswered question
       // Network failure (no status) or a server error: the brief's message with WhatsApp and Retry.
       // Limits and validation (4xx) keep the server's own message, and the question goes back in the box.
@@ -246,7 +257,7 @@ export default function ChatWidget() {
           aria-modal="true"
           aria-label="Ask Tutu, ZUGEE's chat assistant"
           onKeyDown={trapFocus}
-          className="fixed z-40 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-24 sm:w-[380px] h-[min(600px,calc(100dvh-6.5rem))] flex flex-col rounded-2xl bg-surface border border-line shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)] overflow-hidden"
+          className="fixed z-40 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-[10.5rem] sm:w-[380px] h-[min(600px,calc(100dvh-6.5rem))] sm:h-[min(600px,calc(100dvh-13rem))] flex flex-col rounded-2xl bg-surface border border-line shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)] overflow-hidden"
         >
           {/* Header */}
           <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-line bg-canvas-alt">
@@ -339,6 +350,8 @@ export default function ChatWidget() {
               <textarea
                 id="chat-input"
                 ref={inputRef}
+                // Tutu looks up, thinking, while the visitor types (lib/tutu-companion.js).
+                data-tutu-think=""
                 rows={1}
                 value={input}
                 maxLength={maxInput}
@@ -382,8 +395,8 @@ export default function ChatWidget() {
         </div>
       )}
 
-      {/* Launcher: "Ask Tutu", the mascot button */}
-      <TutuLauncher open={open} onToggle={toggle} buttonRef={launcherRef} />
+      {/* Launcher: Tutu, the live mascot, docked on its "Ask Tutu" pill */}
+      <TutuCompanion ref={tutuRef} onOpen={toggle} />
     </>
   );
 }
