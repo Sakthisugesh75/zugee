@@ -15,8 +15,8 @@
 --   Problems are listed first. For indexes, constraints and triggers the "actual" column shows the
 --   definition in the database.
 --
--- Expected checks (120): 3 tables, 45 columns, 16 indexes, 37 constraints, 2 triggers,
--- 2 functions, row level security on each of the 3 tables, and 12 grants: service_role can
+-- Expected checks (138): 4 tables, 51 columns, 18 indexes, 41 constraints, 2 triggers,
+-- 2 functions, row level security on each of the 4 tables, and 16 grants: service_role can
 -- select, insert, update and delete on each table.
 -- Plus: no policies, and no privileges for the anon / authenticated roles.
 --
@@ -34,6 +34,7 @@ with expected (kind, name, expected) as (
     ('table', 'leads', ''),
     ('table', 'subscriptions', ''),
     ('table', 'subscription_payments', ''),
+    ('table', 'chat_guest_usage', ''),
     ('column', 'leads.id', 'uuid | not null | default gen_random_uuid()'),
     ('column', 'leads.created_at', 'timestamp with time zone | not null | default now()'),
     ('column', 'leads.reference_id', 'text | not null'),
@@ -79,6 +80,15 @@ with expected (kind, name, expected) as (
     ('column', 'subscriptions.started_at', 'date | nullable'),
     ('column', 'subscriptions.renewal_date', 'date | nullable'),
     ('column', 'subscriptions.notes', 'text | nullable'),
+    -- migrations/0004_chat_guest_usage.sql
+    ('column', 'chat_guest_usage.key', 'text | not null'),
+    ('column', 'chat_guest_usage.day', 'date | not null'),
+    ('column', 'chat_guest_usage.count', 'integer | not null | default 0'),
+    ('column', 'chat_guest_usage.recent', 'ARRAY | not null | default ''{}''::bigint[]'),
+    ('column', 'chat_guest_usage.version', 'integer | not null | default 0'),
+    ('column', 'chat_guest_usage.updated_at', 'timestamp with time zone | not null | default now()'),
+    ('index', 'chat_guest_usage_day_idx', ''),
+    ('index', 'chat_guest_usage_pkey', ''),
     ('index', 'leads_created_at_idx', ''),
     ('index', 'leads_industry_idx', ''),
     ('index', 'leads_pkey', ''),
@@ -134,6 +144,10 @@ with expected (kind, name, expected) as (
     ('constraint', 'subscriptions.subscriptions_setup_waiver_reason_check', 'check'),
     ('constraint', 'subscriptions.subscriptions_subscription_status_check', 'check'),
     ('constraint', 'subscriptions.subscriptions_waiver_consistent', 'check'),
+    ('constraint', 'chat_guest_usage.chat_guest_usage_count_check', 'check'),
+    ('constraint', 'chat_guest_usage.chat_guest_usage_key_check', 'check'),
+    ('constraint', 'chat_guest_usage.chat_guest_usage_pkey', 'primary key'),
+    ('constraint', 'chat_guest_usage.chat_guest_usage_version_check', 'check'),
     ('trigger', 'subscriptions.subscriptions_guard_update', ''),
     ('trigger', 'subscriptions.update_subscriptions_updated_at', ''),
     ('function', 'subscriptions_guard_update', ''),
@@ -141,6 +155,7 @@ with expected (kind, name, expected) as (
     ('rls', 'leads', 'enabled'),
     ('rls', 'subscriptions', 'enabled'),
     ('rls', 'subscription_payments', 'enabled'),
+    ('rls', 'chat_guest_usage', 'enabled'),
     -- What the server (service_role key) must be able to do. Without these every API call fails.
     ('grant', 'leads: service_role SELECT', 'granted'),
     ('grant', 'leads: service_role INSERT', 'granted'),
@@ -153,35 +168,39 @@ with expected (kind, name, expected) as (
     ('grant', 'subscription_payments: service_role SELECT', 'granted'),
     ('grant', 'subscription_payments: service_role INSERT', 'granted'),
     ('grant', 'subscription_payments: service_role UPDATE', 'granted'),
-    ('grant', 'subscription_payments: service_role DELETE', 'granted')
+    ('grant', 'subscription_payments: service_role DELETE', 'granted'),
+    ('grant', 'chat_guest_usage: service_role SELECT', 'granted'),
+    ('grant', 'chat_guest_usage: service_role INSERT', 'granted'),
+    ('grant', 'chat_guest_usage: service_role UPDATE', 'granted'),
+    ('grant', 'chat_guest_usage: service_role DELETE', 'granted')
 ),
 actual (kind, name, actual, compare) as (
   select 'table', c.relname::text, '', ''
     from pg_class c
    where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
-     and c.relname in ('leads', 'subscriptions', 'subscription_payments')
+     and c.relname in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'column', table_name || '.' || column_name, '',
          data_type || ' | ' || case when is_nullable = 'NO' then 'not null' else 'nullable' end
            || coalesce(' | default ' || column_default, '')
     from information_schema.columns
-   where table_schema = 'public' and table_name in ('leads', 'subscriptions', 'subscription_payments')
+   where table_schema = 'public' and table_name in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'index', indexname::text, indexdef, ''
     from pg_indexes
-   where schemaname = 'public' and tablename in ('leads', 'subscriptions', 'subscription_payments')
+   where schemaname = 'public' and tablename in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'constraint', c.conrelid::regclass::text || '.' || c.conname, pg_get_constraintdef(c.oid),
          case c.contype when 'p' then 'primary key' when 'u' then 'unique' when 'f' then 'foreign key' when 'c' then 'check' else c.contype::text end
     from pg_constraint c
    where c.connamespace = 'public'::regnamespace
      and c.contype in ('p', 'u', 'f', 'c')
-     and c.conrelid::regclass::text in ('leads', 'subscriptions', 'subscription_payments')
+     and c.conrelid::regclass::text in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'trigger', t.tgrelid::regclass::text || '.' || t.tgname, pg_get_triggerdef(t.oid),
          case when t.tgenabled = 'D' then 'DISABLED' else '' end
     from pg_trigger t
-   where not t.tgisinternal and t.tgrelid::regclass::text in ('leads', 'subscriptions', 'subscription_payments')
+   where not t.tgisinternal and t.tgrelid::regclass::text in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'function', p.proname::text, '', ''
     from pg_proc p
@@ -191,7 +210,7 @@ actual (kind, name, actual, compare) as (
   select 'rls', c.relname::text, '', case when c.relrowsecurity then 'enabled' else 'DISABLED' end
     from pg_class c
    where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
-     and c.relname in ('leads', 'subscriptions', 'subscription_payments')
+     and c.relname in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   -- has_table_privilege answers "can this role actually do it", whether the privilege was granted
   -- directly, through PUBLIC or through a role it belongs to.
@@ -200,7 +219,7 @@ actual (kind, name, actual, compare) as (
     from pg_class c
    cross join (values ('SELECT'), ('INSERT'), ('UPDATE'), ('DELETE')) as p (privilege)
    where c.relnamespace = 'public'::regnamespace and c.relkind = 'r'
-     and c.relname in ('leads', 'subscriptions', 'subscription_payments')
+     and c.relname in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
 ),
 objects as (
   select coalesce(e.kind, a.kind) as kind,
@@ -220,12 +239,12 @@ security as (
   select 'policy' as kind, tablename || '.' || policyname as name, 'UNEXPECTED' as status,
          'no policies' as expected, 'a policy exists' as actual
     from pg_policies
-   where schemaname = 'public' and tablename in ('leads', 'subscriptions', 'subscription_payments')
+   where schemaname = 'public' and tablename in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
   union all
   select 'privilege', table_name || ' -> ' || grantee, 'UNEXPECTED',
          'no privileges', string_agg(privilege_type, ', ' order by privilege_type)
     from information_schema.role_table_grants
-   where table_schema = 'public' and table_name in ('leads', 'subscriptions', 'subscription_payments')
+   where table_schema = 'public' and table_name in ('leads', 'subscriptions', 'subscription_payments', 'chat_guest_usage')
      and grantee in ('anon', 'authenticated')
    group by table_name, grantee
 ),
@@ -237,7 +256,7 @@ checks as (
 select 0 as "#", 'SUMMARY' as kind,
        count(*) filter (where status <> 'OK') || ' problems' as name,
        case when count(*) filter (where status <> 'OK') = 0 then 'OK' else 'FAILED' end as status,
-       '120 checks expected' as expected,
+       '138 checks expected' as expected,
        count(*) filter (where status = 'OK') || ' OK' as actual
   from checks
 union all

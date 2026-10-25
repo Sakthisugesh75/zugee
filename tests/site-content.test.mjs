@@ -215,7 +215,12 @@ test("legal pages publish no price and no promise the company cannot keep", () =
   assert.match(terms, /Salem, Tamil Nadu/);
   const privacy = legalSources.find((p) => p.href === "/privacy").source;
   assert.match(privacy, /We do not promise that your data never leaves India/);
-  assert.match(privacy, /sets no cookies for visitors/);
+  // Since the chat assistant (2026-10-25) the site sets a guest cookie, so the policy must say exactly
+  // what it keeps instead of "no cookies".
+  assert.match(privacy, /sets no advertising, analytics or tracking cookies/);
+  assert.match(privacy, /zugee_chat_guest \(cookie\)/);
+  assert.match(privacy, /scrambled, one-way code made from your IP address/);
+  assert.ok(!/sets no cookies for visitors/.test(privacy), "the site does set a cookie for chat guests");
 });
 
 test("no source file holds mojibake (UTF-8 text saved as Windows-1252)", () => {

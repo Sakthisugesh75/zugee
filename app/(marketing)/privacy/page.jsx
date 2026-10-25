@@ -61,7 +61,7 @@ const sections = [
         </ul>
         <h3>When you use the chat assistant</h3>
         <p>
-          The questions you type into the &ldquo;Ask ZUGEE&rdquo; chat assistant on this website, and its answers. We
+          The questions you type into the &ldquo;Ask Tutu&rdquo; chat assistant on this website, and its answers. We
           do not save chats: a conversation is kept only in your browser tab and is gone when you close it. To write
           each answer, your messages are sent to Google&apos;s Gemini service (see the providers below). Please do not
           type personal, health or payment details into the chat.
@@ -94,8 +94,12 @@ const sections = [
           </li>
           <li>
             We use your IP address for up to an hour to limit repeated form submissions, chat messages and failed
-            sign-in attempts.
-            This counter is held in memory only. We do not save it with your enquiry.
+            sign-in attempts. This counter is held in memory only. We do not save it with your enquiry.
+          </li>
+          <li>
+            For the chat assistant&apos;s free daily limit, we keep a count of messages for a random guest ID (from a
+            cookie) and for a scrambled, one-way code made from your IP address, never the address itself. These
+            counts hold no names or messages and are deleted after two days.
           </li>
         </ul>
         <h3>What we do not collect</h3>
@@ -333,15 +337,33 @@ const sections = [
     body: (
       <>
         <KeyPoint>
-          <strong>This website sets no cookies for visitors.</strong> It also stores nothing else in your browser, and
-          it loads no scripts, fonts or images from other companies. That is why there is no cookie banner.
+          <strong>This website sets no advertising, analytics or tracking cookies.</strong> It loads no scripts, fonts
+          or images from other companies. The only things it keeps in your browser are needed for features you use,
+          listed below, which is why there is no cookie banner.
         </KeyPoint>
-        <p>The only cookie this website can set is for our own staff:</p>
         <LegalTable
-          head={["Cookie", "Who gets it", "Purpose", "Lasts"]}
+          head={["Cookie or storage", "Who gets it", "Purpose", "Lasts"]}
           rows={[
             [
-              "zugee_admin_session",
+              "zugee_chat_guest (cookie)",
+              "A visitor who opens the chat assistant",
+              "A random, signed guest ID used only to count free chat messages per day. It cannot be read by scripts and is sent only to the chat.",
+              "30 days"
+            ],
+            [
+              "zugee-chat (session storage)",
+              "A visitor who uses the chat assistant",
+              "Keeps the conversation while the browser tab is open, so it survives a page change. Never sent to us as stored data.",
+              "Until the tab is closed"
+            ],
+            [
+              "zugee-theme (local storage)",
+              "A visitor who switches between light and dark mode",
+              "Remembers the chosen theme.",
+              "Until cleared"
+            ],
+            [
+              "zugee_admin_session (cookie)",
               "Only a member of our team who signs in to the admin portal",
               "Keeps them signed in. It cannot be read by scripts and is not sent to other sites.",
               "24 hours"

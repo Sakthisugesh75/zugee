@@ -1,11 +1,12 @@
 -- supabase/fresh-install.sql
 -- The whole ZUGEE database, built from scratch on an EMPTY database, in one transaction.
 --
--- It is these four files combined, in this order:
+-- It is these five files combined, in this order:
 --   1. supabase/schema.sql                              leads
 --   2. supabase/migrations/0002_leads_request_type.sql  leads.request_type (folded into the table)
 --   3. supabase/migrations/0001_subscriptions_setup_fee.sql  subscriptions, subscription_payments
 --   4. supabase/migrations/0003_prepaid_months.sql      monthly payments before go-live (folded in)
+--   5. supabase/migrations/0004_chat_guest_usage.sql    chat_guest_usage: website chat guest limits
 --
 -- HOW TO RUN
 --   Paste the whole file into the Supabase SQL editor and run it once, then run
@@ -226,6 +227,26 @@ grant select, insert, update, delete on public.subscriptions to service_role;
 
 revoke all on public.subscription_payments from anon, authenticated;
 grant select, insert, update, delete on public.subscription_payments to service_role;
+
+-- ===========================================================================
+-- 7. chat_guest_usage: daily usage counters for guest visitors of the website chat
+-- ===========================================================================
+-- One row per random guest id ("g:…") or keyed IP hash ("ip:…"); no personal data. Updated with
+-- compare-and-swap on `version` (lib/chatbot/guest-limits.js). Rows older than two days are deleted.
+create table public.chat_guest_usage (
+  key text primary key check (char_length(key) between 3 and 100),
+  day date not null,
+  count integer not null default 0 check (count >= 0),
+  recent bigint[] not null default '{}',
+  version integer not null default 0 check (version >= 0),
+  updated_at timestamptz not null default now()
+);
+
+create index chat_guest_usage_day_idx on public.chat_guest_usage (day);
+
+alter table public.chat_guest_usage enable row level security;
+revoke all on public.chat_guest_usage from anon, authenticated;
+grant select, insert, update, delete on public.chat_guest_usage to service_role;
 
 -- Make the API see the new tables straight away (delivered when the transaction commits).
 notify pgrst, 'reload schema';
