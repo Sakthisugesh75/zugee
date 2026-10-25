@@ -1,7 +1,7 @@
 // app/api/chat/route.js
-// The website chat assistant. POST streams the model's reply back as plain text; GET tells the
-// widget how many free messages a guest has left today.
-// The API key never leaves the server; no chat content is stored anywhere on our side.
+// The website chat assistant ("Ask Tutu"). POST streams the model's reply back as plain text; GET
+// tells the widget how many free messages a guest has left today.
+// The API key never leaves the server; no chat content is stored or logged anywhere on our side.
 //
 // Limits:
 //   everyone   per-IP burst limits in memory (6/min, 40/hour), as before
@@ -9,6 +9,9 @@
 //              counted in Supabase per signed guest cookie plus a per-IP backstop
 //              (lib/chatbot/guest-limits.js); 429 with Retry-After when exceeded
 //   signed in  an admin session (the only sign-in on this site) skips the guest limits
+// History: the model sees only the last 12 messages of the conversation.
+// Logging: one metrics line per request (lib/chatbot/metrics.js): hashed IP, counts, latency,
+// tokens, error code. Never message text.
 
 import { NextResponse } from "next/server";
 import { buildSystemPrompt, demoAlreadyOffered, DEMO_ALREADY_OFFERED_NOTE } from "@/lib/chatbot/knowledge";
@@ -19,6 +22,7 @@ import { guardDemoOffers, userAskedForDemo } from "@/lib/chatbot/demo-guard";
 import { guardSensitiveEcho } from "@/lib/chatbot/pii-guard";
 import { chatPolicy, checkGuest, GUEST_COOKIE_NAME, guestSecret, refund } from "@/lib/chatbot/guest-limits";
 import { guestUsageBackend, maybePurgeOldRows } from "@/lib/chatbot/guest-store-supabase";
+import { hashIp, logChatMetrics, redactForLog, trimHistory } from "@/lib/chatbot/metrics";
 import { isAdminRequest } from "@/lib/auth";
 import { createRateLimiter, getClientIp, retryAfterMinutes } from "@/lib/rate-limit";
 
@@ -31,6 +35,7 @@ const hourLimiter = createRateLimiter({ windowMs: 60 * 60 * 1000, max: 40 });
 
 // Built once per server instance: the prompt only changes with a deploy.
 const SYSTEM_PROMPT = buildSystemPrompt();
+const HISTORY_SENT_TO_MODEL = 12;
 
 const UNAVAILABLE = "The chat assistant is not available right now. Please book a demo or message us on WhatsApp.";
 const BUSY = "The chat assistant is busy right now. Please try again in a minute, or book a demo or message us on WhatsApp.";
@@ -56,6 +61,15 @@ function guestHeaders(guest) {
   return headers;
 }
 
+/** The IP as a short keyed hash for logs; never the address itself. */
+function ipHashFor(ip) {
+  try {
+    return hashIp(ip, guestSecret());
+  } catch {
+    return "unavailable";
+  }
+}
+
 export async function GET(request) {
   if (isSignedIn(request)) {
     return NextResponse.json({ guest: false }, { headers: { "Cache-Control": "no-store" } });
@@ -74,18 +88,26 @@ export async function GET(request) {
       { headers: { ...guestHeaders(guest), "Cache-Control": "no-store" } }
     );
   } catch (error) {
-    console.error("[chat] guest status:", error.message);
+    logChatMetrics({ event: "status_error", status: 503, code: redactForLog(error.message) });
     return errorResponse(503, UNAVAILABLE);
   }
 }
 
 export async function POST(request) {
-  if (!process.env.GEMINI_API_KEY) return errorResponse(503, UNAVAILABLE);
-
+  const started = Date.now();
   const ip = getClientIp(request);
+  const ipHash = ipHashFor(ip);
+  const metric = (fields) => logChatMetrics({ ipHash, latencyMs: Date.now() - started, ...fields });
+
+  if (!process.env.GEMINI_API_KEY) {
+    metric({ event: "error", status: 503, code: "no_api_key" });
+    return errorResponse(503, UNAVAILABLE);
+  }
+
   for (const limiter of [minuteLimiter, hourLimiter]) {
     const state = limiter.check(ip);
     if (state.limited) {
+      metric({ event: "limited", status: 429, code: "ip_rate" });
       return errorResponse(429, `Too many messages. Please try again in ${retryAfterMinutes(state.retryAfterMs)} minute(s).`, {
         "Retry-After": String(Math.ceil(state.retryAfterMs / 1000))
       });
@@ -96,7 +118,11 @@ export async function POST(request) {
   const body = await request.json().catch(() => null);
   // Invalid requests are rejected before anything is counted.
   const checked = validateChatRequest(body, { userChars: policy.userChars });
-  if (!checked.ok) return errorResponse(400, checked.error);
+  if (!checked.ok) {
+    metric({ event: "rejected", status: 400, code: "invalid_request" });
+    return errorResponse(400, checked.error);
+  }
+  const guestFlag = policy.applyGuestLimits;
 
   // Guests only: count the message against the stored daily, cooldown and burst limits.
   let guest = null;
@@ -113,10 +139,11 @@ export async function POST(request) {
       });
     } catch (error) {
       // Fail closed: without a working store, guest limits cannot be enforced.
-      console.error("[chat] guest limits:", error.message);
+      metric({ event: "error", status: 503, code: `guest_store: ${redactForLog(error.message)}`, guest: true });
       return errorResponse(503, UNAVAILABLE);
     }
     if (!guest.allowed) {
+      metric({ event: "limited", status: 429, code: `guest_${guest.reason}`, guest: true });
       return errorResponse(
         429,
         guest.error,
@@ -132,25 +159,26 @@ export async function POST(request) {
   // A message the model never answered is given back, so outages do not use up a guest's day.
   const refundGuest = async () => {
     if (!guest) return;
-    await Promise.all([refund(backend, guest.keys.guest), refund(backend, guest.keys.ip)]).catch((error) =>
-      console.error("[chat] refund:", error.message)
-    );
+    await Promise.all([refund(backend, guest.keys.guest), refund(backend, guest.keys.ip)]).catch(() => {});
   };
 
+  // The model sees the last 12 messages; older turns are dropped server-side.
+  const history = trimHistory(checked.messages, HISTORY_SENT_TO_MODEL);
   // Once a demo has been offered, a note after the (cached) prompt stops the model offering it again.
-  const system = demoAlreadyOffered(checked.messages) ? `${SYSTEM_PROMPT}\n\n${DEMO_ALREADY_OFFERED_NOTE}` : SYSTEM_PROMPT;
+  const system = demoAlreadyOffered(history) ? `${SYSTEM_PROMPT}\n\n${DEMO_ALREADY_OFFERED_NOTE}` : SYSTEM_PROMPT;
 
-  // Backstop for the prompt rule: drop a closing demo pitch unless the visitor asked for one.
-  const latestQuestion = checked.messages[checked.messages.length - 1].content;
-  // Backstop for "never repeat personal details": if the message looks sensitive, the reply is
-  // collected and anything identifying the visitor typed is removed before it is sent.
+  let usage = null;
+  const latestQuestion = history[history.length - 1].content;
+  // Backstops: drop a closing demo pitch the visitor did not ask for; if the message looks
+  // sensitive, collect the reply and remove anything identifying the visitor typed.
   const reply = guardSensitiveEcho(
     guardDemoOffers(
       streamGeminiReply({
         system,
-        messages: checked.messages,
+        messages: history,
         tools: TOOL_DECLARATIONS,
         runTool,
+        onUsage: (u) => (usage = u),
         signal: AbortSignal.any([request.signal, AbortSignal.timeout(45000)])
       }),
       userAskedForDemo(latestQuestion)
@@ -167,25 +195,34 @@ export async function POST(request) {
   } catch (error) {
     await refundGuest();
     const headers = guest ? guestHeaders({ ...guest, remaining: guest.remaining + 1 }) : undefined;
-    if (error instanceof ChatProviderError) {
-      console.error("[chat]", error.message);
-      return errorResponse(error.busy ? 503 : 502, error.busy ? BUSY : UNAVAILABLE, headers);
-    }
-    console.error("[chat]", error);
-    return errorResponse(502, UNAVAILABLE, headers);
+    const busy = error instanceof ChatProviderError && error.busy;
+    const status = busy ? 503 : 502;
+    const code = error instanceof ChatProviderError ? `provider_${error.status ?? "error"}` : redactForLog(error?.cause?.code ?? error?.message);
+    metric({ event: "error", status, code, messages: checked.messages.length, guest: guestFlag });
+    return errorResponse(status, busy ? BUSY : UNAVAILABLE, headers);
   }
 
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
+      let code;
       try {
         if (!first.done) controller.enqueue(encoder.encode(first.value));
         for await (const text of reply) controller.enqueue(encoder.encode(text));
       } catch (error) {
-        console.error("[chat] stream interrupted:", error?.message ?? error);
+        code = error instanceof ChatProviderError ? `stream_provider_${error.status ?? "error"}` : "stream_interrupted";
         controller.enqueue(encoder.encode("\n\n(Sorry, the reply was cut short. Please ask again, or book a demo.)"));
       } finally {
         controller.close();
+        metric({
+          event: "reply",
+          status: 200,
+          code,
+          messages: checked.messages.length,
+          inputTokens: usage?.inputTokens,
+          outputTokens: usage?.outputTokens,
+          guest: guestFlag
+        });
       }
     }
   });

@@ -472,3 +472,52 @@ test("feature statuses use the brief's labels: WhatsApp is ROLLING_OUT, e-invoic
   assert.equal(label("gst_return_filing"), "NOT_OFFERED");
   assert.equal(label("e_way_bill"), "UNVERIFIED");
 });
+
+// ---------------------------------------------------------------------------------------------
+// History trimming and privacy-safe metrics
+// ---------------------------------------------------------------------------------------------
+test("history: the model gets the last 12 messages, always starting with the visitor", async () => {
+  const { trimHistory } = await import("../lib/chatbot/metrics.js");
+  const convo = Array.from({ length: 19 }, (_, i) => ({ role: i % 2 ? "assistant" : "user", content: `m${i}` }));
+  const trimmed = trimHistory(convo, 12);
+  assert.ok(trimmed.length <= 12);
+  assert.equal(trimmed[0].role, "user");
+  assert.equal(trimmed.at(-1).content, "m18");
+  assert.deepEqual(trimHistory(convo.slice(0, 3), 12), convo.slice(0, 3));
+});
+
+test("metrics: only whitelisted fields, hashed IP, phones and emails masked, never message text", async () => {
+  const { hashIp, logChatMetrics, redactForLog } = await import("../lib/chatbot/metrics.js");
+  const hash = hashIp("203.0.113.9", "s".repeat(32));
+  assert.match(hash, /^[A-Za-z0-9_-]{12}$/);
+  assert.ok(!hash.includes("203"));
+  assert.equal(redactForLog("call +91 98765 43210 or a@b.co now"), "call [phone] or [email] now");
+
+  const lines = [];
+  const original = console.log;
+  console.log = (line) => lines.push(line);
+  try {
+    logChatMetrics({ event: "reply", ipHash: hash, messages: 3, latencyMs: 812, inputTokens: 100, outputTokens: 50, status: 200, content: "SECRET MESSAGE" });
+  } finally {
+    console.log = original;
+  }
+  assert.equal(lines.length, 1);
+  const logged = JSON.parse(lines[0].replace(/^\[chat\] /, ""));
+  assert.deepEqual(Object.keys(logged).sort(), ["event", "inputTokens", "ipHash", "latencyMs", "messages", "outputTokens", "status", "t"]);
+  assert.ok(!lines[0].includes("SECRET"), "unknown fields such as content are never logged");
+
+  // The route logs through logChatMetrics only: no console.error with request data.
+  const route = fs.readFileSync(path.join(REPO, "app", "api", "chat", "route.js"), "utf8");
+  assert.ok(!/console\.(log|error|warn)\(/.test(route), "route.js must log through logChatMetrics");
+});
+
+test("Gemini client reports token usage summed over tool rounds", async () => {
+  const usageChunk = (p, c) => ({ usageMetadata: { promptTokenCount: p, candidatesTokenCount: c, thoughtsTokenCount: 1 } });
+  const call = { functionCall: { name: "calculate_gst_invoice", id: "c1", args: { lines: [{ quantity: 1, unitPrice: 100, gstRatePercent: 18 }] } } };
+  let usage;
+  await runScripted(
+    [{ body: sse(textChunk(call), usageChunk(100, 10)) }, { body: sse(textChunk("Done."), usageChunk(150, 20)) }],
+    { tools: TOOL_DECLARATIONS, runTool, onUsage: (u) => (usage = u) }
+  );
+  assert.deepEqual(usage, { inputTokens: 250, outputTokens: 32 });
+});
