@@ -1,4 +1,4 @@
-// components/chat/ChatWidget.jsx
+﻿// components/chat/ChatWidget.jsx
 // "Ask Tutu": the website chat assistant (Tutu is the ZUGEE mascot). The live mascot
 // (components/chat/TutuCompanion.jsx) in the bottom corner opens a panel; replies
 // stream in from /api/chat. The conversation lives in this browser tab only (sessionStorage) and is
@@ -132,7 +132,7 @@ export default function ChatWidget() {
     // Opening the chat dismisses Tutu's greeting bubble, which would otherwise peek out under the panel.
     if (open) tutuRef.current?.shadowRoot?.querySelector(".bubble")?.classList.remove("show");
     if (!open) {
-      // Back to the "Ask Tutu" pill after the panel closes (Esc, ×, or a link on a phone).
+      // Back to the "Ask Tutu" pill after the panel closes (Esc, Ã—, or a link on a phone).
       if (returnFocusRef.current) {
         returnFocusRef.current = false;
         pill?.focus();
@@ -365,7 +365,7 @@ export default function ChatWidget() {
                     send(input);
                   }
                 }}
-                placeholder={limitReached ? "Today's free messages are used up" : "Type your question…"}
+                placeholder={limitReached ? "Today's free messages are used up" : "Type your questionâ€¦"}
                 // 16px on phones: iOS zooms the page when a smaller input is focused.
                 className="flex-1 resize-none max-h-28 bg-canvas border border-ink/[0.12] focus:border-cyan-400 rounded-xl px-3 py-2.5 text-base sm:text-sm text-fg outline-none"
               />
@@ -389,8 +389,7 @@ export default function ChatWidget() {
               </a>
             </div>
             <p className="mt-2 text-[10.5px] leading-snug text-slate-500">
-              AI assistant. Answers can be wrong; confirm important details with our team. Chats are processed by Google — please don&apos;t
-              share personal, health or payment details.{" "}
+              AI assistant · may make mistakes · don&apos;t share sensitive info.{" "}
               <Link href="/privacy" className="underline underline-offset-2 hover:text-slate-300">Privacy</Link>
             </p>
           </form>
@@ -421,7 +420,7 @@ function Bubble({ role, children }) {
 const LINK_CLASS = "font-semibold text-cyan-400 underline underline-offset-2 hover:text-cyan-300";
 
 /**
- * The assistant's light formatting: **bold** for key figures, "* " bullets shown as "• ", and
+ * The assistant's light formatting: **bold** for key figures, "* " bullets shown as "â€¢ ", and
  * Markdown links (only safe targets; see lib/chatbot/format.js). Built from React elements (never
  * HTML), so model output cannot inject markup.
  */
