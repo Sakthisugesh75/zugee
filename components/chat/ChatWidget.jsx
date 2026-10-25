@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { MessageCircle, Send, X, CalendarCheck } from "lucide-react";
 import TutuLauncher from "@/components/chat/TutuLauncher";
-import { WHATSAPP_CHAT_URL } from "@/lib/site";
+import { PHONE_DISPLAY, WHATSAPP_CHAT_URL } from "@/lib/site";
 import { getProduct } from "@/lib/products";
 import { richSegments, splitReply } from "@/lib/chatbot/format";
 import { GUEST_LIMIT_MESSAGE } from "@/lib/chatbot/guest-copy";
@@ -27,13 +27,15 @@ const SIGNED_IN_MAX_INPUT = 2000;
 // Matches the server's guest cooldown, so the Send button simply waits instead of erroring.
 const CLIENT_COOLDOWN_MS = 3000;
 const SUGGESTIONS = [
-  "Which ZUGEE product fits my business?",
+  "Which product fits my business?",
   "How does pricing work?",
   "How long does setup take?",
-  "Can my staff use it on mobile?"
+  "Does it work with Tally?"
 ];
 const WELCOME =
-  "Hi, I'm Tutu! 👋 I can answer questions about ZUGEE's products, setup, pricing and GST billing. What kind of business do you run?";
+  "Vanakkam! I'm Tutu. Tell me about your business and I'll help you find the right ZUGEE product.";
+// Network failures and server errors (5xx): shown with a Retry button.
+const SERVER_UNREACHABLE = `I couldn't reach the server. You can WhatsApp us at ${PHONE_DISPLAY} or try again.`;
 
 function loadConversation() {
   try {
@@ -64,9 +66,15 @@ export default function ChatWidget() {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  // The question to resend when the visitor presses Retry (only after a network or server error).
+  const [retryQuestion, setRetryQuestion] = useState(null);
   const listRef = useRef(null);
   const inputRef = useRef(null);
   const abortRef = useRef(null);
+  const panelRef = useRef(null);
+  // The "Ask Tutu" button: focus returns to it when the panel closes.
+  const launcherRef = useRef(null);
+  const returnFocusRef = useRef(false);
   // The saved conversation is read when the panel first opens, and saved only after that, so the
   // empty initial state never overwrites a chat kept from before a reload.
   const restoredRef = useRef(false);
@@ -92,6 +100,8 @@ export default function ChatWidget() {
         .then((data) => data && applyQuota(data))
         .catch(() => {});
     }
+    // Closing from the launcher's own close button also hands focus back to "Ask Tutu".
+    if (open) returnFocusRef.current = true;
     setOpen((v) => !v);
   }
 
@@ -108,13 +118,53 @@ export default function ChatWidget() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages, open]);
 
+  function closeChat() {
+    returnFocusRef.current = true;
+    setOpen(false);
+  }
+
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      // Back to the "Ask Tutu" button after the panel closes (Esc, ×, or a link on a phone).
+      if (returnFocusRef.current) {
+        returnFocusRef.current = false;
+        launcherRef.current?.focus();
+      }
+      return;
+    }
     inputRef.current?.focus();
-    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    const onKey = (e) => {
+      if (e.key === "Escape") closeChat();
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+
+  /** Keeps Tab and Shift+Tab inside the open panel. */
+  function trapFocus(e) {
+    if (e.key !== "Tab" || !panelRef.current) return;
+    const focusable = [...panelRef.current.querySelectorAll('a[href], button:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])')];
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
+  /** A link in a reply: "#id" or "/#id" scrolls when that section is on this page (and closes the panel on phones). */
+  function followAnchor(e, href) {
+    const target = document.getElementById(href.slice(href.indexOf("#") + 1));
+    if (!target) return; // not on this page: let the browser handle it
+    e.preventDefault();
+    const navbarHeight = document.querySelector("header")?.getBoundingClientRect().height || 0;
+    window.scrollTo({ top: Math.max(0, target.getBoundingClientRect().top + window.scrollY - navbarHeight - 16), behavior: "smooth" });
+    if (window.matchMedia("(max-width: 639px)").matches) closeChat();
+  }
 
   useEffect(() => () => abortRef.current?.abort(), []);
 
@@ -122,6 +172,7 @@ export default function ChatWidget() {
     const question = text.trim().slice(0, maxInput);
     if (!question || busy || coolingDown || limitReached) return;
     setError("");
+    setRetryQuestion(null);
     setInput("");
     const history = [...messages, { role: "user", content: question }];
     setMessages([...history, { role: "assistant", content: "" }]);
@@ -148,7 +199,7 @@ export default function ChatWidget() {
       if (!response.ok || !response.body) {
         const data = await response.json().catch(() => ({}));
         if (response.status === 429 && data.reason === "daily") setLimitReached(true);
-        throw new Error(data.error || "Something went wrong. Please try again.");
+        throw Object.assign(new Error(data.error || "Something went wrong. Please try again."), { status: response.status });
       }
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -159,12 +210,19 @@ export default function ChatWidget() {
         reply += decoder.decode(value, { stream: true });
         setMessages([...history, { role: "assistant", content: reply }]);
       }
-      if (!reply.trim()) throw new Error("No answer came back. Please try again, or book a demo.");
+      if (!reply.trim()) throw Object.assign(new Error("No answer came back."), { status: 502 });
     } catch (err) {
       if (err.name === "AbortError") return;
-      setMessages(history.slice(0, -1)); // drop the unanswered question; it goes back in the box
-      setInput(question);
-      setError(err.message);
+      setMessages(history.slice(0, -1)); // drop the unanswered question
+      // Network failure (no status) or a server error: the brief's message with WhatsApp and Retry.
+      // Limits and validation (4xx) keep the server's own message, and the question goes back in the box.
+      if (!err.status || err.status >= 500) {
+        setError(SERVER_UNREACHABLE);
+        setRetryQuestion(question);
+      } else {
+        setError(err.message);
+        setInput(question);
+      }
     } finally {
       setBusy(false);
     }
@@ -174,6 +232,7 @@ export default function ChatWidget() {
     abortRef.current?.abort();
     setMessages([]);
     setError("");
+    setRetryQuestion(null);
     setBusy(false);
     inputRef.current?.focus();
   }
@@ -182,8 +241,11 @@ export default function ChatWidget() {
     <>
       {open && (
         <div
+          ref={panelRef}
           role="dialog"
+          aria-modal="true"
           aria-label="Ask Tutu, ZUGEE's chat assistant"
+          onKeyDown={trapFocus}
           className="fixed z-40 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-24 sm:w-[380px] h-[min(600px,calc(100dvh-6.5rem))] flex flex-col rounded-2xl bg-surface border border-line shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)] overflow-hidden"
         >
           {/* Header */}
@@ -195,8 +257,8 @@ export default function ChatWidget() {
                 </span>
               </span>
               <div className="min-w-0">
-                <p className="text-sm font-bold text-fg leading-tight">Tutu</p>
-                <p className="text-[11px] text-slate-400 leading-tight">ZUGEE&apos;s AI assistant · answers from our website</p>
+                <p className="text-sm font-bold text-fg leading-tight">Ask Tutu</p>
+                <p className="text-[11px] text-slate-400 leading-tight">Answers about ZUGEE products</p>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -205,7 +267,7 @@ export default function ChatWidget() {
                   New chat
                 </button>
               )}
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close chat" className="p-1.5 rounded-lg text-slate-400 hover:text-fg hover:bg-ink/[0.06] cursor-pointer">
+              <button type="button" onClick={closeChat} aria-label="Close chat" className="p-1.5 rounded-lg text-slate-400 hover:text-fg hover:bg-ink/[0.06] cursor-pointer">
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
@@ -229,7 +291,7 @@ export default function ChatWidget() {
               const streaming = busy && i === messages.length - 1;
               return (
                 <div key={i} className="space-y-2">
-                  <Bubble role="assistant">{visible ? <RichText text={visible} /> : streaming ? <TypingDots /> : ""}</Bubble>
+                  <Bubble role="assistant">{visible ? <RichText text={visible} onAnchor={followAnchor} /> : streaming ? <TypingDots /> : ""}</Bubble>
                   {!streaming && demoSlugs.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {demoSlugs.map((slug) => {
@@ -252,9 +314,14 @@ export default function ChatWidget() {
               </p>
             ) : (
               error && (
-                <p role="alert" className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2">
-                  {error}
-                </p>
+                <div role="alert" className="text-xs text-rose-400 bg-rose-500/10 border border-rose-500/30 rounded-xl px-3 py-2">
+                  <p>{error}</p>
+                  {retryQuestion && (
+                    <button type="button" onClick={() => send(retryQuestion)} disabled={busy || coolingDown} className="mt-2 px-3 py-1 rounded-lg text-xs font-semibold text-fg bg-ink/[0.06] border border-ink/[0.12] hover:border-cyan-400/50 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">
+                      Try again
+                    </button>
+                  )}
+                </div>
               )
             )}
           </div>
@@ -307,7 +374,7 @@ export default function ChatWidget() {
               </a>
             </div>
             <p className="mt-2 text-[10.5px] leading-snug text-slate-500">
-              AI answers can be wrong; our team confirms details on a call. Chats are processed by Google — please don&apos;t
+              AI assistant. Answers can be wrong; confirm important details with our team. Chats are processed by Google — please don&apos;t
               share personal, health or payment details.{" "}
               <Link href="/privacy" className="underline underline-offset-2 hover:text-slate-300">Privacy</Link>
             </p>
@@ -316,7 +383,7 @@ export default function ChatWidget() {
       )}
 
       {/* Launcher: "Ask Tutu", the mascot button */}
-      <TutuLauncher open={open} onToggle={toggle} />
+      <TutuLauncher open={open} onToggle={toggle} buttonRef={launcherRef} />
     </>
   );
 }
@@ -336,20 +403,52 @@ function Bubble({ role, children }) {
   );
 }
 
+const LINK_CLASS = "font-semibold text-cyan-400 underline underline-offset-2 hover:text-cyan-300";
+
 /**
- * The assistant's light formatting: **bold** for key figures and "* " bullets shown as "• ".
- * Built from React elements (never HTML), so model output cannot inject markup.
+ * The assistant's light formatting: **bold** for key figures, "* " bullets shown as "• ", and
+ * Markdown links (only safe targets; see lib/chatbot/format.js). Built from React elements (never
+ * HTML), so model output cannot inject markup.
  */
-function RichText({ text }) {
-  return richSegments(text).map((segment, i) =>
-    segment.bold ? (
+function RichText({ text, onAnchor }) {
+  return richSegments(text).map((segment, i) => {
+    const { href } = segment;
+    if (href?.startsWith("#") || href?.startsWith("/#")) {
+      return (
+        <a key={i} href={href} onClick={(e) => onAnchor(e, href)} className={LINK_CLASS}>
+          {segment.text}
+        </a>
+      );
+    }
+    if (href?.startsWith("/")) {
+      return (
+        <Link key={i} href={href} className={LINK_CLASS}>
+          {segment.text}
+        </Link>
+      );
+    }
+    if (href?.startsWith("https://")) {
+      return (
+        <a key={i} href={href} target="_blank" rel="noopener noreferrer" className={LINK_CLASS}>
+          {segment.text}
+        </a>
+      );
+    }
+    if (href) {
+      return (
+        <a key={i} href={href} className={LINK_CLASS}>
+          {segment.text}
+        </a>
+      );
+    }
+    return segment.bold ? (
       <strong key={i} className="font-semibold text-fg">
         {segment.text}
       </strong>
     ) : (
       segment.text
-    )
-  );
+    );
+  });
 }
 
 function TypingDots() {

@@ -16,7 +16,8 @@ const GREETING_DELAY_MS = 4000;
 const GREETING_VISIBLE_MS = 12000;
 const MAX_TILT_DEG = 16;
 
-export default function TutuLauncher({ open, onToggle }) {
+/** `buttonRef` goes on the "Ask Tutu" button, so the chat can return focus to it on close. */
+export default function TutuLauncher({ open, onToggle, buttonRef }) {
   const tiltRef = useRef(null);
   const [hopping, setHopping] = useState(false);
   const [greeting, setGreeting] = useState(false);
@@ -108,6 +109,7 @@ export default function TutuLauncher({ open, onToggle }) {
       )}
 
       <button
+        ref={buttonRef}
         type="button"
         onClick={handleClick}
         onPointerMove={handlePointerMove}

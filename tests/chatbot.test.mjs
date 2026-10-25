@@ -521,3 +521,27 @@ test("Gemini client reports token usage summed over tool rounds", async () => {
   );
   assert.deepEqual(usage, { inputTokens: 250, outputTokens: 32 });
 });
+
+test("replies: only safe Markdown links become links (https, site paths, #anchors, mailto; never phone links)", async () => {
+  const { isSafeHref } = await import("../lib/chatbot/format.js");
+  assert.deepEqual(richSegments("See [ZUGEE Fleet](/fleet-management-software) or [book](#contact)."), [
+    { text: "See ", bold: false },
+    { text: "ZUGEE Fleet", bold: false, href: "/fleet-management-software" },
+    { text: " or ", bold: false },
+    { text: "book", bold: false, href: "#contact" },
+    { text: ".", bold: false }
+  ]);
+  for (const ok of ["https://www.getzugee.com/products", "/privacy", "#contact", "mailto:support@getzugee.com"]) {
+    assert.equal(isSafeHref(ok), true, ok);
+  }
+  // The site publishes its one number only through lib/site.js (tests/public-contact.test.mjs).
+  for (const bad of ["tel:+910000000000", "sms:0000", "javascript:alert(1)","data:text/html,x", "//evil.example", "http://plain.example", "vbscript:x", "# bad"]) {
+    assert.equal(isSafeHref(bad), false, bad);
+  }
+  // Our own site's absolute URLs become site paths (same tab; #anchors scroll).
+  assert.equal(richSegments("[Book](https://www.getzugee.com/#contact)")[0].href, "/#contact");
+  assert.equal(richSegments("[Home](https://getzugee.com)")[0].href, "/");
+  assert.equal(richSegments("[x](https://getzugee.com.evil.example/)")[0].href, "https://getzugee.com.evil.example/");
+  // An unsafe link keeps its text and loses the link.
+  assert.deepEqual(richSegments("[click](javascript:alert(1))"), [{ text: "click", bold: false }, { text: ")", bold: false }]);
+});
