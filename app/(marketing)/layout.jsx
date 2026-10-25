@@ -12,7 +12,7 @@ export default function MarketingLayout({ children }) {
       <Navbar />
       <main id="main-content" className="flex-1">{children}</main>
       <Footer />
-      {/* "Ask ZUGEE" assistant on every public page. In the layout, so a chat survives page changes. */}
+      {/* "Ask Tutu" assistant on every public page. In the layout, so a chat survives page changes. */}
       <ChatWidget />
     </div>
   );
