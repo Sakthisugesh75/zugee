@@ -2,7 +2,7 @@
 
 # Onboarding
 
-Typical setup: about 14 days from start to go-live, done by our team (white-glove): discovery, data migration, staff training and go-live.
+Typical setup: about 14 days from start to go-live, done by our team (white-glove), in 4 steps: Discovery & Workflow Mapping; Interactive Live Demo; White-Glove Data Migration; Go-Live & Dedicated Support. When asked about setup, name all 4 steps.
 
 ## 01 DISCOVERY: Discovery & Workflow Mapping
 We map your daily business operations, branches, and staff roles to eliminate spreadsheet bottlenecks. (Workflow Audit · Custom Rules)

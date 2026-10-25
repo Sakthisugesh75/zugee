@@ -17,7 +17,7 @@ import { NextResponse } from "next/server";
 import { buildSystemPrompt, demoAlreadyOffered, DEMO_ALREADY_OFFERED_NOTE } from "@/lib/chatbot/knowledge";
 import { validateChatRequest } from "@/lib/chatbot/validate";
 import { ChatProviderError, streamGeminiReply } from "@/lib/chatbot/gemini";
-import { runTool, TOOL_DECLARATIONS } from "@/lib/chatbot/tools";
+import { needsGstCalculation, runTool, TOOL_DECLARATIONS } from "@/lib/chatbot/tools";
 import { guardDemoOffers, userAskedForDemo } from "@/lib/chatbot/demo-guard";
 import { guardSensitiveEcho } from "@/lib/chatbot/pii-guard";
 import { chatPolicy, checkGuest, GUEST_COOKIE_NAME, guestSecret, refund } from "@/lib/chatbot/guest-limits";
@@ -178,6 +178,8 @@ export async function POST(request) {
         messages: history,
         tools: TOOL_DECLARATIONS,
         runTool,
+        // An amount calculation always goes through lib/gst.js, never the model's own arithmetic.
+        forceTool: needsGstCalculation(latestQuestion),
         onUsage: (u) => (usage = u),
         signal: AbortSignal.any([request.signal, AbortSignal.timeout(45000)])
       }),

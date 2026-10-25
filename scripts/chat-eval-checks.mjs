@@ -5,7 +5,13 @@
 
 /** A demo, call or "would you like to see it" pitch, or a demo marker. */
 export function isDemoPush(text) {
-  return /\[\[demo:|\bdemo\b|demonstration|walk-?through|book a call|schedule a call|pricing call|(would you|if you would|if you'd) like to see|want to see (it|how)|in action\b|our team can (arrange|show you|walk you)/i.test(text);
+  // List items state facts (the onboarding step "Interactive Live Demo"); only prose can pitch,
+  // matching lib/chatbot/demo-guard.js.
+  const prose = String(text)
+    .split("\n")
+    .filter((line) => !/^\s*([-*•]|\d+[.)])\s/.test(line))
+    .join("\n");
+  return /\[\[demo:|\bdemo\b|demonstration|walk-?through|book a call|schedule a call|pricing call|(would you|if you would|if you'd) like to see|want to see (it|how)|in action\b|our team can (arrange|show you|walk you)/i.test(prose);
 }
 
 /**

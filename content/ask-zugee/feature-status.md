@@ -45,7 +45,7 @@ AVAILABLE = live today. LIMITED = only in the products named, partly, or done by
 ## UNVERIFIED (confirm with founder)
 UNVERIFIED: What is ZUGEE's registered office street address? — confirm with founder. Until then say: Only the city (Salem, Tamil Nadu) is published.
 UNVERIFIED: Who are the founders / team? — confirm with founder. Until then say: Not published on the site yet.
-UNVERIFIED: Which companies use ZUGEE? Are there case studies or testimonials? — confirm with founder. Until then say: No customer names or case studies are published.
+UNVERIFIED: Which companies use ZUGEE? Are there case studies or testimonials? — confirm with founder. Until then say: No customer names or case studies are published; the team can answer questions about similar businesses on WhatsApp.
 UNVERIFIED: Is there a free trial? — confirm with founder. Until then say: Not stated; ZUGEE is shown on a live demo first.
 UNVERIFIED: Are there discounts or annual billing? — confirm with founder. Until then say: Not stated; pricing is quoted on a call.
 UNVERIFIED: Does ZUGEE integrate with SAP, Zoho, QuickBooks or other ERPs? — confirm with founder. Until then say: No ready integrations are listed; Enterprise mentions custom ERP integrations scoped on a call.

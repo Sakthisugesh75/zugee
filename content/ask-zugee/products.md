@@ -4,7 +4,7 @@
 
 ZUGEE makes 11 products a business can use today. Each is separate software with its own login and data. For a general business that is not in a listed industry, ZUGEE Omni covers customers, sales, billing, payments and stock (see also the FAQ on unlisted industries).
 
-## ZUGEE Omni (id: core-erp)
+## ZUGEE Omni (demo id: core-erp)
 Page: /erp-crm-software (https://www.getzugee.com/erp-crm-software)
 Category: Business Platform. Tailored for: Any business. Replaces: Excel + WhatsApp + standalone Tally.
 What it does: Customers, leads, products, sales, billing, payments and inventory for a general business.
@@ -27,7 +27,7 @@ Questions and answers:
 - Q: Can I move my existing customers and items from Excel or Tally? A: Yes. During the 14-day setup our team brings your customer list, item list with prices and opening balances across from Excel or your Tally exports, and goes through them with you before you go live.
 - Q: How much does ZUGEE Omni cost? A: The price depends on how many users and branches you have, plus a one-time setup fee for configuration, data migration and training. We give you a clear quote on a short call once we understand your business.
 
-## ZUGEE Fleet (id: transposs)
+## ZUGEE Fleet (demo id: transposs)
 Page: /fleet-management-software (https://www.getzugee.com/fleet-management-software)
 Category: Fleet Management. Tailored for: Fleet & transport. Replaces: Paper logbooks + WhatsApp driver dispatch.
 What it does: Manage vehicles, drivers, bookings, trips, maintenance and fleet expenses.
@@ -50,7 +50,7 @@ Questions and answers:
 - Q: Does ZUGEE Fleet send trip updates or bills to customers on WhatsApp? A: Not yet. WhatsApp sending is coming soon to ZUGEE products. Today you can share bills and trip details with customers the way you already do, and we will tell you on your demo call when WhatsApp sending is ready.
 - Q: How much does ZUGEE Fleet cost? A: It depends on the number of users and branches, plus a one-time setup fee that covers configuration, data migration and training. We share the exact figure on a short call after understanding your fleet, before you decide.
 
-## ZUGEE Tours (id: tours-travels)
+## ZUGEE Tours (demo id: tours-travels)
 Page: /tours-and-travels-crm (https://www.getzugee.com/tours-and-travels-crm)
 Category: Travel & Tourism. Tailored for: Travel agencies. Replaces: Word doc quotations + scattered email PDFs.
 What it does: Take an enquiry through follow-up, package, quotation and booking to payment.
@@ -73,7 +73,7 @@ Questions and answers:
 - Q: Can ZUGEE Tours send quotations to customers on WhatsApp? A: Not yet. Sending from inside ZUGEE Tours on WhatsApp is coming soon. Until then, share the quotation the way you do now; the quotation and its follow-ups are still recorded on the lead.
 - Q: How much does ZUGEE Tours cost? A: ZUGEE Tours' price depends on how many users and branches will use it, plus a one-time setup fee that covers configuration, moving your packages and customers across, and training. We share a clear quote on a short call.
 
-## ZUGEE Water (id: aqua-erp)
+## ZUGEE Water (demo id: aqua-erp)
 Page: /water-supply-erp (https://www.getzugee.com/water-supply-erp)
 Category: Water Operations. Tailored for: Packaged drinking water. Replaces: Pocket diary route delivery records.
 What it does: Orders, can deliveries, routes, drivers and outstanding payments for water businesses.
@@ -96,7 +96,7 @@ Questions and answers:
 - Q: Can ZUGEE Water send delivery and payment reminders on WhatsApp? A: That is coming soon. WhatsApp sending is not live in any ZUGEE product yet. Today the outstanding list tells your staff whom to remind, and we will let you know when reminders can go out from ZUGEE Water itself.
 - Q: How much does ZUGEE Water cost? A: ZUGEE Water is priced on the number of users and branches or plants, with a one-time setup fee for configuration, data migration and staff training. Tell us about your routes on a short call and we give you a clear quote.
 
-## ZUGEE Estates (id: real-estate)
+## ZUGEE Estates (demo id: real-estate)
 Page: /real-estate-crm (https://www.getzugee.com/real-estate-crm)
 Category: Real Estate. Tailored for: Real estate. Replaces: Fragmented spreadsheets + broker chats.
 What it does: Projects, properties, leads, site visits, follow-ups and bookings in one place.
@@ -119,7 +119,7 @@ Questions and answers:
 - Q: Can ZUGEE Estates send site visit reminders to buyers on WhatsApp? A: WhatsApp messages from ZUGEE Estates are coming soon, not live today. Your team still calls or messages buyers as they do now, and every visit and follow-up is recorded on the lead.
 - Q: How much does ZUGEE Estates cost? A: It depends on the number of users and branches, and there is a one-time setup fee that covers loading your projects and leads and training your team. We give you a clear quote on a short call.
 
-## ZUGEE Factory (id: manuflow)
+## ZUGEE Factory (demo id: manuflow)
 Page: /garment-manufacturing-erp (https://www.getzugee.com/garment-manufacturing-erp)
 Category: Manufacturing. Tailored for: Manufacturing. Replaces: Manual job cards + offline inventory logs.
 What it does: Job cards, BOM, cutting, job work, quality checks, packing and dispatch for garment and textile units.
@@ -142,7 +142,7 @@ Questions and answers:
 - Q: Does ZUGEE Factory work in Tamil, Hindi and other languages? A: Yes. ZUGEE Factory is available in 11 languages, so supervisors and stores staff can work in the language they read best. It also includes HR for your workers and cost insights that show what each order really cost.
 - Q: How much does ZUGEE Factory cost? A: ZUGEE Factory's price depends on the number of users and branches or units, plus a one-time setup fee for mapping your stages, bringing your data across and training staff. We share a clear quote on a short call.
 
-## ZUGEE Schools (id: school-erp)
+## ZUGEE Schools (demo id: school-erp)
 Page: /school-management-software (https://www.getzugee.com/school-management-software)
 Category: Education. Tailored for: Schools. Replaces: Paper attendance sheets + manual fee receipts.
 What it does: Students, classes, attendance, fees, exams and parent communication.
@@ -165,7 +165,7 @@ Questions and answers:
 - Q: Can ZUGEE Schools send messages to parents on WhatsApp? A: WhatsApp sending is coming soon, not live yet. Parent communication already works in ZUGEE Schools, and on your demo we show you how it reaches parents today and when WhatsApp will be added.
 - Q: How much does ZUGEE Schools cost? A: ZUGEE Schools is priced by the number of users and branches or campuses, plus a one-time setup fee for configuring classes and fees, moving your data and training staff. We share a clear quote on a short call.
 
-## ZUGEE Campus (id: college)
+## ZUGEE Campus (demo id: college)
 Page: /college-management-software (https://www.getzugee.com/college-management-software)
 Category: College ERP. Tailored for: Colleges. Replaces: Legacy college servers + manual desk fees.
 What it does: Departments, courses, faculty, attendance, fees and exams.
@@ -188,7 +188,7 @@ Questions and answers:
 - Q: Can we move away from our old college server? A: Yes. During setup we bring your student, course and fee records across from your current system's exports or Excel, and check them with your staff before you go live. Your staff keep working on the old system until the new one is ready to take over.
 - Q: How much does ZUGEE Campus cost? A: ZUGEE Campus is priced by the number of users and campuses, with a one-time setup fee for configuring your departments, migrating data and training staff. We share a clear quote on a short call.
 
-## ZUGEE Hostels (id: pg-management)
+## ZUGEE Hostels (demo id: pg-management)
 Page: /pg-management-software (https://www.getzugee.com/pg-management-software)
 Category: Hospitality. Tailored for: PGs & hostels. Replaces: Paper rent registers + cash deposit slips.
 What it does: Rooms, beds, tenants, rent, deposits and complaints for PG operators.
@@ -211,7 +211,7 @@ Questions and answers:
 - Q: Can tenants get rent reminders on WhatsApp? A: Not yet. WhatsApp reminders from ZUGEE Hostels are coming soon. Until then, the unpaid-rent list tells you exactly whom to remind each month.
 - Q: How much does ZUGEE Hostels cost? A: ZUGEE Hostels' price depends on the number of users and buildings, with a one-time setup fee for entering your rooms and tenants and training your manager. We give you a clear quote on a short call.
 
-## ZUGEE Resorts (id: resort)
+## ZUGEE Resorts (demo id: resort)
 Page: /resort-management-software (https://www.getzugee.com/resort-management-software)
 Category: Resort Suite. Tailored for: Resorts. Replaces: Separate booking calendar + desk invoices.
 What it does: Rooms, bookings, guests, check-in, check-out and services.
@@ -234,7 +234,7 @@ Questions and answers:
 - Q: Can ZUGEE Resorts send booking confirmations on WhatsApp? A: Not yet; WhatsApp sending is coming soon to ZUGEE products. Your desk shares confirmations as it does today, and the booking and advance are recorded in ZUGEE Resorts either way.
 - Q: How much does ZUGEE Resorts cost? A: ZUGEE Resorts' price depends on the number of users and properties, plus a one-time setup fee for setting up your rooms, tariffs and services and training the front desk. We share a clear quote on a short call.
 
-## ZUGEE Care (id: medical)
+## ZUGEE Care (demo id: medical)
 Page: /hospital-management-software (https://www.getzugee.com/hospital-management-software)
 Category: Healthcare. Tailored for: Hospitals & clinics. Replaces: Paper OP registers + manual billing.
 What it does: Patients, appointments, doctors, admissions, billing, pharmacy and lab reports for hospitals and clinics.

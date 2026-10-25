@@ -26,7 +26,7 @@ const statusOf = (id) => CAPABILITIES.find((c) => c.id === id)?.status;
 // ---------------------------------------------------------------------------------------------
 test("the assistant knows every product a business can buy, with its page and id", () => {
   for (const product of availableProducts()) {
-    assert.ok(prompt.includes(`## ${product.name} (id: ${product.slug})`), `${product.name} missing`);
+    assert.ok(prompt.includes(`## ${product.name} (demo id: ${product.slug})`), `${product.name} missing`);
     assert.ok(prompt.includes(`Page: /${product.pageSlug}`), `${product.name} page missing`);
   }
   for (const product of PRODUCTS.filter((p) => p.status === "coming_soon")) {
@@ -259,6 +259,28 @@ test("Gemini client: a tool call runs our code and the model's turn goes back un
   assert.equal(fr.name, "calculate_gst_invoice");
   assert.equal(fr.id, "call_1");
   assert.equal(fr.response.result.intraState.total, "₹90,624.00");
+  assert.equal(requests[0].body.toolConfig, undefined, "tool use is the model's choice unless forced");
+});
+
+test("Gemini client: forceTool makes only the first round call a tool (mode ANY)", async () => {
+  const call = { functionCall: { name: "calculate_gst_invoice", id: "c", args: { lines: [{ quantity: 3, unitPrice: 1180, gstRatePercent: 18 }], pricesIncludeGst: true } } };
+  const { requests } = await runScripted([{ body: sse(textChunk(call)) }, { body: sse(textChunk("Taxable ₹3,000.00")) }], {
+    tools: TOOL_DECLARATIONS,
+    runTool,
+    forceTool: true
+  });
+  assert.deepEqual(requests[0].body.toolConfig, { functionCallingConfig: { mode: "ANY" } });
+  assert.equal(requests[1].body.toolConfig, undefined, "the answer round is free to reply in text");
+});
+
+test("amount calculations are detected (GST/tax words plus an amount or rate); GSTR-1 questions are not", async () => {
+  const { needsGstCalculation } = await import("../lib/chatbot/tools.js");
+  for (const yes of ["Calculate GST on ₹48,500 at 18%", "My MRP is ₹1,180 including 18% GST", "Rs 500 + GST?", "invoice total for 2 items at 12%"]) {
+    assert.equal(needsGstCalculation(yes), true, yes);
+  }
+  for (const no of ["Can ZUGEE file my GSTR-1?", "Does ZUGEE make GST invoices?", "Plans for 10 users?", "I have 3 shops, 20% growth"]) {
+    assert.equal(needsGstCalculation(no), false, no);
+  }
 });
 
 test("Gemini client: endless tool calls stop after the limit", async () => {
@@ -360,6 +382,13 @@ test("demo guard strips soft pitches without the word 'demo' (live eval run 4)",
   assert.equal(stripDemoPitch("How many vans do you run each day?"), "How many vans do you run each day?");
 });
 
+test("demo guard keeps list items: the onboarding step 'Interactive Live Demo' is a fact, not a pitch (acceptance run 3)", () => {
+  const steps = "- **Discovery & Workflow Mapping**: we map your operations.\n- **Interactive Live Demo**: your product with your own examples.\n- **Go-Live & Dedicated Support**: training and launch.";
+  assert.equal(stripDemoPitch(steps), steps);
+  // A pitch sentence after the list is still removed.
+  assert.equal(stripDemoPitch(`${steps}\n\nWould you like to book a demo?`), steps);
+});
+
 test("eval checks: negation is not a Tally-sync claim; soft pitches count as demo pushes", async () => {
   const { claimsLiveTallySync, isDemoPush } = await import("../scripts/chat-eval-checks.mjs");
   assert.equal(claimsLiveTallySync("ZUGEE does not sync directly with Tally today."), false);
@@ -429,7 +458,7 @@ test("run 6 regressions: pitch before a marker paragraph is removed; Water says 
   assert.match(out, /Our team can set you up in about 14 days\./);
 
   // Product sections carry the capabilities confirmed only elsewhere.
-  const water = prompt.slice(prompt.indexOf("## ZUGEE Water (id: aqua-erp)"), prompt.indexOf("## ZUGEE Estates"));
+  const water = prompt.slice(prompt.indexOf("## ZUGEE Water (demo id: aqua-erp)"), prompt.indexOf("## ZUGEE Estates"));
   assert.match(water, /CAN'T CONFIRM for ZUGEE Water[^\n]*Part payments/);
   const hostels = prompt.slice(prompt.indexOf("## ZUGEE Hostels"), prompt.indexOf("## ZUGEE Resorts"));
   assert.ok(!/CAN'T CONFIRM for ZUGEE Hostels[^\n]*Part payments/.test(hostels), "Hostels does record part payments");
