@@ -3,7 +3,7 @@
 // and the visible answers are the same strings emitted in the FAQPage schema.
 // The homepage uses the defaults; product pages pass their own questions and heading.
 
-import { FAQ_ITEMS } from "@/lib/site-content";
+import { FAQ_ITEMS, FEATURE_ROADMAP_UPDATED } from "@/lib/site-content";
 import { ChevronDown, HelpCircle } from "lucide-react";
 
 const DEFAULT_ITEMS = FAQ_ITEMS.map((faq) => ({ q: faq.question, a: faq.answer }));
@@ -58,7 +58,7 @@ export default function FAQSection({
       {/* Roadmap freshness note (item #10) */}
       {showRoadmapNote && (
         <p className="mt-8 text-center text-[11px] text-slate-600 font-mono tracking-wider uppercase">
-          Feature roadmap updated September 2026
+          Feature roadmap updated {FEATURE_ROADMAP_UPDATED}
         </p>
       )}
 

@@ -5,7 +5,8 @@
 // scripts/chat-eval.mjs (they need a key and use the free-tier quota).
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildSystemPrompt, DEMO_MARKER, demoAlreadyOffered } from "../lib/chatbot/knowledge.js";
+import { buildSystemPrompt, DEMO_MARKER, demoAlreadyOffered, knowledgeDocs, knowledgeText, statusLabel } from "../lib/chatbot/knowledge.js";
+import { OPEN_QUESTIONS } from "../lib/chatbot/open-questions.js";
 import fs from "node:fs";
 import path from "node:path";
 import { CAPABILITIES, CAPABILITY_STATUSES, findCapabilities } from "../lib/chatbot/capabilities.js";
@@ -34,14 +35,15 @@ test("the assistant knows every product a business can buy, with its page and id
 });
 
 test("pricing: the assistant never sees a ZUGEE price (data unavailable to it by design)", () => {
-  assert.ok(!/₹|\bRs\.?\s?\d|\bINR\b/.test(prompt), "a rupee amount reached the prompt");
+  // The rules mention ₹ (formatting general calculations); the knowledge must hold no amount at all.
+  assert.ok(!/₹|\bRs\.?\s?\d|\bINR\b/.test(knowledgeText()), "a rupee amount reached the knowledge");
   const amounts = PLANS.flatMap((p) => [p.monthlyPrice, p.annualMonthlyEquivalent, p.annualPrice, p.setupFee]).filter(Boolean);
   for (const amount of amounts) {
     for (const form of [String(amount), Number(amount).toLocaleString("en-IN")]) {
       assert.ok(!prompt.includes(form), `plan amount ${form} reached the prompt`);
     }
   }
-  assert.match(prompt, /never state or estimate any ZUGEE price/);
+  assert.match(prompt, /never state or estimate any ZUGEE price/i);
 });
 
 test("marketing taglines are not treated as facts", () => {
@@ -52,7 +54,12 @@ test("marketing taglines are not treated as facts", () => {
 
 test("the response policy: answer first, statuses, GST via the tool, demo only when relevant, safety", () => {
   assert.match(prompt, /Answer the visitor's question first/);
-  for (const label of ["AVAILABLE", "PARTLY", "COMING SOON", "NOT OFFERED", "CAN'T CONFIRM"]) assert.ok(prompt.includes(label), label);
+  for (const label of ["AVAILABLE", "LIMITED", "ROLLING_OUT", "PLANNED", "NOT_OFFERED", "UNVERIFIED"]) assert.ok(prompt.includes(`- ${label}:`), label);
+  // The brief's behaviours: can't book or submit; Tanglish/Hinglish; general guidance labelled.
+  assert.match(prompt, /You cannot book demos, send messages, create accounts/);
+  assert.match(prompt, /the chat does not submit details and ask them to use the form/);
+  assert.match(prompt, /Tanglish \(Tamil in English letters\), Hindi or Hinglish/);
+  assert.match(prompt, /label it as general guidance, not a ZUGEE feature/);
   assert.match(prompt, /call the calculate_gst_invoice tool/);
   assert.match(prompt, /Never do the arithmetic yourself/);
   // Regressions (live eval, 2026-10-25): unprompted demo offers; product facts stretched; PII echoed.
@@ -71,7 +78,7 @@ test("the response policy: answer first, statuses, GST via the tool, demo only w
 // Capability registry
 // ---------------------------------------------------------------------------------------------
 const REPO = path.resolve(import.meta.dirname, "..");
-const squash = (text) => text.replace(/s+/g, " ");
+const squash = (text) => text.replace(/\s+/g, " ");
 
 test("every capability has a valid status and an answer; every non-'unverified' status is backed by evidence that still exists", () => {
   const ids = new Set();
@@ -88,7 +95,7 @@ test("every capability has a valid status and an answer; every non-'unverified' 
       assert.ok(squash(fs.readFileSync(full, "utf8")).includes(squash(quote)), `${c.id}: "${quote}" is no longer in ${file}`);
     }
     for (const slug of c.products ?? []) assert.ok(PRODUCTS.some((p) => p.slug === slug), `${c.id}: unknown product ${slug}`);
-    assert.ok(prompt.includes(`[${c.id}]`), `${c.id} is not in the prompt`);
+    assert.ok(prompt.includes(`| ${c.id} |`), `${c.id} is not in the prompt`);
   }
 });
 
@@ -431,4 +438,37 @@ test("run 6 regressions: pitch before a marker paragraph is removed; Water says 
   assert.equal(claimsPartPayments("A shop that has not paid shows up, and part payments are recorded as they come in."), true);
   assert.equal(claimsPartPayments("I can't confirm part payments for ZUGEE Water."), false);
   assert.equal(claimsPartPayments("Dues are tracked by customer and route."), false);
+});
+
+// ---------------------------------------------------------------------------------------------
+// Knowledge files (content/ask-zugee/*.md)
+// ---------------------------------------------------------------------------------------------
+test("content/ask-zugee/*.md match the site data (run `npm run knowledge:build` after any change)", async () => {
+  const { GENERATED_HEADER } = await import("../scripts/build-ask-zugee-knowledge.mjs");
+  const docs = knowledgeDocs();
+  assert.deepEqual(Object.keys(docs), ["company.md", "products.md", "pricing.md", "onboarding.md", "faq.md", "feature-status.md"]);
+  for (const [name, body] of Object.entries(docs)) {
+    const file = path.join(REPO, "content", "ask-zugee", name);
+    assert.ok(fs.existsSync(file), `${name} missing: run npm run knowledge:build`);
+    assert.equal(fs.readFileSync(file, "utf8").replace(/\r\n/g, "\n"), `${GENERATED_HEADER}${body}\n`, `${name} is out of date: run npm run knowledge:build`);
+    assert.ok(prompt.includes(body), `${name} is not what the model reads`);
+  }
+  // Sources the brief names: onboarding steps, roadmap date, plan contents, contact details.
+  assert.match(docs["onboarding.md"], /01 DISCOVERY[\s\S]*02 WALKTHROUGH[\s\S]*03 MIGRATION[\s\S]*04 LAUNCH/);
+  assert.match(docs["feature-status.md"], /Feature roadmap updated September 2026/);
+  assert.match(docs["pricing.md"], /Up to 20 Staff Logins/);
+  assert.match(docs["company.md"], /Salem, Tamil Nadu, India/);
+  // Every open question appears as an UNVERIFIED line for the founder.
+  for (const q of OPEN_QUESTIONS) assert.ok(docs["feature-status.md"].includes(`UNVERIFIED: ${q.question} — confirm with founder`));
+});
+
+test("feature statuses use the brief's labels: WhatsApp is ROLLING_OUT, e-invoice PLANNED", () => {
+  const label = (id) => statusLabel(CAPABILITIES.find((c) => c.id === id));
+  assert.equal(label("whatsapp_messaging"), "ROLLING_OUT");
+  assert.equal(label("online_payment_links"), "ROLLING_OUT");
+  assert.equal(label("e_invoice"), "PLANNED");
+  assert.equal(label("tally_direct"), "PLANNED");
+  assert.equal(label("multi_branch"), "AVAILABLE");
+  assert.equal(label("gst_return_filing"), "NOT_OFFERED");
+  assert.equal(label("e_way_bill"), "UNVERIFIED");
 });

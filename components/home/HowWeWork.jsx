@@ -8,41 +8,11 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CheckCircle2, Calendar, FileText, Rocket, Building2, ShieldCheck, Database } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
+import { ONBOARDING_STEPS } from "@/lib/site-content";
 
-const STEPS = [
-  {
-    number: "01",
-    label: "DISCOVERY",
-    title: "Discovery & Workflow Mapping",
-    description: "We map your daily business operations, branches, and staff roles to eliminate spreadsheet bottlenecks.",
-    tag: "Workflow Audit · Custom Rules",
-    icon: Building2,
-  },
-  {
-    number: "02",
-    label: "WALKTHROUGH",
-    title: "Interactive Live Demo",
-    description: "Experience your specialized ZUGEE product populated with your own trade structure and real business examples.",
-    tag: "Custom Demo · Live Validation",
-    icon: Calendar,
-  },
-  {
-    number: "03",
-    label: "MIGRATION",
-    title: "White-Glove Data Migration",
-    description: "Our engineers import your legacy customer ledgers, inventory SKUs, and balances from Excel or Tally with validation at every step.",
-    tag: "Clean Ledgers · Role Permissions",
-    icon: Database,
-  },
-  {
-    number: "04",
-    label: "LAUNCH",
-    title: "Go-Live & Dedicated Support",
-    description: "Your team receives guided mobile training. You begin billing and dispatching live with dedicated onboarding support.",
-    tag: "Live Operations · Ongoing Support",
-    icon: Rocket,
-  },
-];
+// The step copy lives in lib/site-content.js (shared with the chat assistant); icons are added here.
+const STEP_ICONS = [Building2, Calendar, Database, Rocket];
+const STEPS = ONBOARDING_STEPS.map((step, i) => ({ ...step, icon: STEP_ICONS[i] }));
 
 export default function HowWeWork() {
   const [visibleSteps, setVisibleSteps] = useState([]);
