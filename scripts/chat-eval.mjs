@@ -197,7 +197,7 @@ const CASES = [
     turns: ["Do you integrate with SAP?"],
     checks: {
       ...NO_DEMO_PUSH,
-      "says it is not confirmed / not listed": (t) => CANT_CONFIRM.test(t) || /not (listed|confirmed)|(don'?t|do not) have[^.]{0,40}(listed|integration)/i.test(t),
+      "says it is not confirmed / not listed": (t) => CANT_CONFIRM.test(t) || /not (listed|confirmed)|no [^.]{0,30}integrations? (are |is )?listed|(don'?t|do not) have[^.]{0,40}(listed|integration)/i.test(t),
       "mentions Enterprise custom ERP integrations": has(/enterprise/i),
       // "I can't confirm if ZUGEE integrates with SAP" is fine; a plain "ZUGEE integrates with SAP" is not.
       "makes no promise": lacks(/^yes\b|\bwe (integrate|support|connect) with SAP|(?<!(confirm|whether|if) (ZUGEE )?)\bintegrates with SAP/i)
