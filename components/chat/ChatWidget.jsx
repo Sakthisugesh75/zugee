@@ -125,6 +125,8 @@ export default function ChatWidget() {
   }
 
   useEffect(() => {
+    // While the chat is open Tutu stays docked on its pill instead of flying to page perches.
+    tutuRef.current?.dock?.(open);
     const pill = tutuRef.current?.shadowRoot?.querySelector(".pill");
     pill?.setAttribute("aria-expanded", String(open));
     // Opening the chat dismisses Tutu's greeting bubble, which would otherwise peek out under the panel.

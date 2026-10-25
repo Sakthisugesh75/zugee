@@ -13,6 +13,7 @@
 "use client";
 
 import { useState } from "react";
+import TutuPerch from "@/components/chat/TutuPerch";
 import {
   Activity,
   CheckCircle2,
@@ -133,6 +134,8 @@ export default function HeroProductPreview() {
         backdropFilter: "blur(16px)",
       }}
     >
+      {/* Live mascot perch: in the right gutter beside the card's top */}
+      <TutuPerch gutter say="Vanakkam! I'm Tutu. Click any row to see how it works." mood="happy" style={{ right: "-110px", top: "80px" }} />
       {/* Tab switcher */}
       <div role="tablist" aria-label="Product preview" className="grid grid-cols-2 gap-2 mb-6">
         {TABS.map((tab) => {

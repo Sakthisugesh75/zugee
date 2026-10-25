@@ -2,7 +2,9 @@
 // The live "Ask Tutu" mascot: <tutu-companion> (lib/tutu-companion.js, a Web Component loaded in the
 // browser only) with the genie artwork public/tutu-genie.webp, whose printed eyes are removed so the
 // component draws live eyes: they follow the pointer, blink, and change with the mood.
-// No perches are placed on the page, so Tutu stays docked on the "Ask Tutu" pill in the corner.
+// On the homepage Tutu flies between perches (components/chat/TutuPerch.jsx) as the visitor scrolls
+// and docks on the "Ask Tutu" pill where there is none (Pricing, footer), on phones, and while the
+// chat is open (ChatWidget calls dock()).
 //
 // `ref` receives the element: ChatWidget calls setMood() / clearMood() on it (thinking while a reply
 // streams, happy when it lands, sad on an error). Clicking Tutu or the pill calls `onOpen`.
@@ -62,6 +64,10 @@ export default function TutuCompanion({ ref, onOpen }) {
       src="/tutu-genie.webp"
       label="Ask Tutu"
       size="96"
+      idle-sleep="9000"
+      theme="auto"
+      // Header (90 px) + half of Tutu (~79 px) + a margin: Tutu never perches under the sticky header.
+      perch-top="180"
       style={{ "--tutu-z": 30 }}
     />
   );

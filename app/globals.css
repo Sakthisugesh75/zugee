@@ -509,20 +509,6 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* Subtle Levitating Mascot Animation */
-@keyframes mascotFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(0.8deg);
-  }
-}
-
-.animate-mascot-float {
-  animation: mascotFloat 5.5s ease-in-out infinite;
-}
-
 /* Hide scrollbars while maintaining scroll functionality */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -574,7 +560,6 @@ body {
     scroll-behavior: auto;
   }
 
-  .animate-mascot-float,
   .animate-fade-in,
   .animate-shake,
   .tutu-float {

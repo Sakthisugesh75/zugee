@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react";
 import { ArrowRight, CheckCircle2, Calendar, FileText, Rocket, Building2, ShieldCheck, Database } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 import { ONBOARDING_STEPS } from "@/lib/site-content";
+import TutuPerch from "@/components/chat/TutuPerch";
 
 // The step copy lives in lib/site-content.js (shared with the chat assistant); icons are added here.
 const STEP_ICONS = [Building2, Calendar, Database, Rocket];
@@ -160,7 +161,9 @@ export default function HowWeWork() {
         </div>
 
         {/* Bottom Guarantee Banner */}
-        <div className="max-w-3xl mx-auto p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 border border-cyan-400/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="relative max-w-3xl mx-auto p-5 rounded-2xl bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 border border-cyan-400/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          {/* Live mascot perch: left of the banner (absolute, so not a flex item) */}
+          <TutuPerch gutter say="We set everything up in 14 days." mood="thinking" style={{ left: "-110px", top: "50%" }} />
           <div className="flex items-center gap-3">
             <ShieldCheck className="w-6 h-6 text-cyan-400 shrink-0" />
             <div>

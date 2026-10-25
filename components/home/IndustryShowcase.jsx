@@ -6,6 +6,7 @@
 "use client";
 
 import { useState } from "react";
+import TutuPerch from "@/components/chat/TutuPerch";
 import {
   ArrowRight,
   ShieldCheck,
@@ -262,6 +263,8 @@ export default function IndustryShowcase() {
               boxShadow: `0 24px 60px -15px ${activeWorkflow.accent}20, 0 0 0 1px color-mix(in srgb, var(--color-ink) 5%, transparent), var(--theme-shadow-card-raised)`,
             }}
           >
+            {/* Live mascot perch: in the right gutter beside the card's top corner */}
+            <TutuPerch gutter say="Built for how Indian businesses work." mood="happy" style={{ right: "-110px", top: "60px" }} />
             {/* Top highlight bar */}
             <div
               className="absolute top-0 left-0 right-0 h-px"
