@@ -11,6 +11,7 @@
 
 import { useState } from "react";
 import PricingCallButton from "@/components/home/PricingCallButton";
+import { ENTERPRISE_FEATURES, PLAN_LIMITS, PRICING_MODEL, PRICING_SCOPE_CALL } from "@/lib/plan-content";
 import { Check, ChevronDown, ArrowRight, Package, Users, Building2, Wrench, ShieldCheck, Clock, Download } from "lucide-react";
 
 // What a quote depends on
@@ -48,20 +49,7 @@ const COMPARISON_MATRIX = [
   },
 ];
 
-const ENTERPRISE_FEATURES = [
-  "Unlimited branches & staff accounts",
-  "Dedicated cloud database",
-  "Custom module development & API webhooks",
-  "On-site staff & management training",
-  "Priority support — direct founder line, business hours",
-];
-
-// The headline limits of each plan, shown as a short structured list at the top of each card.
-const PLAN_LIMITS = {
-  starter: ["1 Branch", "Up to 5 Staff Logins", "14-Day White-Glove Setup"],
-  growth: ["Multiple Branches", "Up to 20 Staff Logins", "Role-Based Mobile Access & Approvals"],
-  enterprise: ["Unlimited Branches & Users", "Dedicated Cloud Database", "Custom ERP Integrations"],
-};
+// Plan limits, Enterprise features and the pricing wording are shared with the chat assistant.
 
 function PlanLimits({ planKey, accentClass = "text-cyan-400" }) {
   return (
@@ -147,7 +135,7 @@ export default function PricingSection({ plans }) {
           </PricingCallButton>
           <p className="flex items-start gap-2 max-w-xl text-center text-sm text-slate-300 leading-relaxed">
             <Clock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" aria-hidden="true" />
-            <span>10-minute scope call to check your branches &amp; staff count — receive a clear written quote on WhatsApp/Email the same day.</span>
+            <span>{PRICING_SCOPE_CALL}</span>
           </p>
         </div>
 
@@ -346,7 +334,7 @@ export default function PricingSection({ plans }) {
         <aside className="max-w-4xl mx-auto -mt-6 mb-16 p-5 sm:p-6 rounded-2xl bg-card border border-cyan-400/30 shadow-card flex items-start gap-3">
           <Wrench className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" aria-hidden="true" />
           <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
-            <strong className="text-fg">How our pricing works:</strong> You pay a one-time setup fee (covering data migration from Excel/Tally, workflow mapping, and staff training) plus a simple subscription based on your product, branches, and user count. No hidden AMC charges and 1-click data export anytime.
+            <strong className="text-fg">How our pricing works:</strong> {PRICING_MODEL}
           </p>
         </aside>
 

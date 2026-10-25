@@ -215,5 +215,25 @@ test("legal pages publish no price and no promise the company cannot keep", () =
   assert.match(terms, /Salem, Tamil Nadu/);
   const privacy = legalSources.find((p) => p.href === "/privacy").source;
   assert.match(privacy, /We do not promise that your data never leaves India/);
-  assert.match(privacy, /sets no cookies for visitors/);
+  // Since the chat assistant (2026-10-25) the site sets a guest cookie, so the policy must say exactly
+  // what it keeps instead of "no cookies".
+  assert.match(privacy, /sets no advertising, analytics or tracking cookies/);
+  assert.match(privacy, /zugee_chat_guest \(cookie\)/);
+  assert.match(privacy, /scrambled, one-way code made from your IP address/);
+  assert.ok(!/sets no cookies for visitors/.test(privacy), "the site does set a cookie for chat guests");
+});
+
+test("no source file holds mojibake (UTF-8 text saved as Windows-1252)", () => {
+  // "â€”" is an em dash, "Ã—" a multiplication sign, "Â·" a middle dot after a wrong-encoding save.
+  // These reach page titles and share previews, so fail fast.
+  const MOJIBAKE = /\u00e2\u20ac|\u00c3[\u0080-\u00bf\u2014\u2013\u201c\u201d\u2018\u2019\u2022\u2026\u0152\u0153\u0160\u0161\u0178\u017d\u017e\u0192\u02c6\u02dc\u2020\u2021\u2030\u2039\u203a\u2122]|\u00c2[\u00a0-\u00bf]/;
+  const root = path.join(import.meta.dirname, "..");
+  const walk = (dir) =>
+    fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {
+      const full = path.join(dir, e.name);
+      return e.isDirectory() ? walk(full) : /\.(js|jsx|mjs|css|txt|json)$/.test(e.name) ? [full] : [];
+    });
+  for (const file of ["app", "components", "lib", "public", "scripts"].flatMap((d) => walk(path.join(root, d)))) {
+    assert.ok(!MOJIBAKE.test(fs.readFileSync(file, "utf8")), `${path.relative(root, file)} has mojibake (re-save as UTF-8)`);
+  }
 });

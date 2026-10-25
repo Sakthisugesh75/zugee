@@ -509,20 +509,6 @@ body {
   transform: translateY(0) scale(0.98);
 }
 
-/* Subtle Levitating Mascot Animation */
-@keyframes mascotFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-12px) rotate(0.8deg);
-  }
-}
-
-.animate-mascot-float {
-  animation: mascotFloat 5.5s ease-in-out infinite;
-}
-
 /* Hide scrollbars while maintaining scroll functionality */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
@@ -559,15 +545,24 @@ body {
   animation: shake 0.4s ease-in-out;
 }
 
+/* Tutu's avatar in the chat panel header floats gently. (The live mascot on the page is
+   lib/tutu-companion.js, styled inside its own shadow DOM.) */
+@keyframes tutuFloat {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-5px) rotate(2deg); }
+}
+
+.tutu-float { animation: tutuFloat 3.2s ease-in-out infinite; }
+
 /* Respect reduced-motion preferences for CSS-driven animations */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
-  .animate-mascot-float,
   .animate-fade-in,
-  .animate-shake {
+  .animate-shake,
+  .tutu-float {
     animation: none;
   }
 }

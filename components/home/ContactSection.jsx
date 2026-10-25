@@ -7,7 +7,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import InteractiveMascot from "@/components/animations/InteractiveMascot";
+import TutuPerch from "@/components/chat/TutuPerch";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { DEFAULT_REQUEST_TYPE, REQUEST_TYPES } from "@/lib/lead-request";
 
@@ -132,13 +132,10 @@ export default function ContactSection({
         </div>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,300px)_minmax(0,1fr)] gap-10 items-center">
-          {/* Mascot — desktop only, so the form stays first on phones. The webp has its black
-              background converted to transparency, so it sits directly on the section glow. */}
-          <div aria-hidden="true" className="hidden lg:flex justify-center relative">
-            <InteractiveMascot 
-              src="/zugee-mascot-cutout.webp"
-              size={300}
-            />
+          {/* The live mascot (lib/tutu-companion.js) lands here, left of the form. Desktop only, so the
+              form stays first on phones. */}
+          <div aria-hidden="true" className="hidden lg:block relative h-[450px]">
+            <TutuPerch mood="happy" style={{ left: "50%", top: "50%" }} />
           </div>
 
           {/* Not wrapped in a reveal animation: CTAs jump straight here, so the form must be visible at once. */}

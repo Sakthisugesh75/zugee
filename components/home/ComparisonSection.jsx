@@ -9,6 +9,7 @@
 import { useState } from "react";
 import { X, CheckCircle2, AlertTriangle, ArrowRight, Zap, Database, Sparkles } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
+import TutuPerch from "@/components/chat/TutuPerch";
 
 const COMPARISON_CATEGORIES = [
   {
@@ -169,7 +170,9 @@ export default function ComparisonSection() {
         </div>
 
         {/* Dual Comparison Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+        <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 max-w-5xl mx-auto">
+          {/* Live mascot perch: right gutter beside the two cards (absolute, so not a grid cell) */}
+          <TutuPerch gutter say="No more chasing staff on the phone." mood="surprised" style={{ right: "-110px", top: "100px" }} />
           {/* LEFT: The Chaos (Scattered Apps) */}
           <div
             className="rounded-3xl p-6 sm:p-8 flex flex-col justify-between transition-all duration-300 relative overflow-hidden"

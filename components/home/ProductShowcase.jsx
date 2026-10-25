@@ -18,6 +18,7 @@ import { availableProducts, productPagePath } from "@/lib/products";
 import { getAccent } from "@/lib/product-accents";
 import { useMediaQuery } from "@/lib/use-media-query";
 import { accentInk } from "@/lib/theme";
+import TutuPerch from "@/components/chat/TutuPerch";
 
 // Only products a business can use today. Coming Soon products stay in lib/products.js and appear
 // here automatically once their status changes to "available".
@@ -311,6 +312,14 @@ export default function ProductShowcase() {
             ZENXAI-STYLE SHOWCASE STAGE (Single Active Experience)
            ======================================================== */}
         <div className="relative flex items-center justify-center min-h-[520px] px-2 lg:px-12">
+          {/* Live mascot perch: right of the product name, in the space above the cards' right edge and
+              well above the arrow (the stage itself spans almost the full width) */}
+          <TutuPerch
+            gutter
+            say={`${SHOWCASE_PRODUCTS.length} products. Swipe to find yours!`}
+            mood="wink"
+            style={{ right: "113px", top: "64px" }}
+          />
           {/* External Left Navigation Arrow (desktop only) */}
           <button
             type="button"

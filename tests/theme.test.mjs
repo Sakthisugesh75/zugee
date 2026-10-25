@@ -55,7 +55,7 @@ test("accent colours used as text are darkened through the theme variable", () =
 
 // The public site (everything under the marketing layout, plus shared pieces it renders).
 // The admin portal is not themed and is excluded.
-const PUBLIC_DIRS = ["app/(marketing)", "components/home", "components/layout", "components/legal", "components/animations"];
+const PUBLIC_DIRS = ["app/(marketing)", "components/home", "components/layout", "components/legal"];
 const PUBLIC_FILES = ["app/not-found.jsx", "components/ui/MascotLogo.jsx", "components/ui/ScrollRow.jsx"];
 
 function publicSourceFiles() {

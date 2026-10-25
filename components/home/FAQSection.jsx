@@ -3,8 +3,9 @@
 // and the visible answers are the same strings emitted in the FAQPage schema.
 // The homepage uses the defaults; product pages pass their own questions and heading.
 
-import { FAQ_ITEMS } from "@/lib/site-content";
+import { FAQ_ITEMS, FEATURE_ROADMAP_UPDATED } from "@/lib/site-content";
 import { ChevronDown, HelpCircle } from "lucide-react";
+import TutuPerch from "@/components/chat/TutuPerch";
 
 const DEFAULT_ITEMS = FAQ_ITEMS.map((faq) => ({ q: faq.question, a: faq.answer }));
 
@@ -21,8 +22,10 @@ export default function FAQSection({
     <div id="faq" className="max-w-3xl mx-auto scroll-mt-[80px]">
       {/* Section Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 mb-4">
+        <div className="relative inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 mb-4">
           <HelpCircle className="w-7 h-7 text-cyan-400" aria-hidden="true" />
+          {/* Live mascot perch: beside the "?" icon, raised so Tutu clears the heading below */}
+          <TutuPerch say="Still have a question? Ask me!" mood="happy" style={{ left: "calc(100% + 70px)", top: "-10px" }} />
         </div>
         <h2 className="text-3xl sm:text-4xl font-extrabold text-fg tracking-tight mb-3">
           {title}
@@ -58,7 +61,7 @@ export default function FAQSection({
       {/* Roadmap freshness note (item #10) */}
       {showRoadmapNote && (
         <p className="mt-8 text-center text-[11px] text-slate-600 font-mono tracking-wider uppercase">
-          Feature roadmap updated September 2026
+          Feature roadmap updated {FEATURE_ROADMAP_UPDATED}
         </p>
       )}
 

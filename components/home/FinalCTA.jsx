@@ -2,7 +2,7 @@
 "use client";
 
 import { useState } from "react";
-import InteractiveMascot from "@/components/animations/InteractiveMascot";
+import TutuPerch from "@/components/chat/TutuPerch";
 import { ArrowRight, Sparkles, Shield, Zap } from "lucide-react";
 
 export default function FinalCTA() {
@@ -44,17 +44,10 @@ export default function FinalCTA() {
             <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 via-transparent to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
             <div className="relative z-10 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-              {/* Left: Mascot */}
-              <div className="shrink-0 hidden lg:block">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-cyan-500/20 rounded-full lg:blur-3xl" />
-                  <InteractiveMascot
-                    size={140}
-                    className="relative z-10"
-                    enableProximity={true}
-                    enableMouseTracking={true}
-                  />
-                </div>
+              {/* Left: the live mascot lands here (its glow stays; Tutu itself is lib/tutu-companion.js) */}
+              <div className="shrink-0 hidden lg:block relative w-[140px] h-[210px]" aria-hidden="true">
+                <div className="absolute inset-0 bg-cyan-500/20 rounded-full lg:blur-3xl" />
+                <TutuPerch say="Shall we set up a demo?" mood="happy" style={{ left: "50%", top: "50%" }} />
               </div>
 
               {/* Right: Content */}
