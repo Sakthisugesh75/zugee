@@ -132,7 +132,7 @@ export default function ChatWidget() {
     // Opening the chat dismisses Tutu's greeting bubble, which would otherwise peek out under the panel.
     if (open) tutuRef.current?.shadowRoot?.querySelector(".bubble")?.classList.remove("show");
     if (!open) {
-      // Back to the "Ask Tutu" pill after the panel closes (Esc, Ã—, or a link on a phone).
+      // Back to the "Ask Tutu" pill after the panel closes (Esc, ×, or a link on a phone).
       if (returnFocusRef.current) {
         returnFocusRef.current = false;
         pill?.focus();
@@ -259,12 +259,12 @@ export default function ChatWidget() {
           aria-modal="true"
           aria-label="Ask Tutu, ZUGEE's chat assistant"
           onKeyDown={trapFocus}
-          className="fixed z-40 inset-x-3 bottom-3 sm:inset-x-auto sm:right-5 sm:bottom-[10.5rem] sm:w-[380px] h-[min(600px,calc(100dvh-6.5rem))] sm:h-[min(600px,calc(100dvh-13rem))] flex flex-col rounded-2xl bg-surface border border-line shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)] overflow-hidden"
+          className="fixed z-40 right-3 bottom-3 w-[min(290px,calc(100vw-1.5rem))] sm:right-5 sm:bottom-[10.5rem] sm:w-[320px] h-[min(390px,calc(100dvh-6.5rem))] sm:h-[min(440px,calc(100dvh-13rem))] flex flex-col rounded-2xl bg-surface border border-line shadow-[0_24px_60px_-12px_rgba(0,0,0,0.45)] overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between gap-3 px-4 py-3 border-b border-line bg-canvas-alt">
+          <div className="flex items-center justify-between gap-3 px-3.5 py-2.5 border-b border-line bg-canvas-alt">
             <div className="flex items-center gap-2.5 min-w-0">
-              <span className="relative w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30" aria-hidden="true">
+              <span className="relative w-8 h-8 shrink-0 rounded-full bg-gradient-to-br from-cyan-500/20 to-blue-600/20 border border-cyan-400/30" aria-hidden="true">
                 <span className="tutu-float absolute -inset-1 block">
                   <Image src="/zugee-tutu-avatar.webp" alt="" width={48} height={48} className="w-full h-full select-none" draggable={false} />
                 </span>
@@ -287,12 +287,12 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div ref={listRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-3" aria-live="polite">
+          <div ref={listRef} className="flex-1 overflow-y-auto px-3.5 py-3 space-y-2.5" aria-live="polite">
             <Bubble role="assistant">{WELCOME}</Bubble>
             {messages.length === 0 && (
-              <div className="flex flex-wrap gap-2 pt-1">
+              <div className="flex flex-wrap gap-1.5 pt-0.5">
                 {SUGGESTIONS.map((s) => (
-                  <button key={s} type="button" onClick={() => send(s)} className="px-3 py-1.5 rounded-full text-xs text-slate-200 bg-ink/[0.04] border border-ink/[0.12] hover:border-cyan-400/50 hover:text-fg text-left cursor-pointer">
+                  <button key={s} type="button" onClick={() => send(s)} className="px-2.5 py-1 rounded-full text-[11.5px] text-slate-200 bg-ink/[0.04] border border-ink/[0.12] hover:border-cyan-400/50 hover:text-fg text-left cursor-pointer">
                     {s}
                   </button>
                 ))}
@@ -345,7 +345,7 @@ export default function ChatWidget() {
               e.preventDefault();
               send(input);
             }}
-            className="border-t border-line px-3 pt-3 pb-2 bg-canvas-alt"
+            className="border-t border-line px-3 pt-2.5 pb-2 bg-canvas-alt"
           >
             <div className="flex items-end gap-2">
               <label htmlFor="chat-input" className="sr-only">Your question</label>
@@ -365,11 +365,11 @@ export default function ChatWidget() {
                     send(input);
                   }
                 }}
-                placeholder={limitReached ? "Today's free messages are used up" : "Type your questionâ€¦"}
+                placeholder={limitReached ? "Today's free messages are used up" : "Type your question…"}
                 // 16px on phones: iOS zooms the page when a smaller input is focused.
-                className="flex-1 resize-none max-h-28 bg-canvas border border-ink/[0.12] focus:border-cyan-400 rounded-xl px-3 py-2.5 text-base sm:text-sm text-fg outline-none"
+                className="flex-1 resize-none max-h-28 bg-canvas border border-ink/[0.12] focus:border-cyan-400 rounded-xl px-2.5 py-1.5 text-base sm:text-[13px] text-fg outline-none"
               />
-              <button type="submit" disabled={busy || coolingDown || limitReached || !input.trim()} aria-label="Send" className="p-2.5 rounded-xl text-white bg-gradient-to-r from-cyan-500 to-blue-600 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">
+              <button type="submit" disabled={busy || coolingDown || limitReached || !input.trim()} aria-label="Send" className="p-2 rounded-xl text-white bg-gradient-to-r from-cyan-500 to-blue-600 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">
                 <Send className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
@@ -378,17 +378,17 @@ export default function ChatWidget() {
                 {quota.remaining} of {quota.limit} free messages left today
               </p>
             )}
-            <div className="flex items-center gap-2 mt-2">
-              <button type="button" onClick={() => openDemoForm(null, router)} className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 bg-ink/[0.04] border border-ink/[0.12] hover:border-cyan-400/50 cursor-pointer">
+            <div className="flex items-center gap-2 mt-1.5">
+              <button type="button" onClick={() => openDemoForm(null, router)} className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-lg text-[11.5px] font-semibold text-slate-200 bg-ink/[0.04] border border-ink/[0.12] hover:border-cyan-400/50 cursor-pointer">
                 <CalendarCheck className="w-3.5 h-3.5 text-cyan-400" aria-hidden="true" />
                 Book a demo
               </button>
-              <a href={WHATSAPP_CHAT_URL} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-200 bg-ink/[0.04] border border-[#25D366]/40 hover:border-[#25D366]/70">
+              <a href={WHATSAPP_CHAT_URL} target="_blank" rel="noopener noreferrer" className="flex-1 inline-flex items-center justify-center gap-1.5 px-3 py-1 rounded-lg text-[11.5px] font-semibold text-slate-200 bg-ink/[0.04] border border-[#25D366]/40 hover:border-[#25D366]/70">
                 <MessageCircle className="w-3.5 h-3.5 text-[#25D366]" aria-hidden="true" />
                 WhatsApp us
               </a>
             </div>
-            <p className="mt-2 text-[10.5px] leading-snug text-slate-500">
+            <p className="mt-1.5 text-[10px] leading-snug text-slate-500">
               AI assistant · may make mistakes · don&apos;t share sensitive info.{" "}
               <Link href="/privacy" className="underline underline-offset-2 hover:text-slate-300">Privacy</Link>
             </p>
@@ -407,7 +407,7 @@ function Bubble({ role, children }) {
   return (
     <div className={`flex ${mine ? "justify-end" : "justify-start"}`}>
       <div
-        className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
+        className={`max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3 py-2 text-[13px] leading-relaxed ${
           mine ? "bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-br-md" : "bg-card border border-line text-slate-200 rounded-bl-md"
         }`}
       >
@@ -420,7 +420,7 @@ function Bubble({ role, children }) {
 const LINK_CLASS = "font-semibold text-cyan-400 underline underline-offset-2 hover:text-cyan-300";
 
 /**
- * The assistant's light formatting: **bold** for key figures, "* " bullets shown as "â€¢ ", and
+ * The assistant's light formatting: **bold** for key figures, "* " bullets shown as "• ", and
  * Markdown links (only safe targets; see lib/chatbot/format.js). Built from React elements (never
  * HTML), so model output cannot inject markup.
  */
