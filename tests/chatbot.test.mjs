@@ -101,7 +101,7 @@ test("every capability has a valid status and an answer; every non-'unverified' 
 
 test("product-specific capabilities only name products whose page backs them", () => {
   // A product listed on an entry must have its own product page among that entry's evidence.
-  const pageFile = { "core-erp": "zugee-omni", transposs: "fleetova", "aqua-erp": "aqurix", "pg-management": "roomora", resort: "resortique", "real-estate": "estatova", manuflow: "fabrova" };
+  const pageFile = { "core-erp": "zugee-omni", transposs: "fleet", "aqua-erp": "water", "pg-management": "hostels", resort: "resorts", "real-estate": "estates", manuflow: "factory" };
   for (const c of CAPABILITIES.filter((c) => c.products)) {
     for (const slug of c.products) {
       assert.ok(c.evidence.some((e) => e.file === `lib/product-pages/${pageFile[slug]}.js`), `${c.id}: ${slug} is listed without evidence from its page`);
