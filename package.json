@@ -11,7 +11,8 @@
     "test": "node --test \"tests/**/*.test.mjs\"",
     "indexnow": "node scripts/indexnow.mjs",
     "chat:eval": "node scripts/chat-eval.mjs",
-    "knowledge:build": "node scripts/build-ask-zugee-knowledge.mjs"
+    "knowledge:build": "node scripts/build-ask-zugee-knowledge.mjs",
+    "og:generate": "node scripts/generate-og-images.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.116.0",

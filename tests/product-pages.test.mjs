@@ -313,8 +313,8 @@ test("the homepage showcase and the footer link to every product page", () => {
 // ZUGEE Factory's slug move and the /products hub (2026-10-10)
 // ---------------------------------------------------------------------------
 test("ZUGEE Factory lives at /garment-manufacturing-erp and the old path redirects permanently", async () => {
-  const fabrova = PRODUCTS.find((p) => p.slug === "manuflow");
-  assert.equal(fabrova.pageSlug, "garment-manufacturing-erp");
+  const factory = PRODUCTS.find((p) => p.slug === "manuflow");
+  assert.equal(factory.pageSlug, "garment-manufacturing-erp");
   for (const { page } of pages) assert.ok(!page.related.includes("manufacturing-erp"), "a related link uses the old path");
 
   const { default: config } = await import("../next.config.mjs");

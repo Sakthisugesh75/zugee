@@ -2,7 +2,7 @@
 // The public site publishes exactly one phone number: the company's own, written once in lib/site.js
 // (PHONE_DISPLAY, PHONE_E164, WHATSAPP_CHAT_URL) and shown through those constants in the hero and
 // footer. Any other number, tel: link or wa.me link in public source fails, and the structured data
-// still carries no telephone.
+// carries that same number as the Organization's telephone and no other.
 //
 // Not covered, on purpose: the admin portal (app/admin, components/admin), the API routes
 // (app/api), the email templates (lib/email.js) and the server-only database code (lib/supabase.js,
@@ -87,10 +87,11 @@ test("no file in public/ contains the company number or a phone link", () => {
   }
 });
 
-test("the structured data carries no telephone and no phone number", () => {
+test("the structured data carries only the company's own number", () => {
+  assert.equal(organizationSchema("https://www.example.com").telephone, PHONE_E164);
   for (const schema of [organizationSchema("https://www.example.com"), homePageSchema("https://www.example.com")]) {
-    const json = JSON.stringify(schema);
-    assert.ok(!/"telephone"/.test(json), "structured data has a telephone field");
+    const json = JSON.stringify(schema).split(PHONE_E164).join("");
+    assert.equal((json.match(/"telephone"/g) || []).length, schema["@type"] === "Organization" ? 1 : 0);
     for (const pattern of PHONE_PATTERNS) {
       assert.ok(!pattern.test(json), `structured data matches ${pattern}`);
     }

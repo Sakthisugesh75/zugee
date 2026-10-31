@@ -11,7 +11,7 @@
 
 import { useState } from "react";
 import PricingCallButton from "@/components/home/PricingCallButton";
-import { ENTERPRISE_FEATURES, PLAN_LIMITS, PRICING_MODEL, PRICING_SCOPE_CALL } from "@/lib/plan-content";
+import { PLAN_INCLUDES, PRICING_MODEL, PRICING_SCOPE_CALL } from "@/lib/plan-content";
 import { Check, ChevronDown, ArrowRight, Package, Users, Building2, Wrench, ShieldCheck, Clock, Download } from "lucide-react";
 
 // What a quote depends on
@@ -49,22 +49,26 @@ const COMPARISON_MATRIX = [
   },
 ];
 
-// Plan limits, Enterprise features and the pricing wording are shared with the chat assistant.
+// Pricing wording is shared with the chat assistant (lib/plan-content.js).
 
-function PlanLimits({ planKey, accentClass = "text-cyan-400" }) {
+/** The plan's one bullet list: its limits first (in bold), then what else it includes. */
+function PlanIncludes({ planKey, accentClass = "text-cyan-400" }) {
+  const { limits, items } = PLAN_INCLUDES[planKey];
   return (
-    <ul aria-label="Plan limits" className="mb-6 rounded-xl border border-line bg-card shadow-card divide-y divide-ink/[0.06] list-none p-0">
-      {PLAN_LIMITS[planKey].map((limit) => (
-        <li key={limit} className="flex items-center gap-2 px-3.5 py-2 text-sm font-semibold text-fg">
-          <span className={`w-1.5 h-1.5 rounded-full bg-current shrink-0 ${accentClass}`} aria-hidden="true" />
-          <span>{limit}</span>
+    <ul className="space-y-3 mb-8">
+      {items.map((item, i) => (
+        <li key={item} className={`flex items-start gap-2.5 text-sm ${i < limits ? "font-semibold text-fg" : "text-slate-200"}`}>
+          <Check className={`w-4 h-4 shrink-0 mt-0.5 ${accentClass}`} aria-hidden="true" />
+          <span>{item}</span>
         </li>
       ))}
     </ul>
   );
 }
 
-export default function PricingSection({ plans }) {
+/** `headingLevel`: "h2" on the homepage; "h1" on /pricing, where this section is the page's heading. */
+export default function PricingSection({ plans, headingLevel = "h2" }) {
+  const Heading = headingLevel;
   const [openAccordions, setOpenAccordions] = useState({ starter: false, growth: false });
   const [isMatrixOpen, setIsMatrixOpen] = useState(false);
 
@@ -95,7 +99,7 @@ export default function PricingSection({ plans }) {
           <p className="text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-cyan-400 mb-3">
             Pricing
           </p>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-fg mb-4 leading-tight">
+          <Heading className="text-3xl sm:text-4xl lg:text-5xl font-black uppercase tracking-tight text-fg mb-4 leading-tight">
             Get the Best Price{" "}
             <span
               style={{
@@ -106,7 +110,7 @@ export default function PricingSection({ plans }) {
             >
               For Your Business.
             </span>
-          </h2>
+          </Heading>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl mx-auto">
             Your price depends on the product you choose, how many users and branches you have, and how much setup your business needs. Tell us a little about your business and we&apos;ll share a clear quote on a short call.
           </p>
@@ -162,17 +166,7 @@ export default function PricingSection({ plans }) {
                 For independent businesses getting started with connected workflows.
               </p>
 
-              <PlanLimits planKey="starter" />
-
-              {/* Key Features */}
-              <ul className="space-y-3 mb-8">
-                {starter.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-200">
-                    <Check className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <PlanIncludes planKey="starter" />
             </div>
 
             <div>
@@ -228,17 +222,7 @@ export default function PricingSection({ plans }) {
                 For expanding businesses with multiple branches, dispatch operations, or teams.
               </p>
 
-              <PlanLimits planKey="growth" />
-
-              {/* Key Features */}
-              <ul className="space-y-3 mb-8">
-                {growth.features.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-100 font-medium">
-                    <Check className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <PlanIncludes planKey="growth" />
             </div>
 
             <div>
@@ -294,17 +278,7 @@ export default function PricingSection({ plans }) {
                 For corporations requiring 20+ users, custom ERP integrations, or dedicated cloud instances.
               </p>
 
-              <PlanLimits planKey="enterprise" accentClass="text-violet-400" />
-
-              {/* Key Features */}
-              <ul className="space-y-3 mb-8">
-                {ENTERPRISE_FEATURES.map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm text-slate-200">
-                    <Check className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
+              <PlanIncludes planKey="enterprise" accentClass="text-violet-400" />
             </div>
 
             <div>

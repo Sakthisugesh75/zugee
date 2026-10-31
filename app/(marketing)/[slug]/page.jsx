@@ -7,6 +7,7 @@ import { notFound } from "next/navigation";
 import ProductPage from "@/components/product/ProductPage";
 import { getProductPage, productPages } from "@/lib/product-pages";
 import { ProductPageJsonLd } from "@/components/JsonLdSchema";
+import { productOgImage } from "@/lib/products";
 
 export const dynamicParams = false;
 
@@ -20,9 +21,10 @@ export async function generateMetadata({ params }) {
   if (!entry) return {};
   const { product, page } = entry;
   const path = `/${product.pageSlug}`;
+  const ogImage = productOgImage(product);
 
   // openGraph and twitter replace the root layout's objects rather than merging, so every field
-  // is repeated here. /og.jpg until each product has its own share image.
+  // is repeated here. Each product has its own share image (public/og/, npm run og:generate).
   return {
     title: { absolute: page.title },
     description: page.metaDescription,
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }) {
       description: page.metaDescription,
       url: path,
       siteName: "ZUGEE",
-      images: [{ url: "/og.jpg", width: 1200, height: 630, alt: page.title }],
+      images: [{ url: ogImage, width: 1200, height: 630, alt: page.title }],
       locale: "en_IN",
       type: "website"
     },
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }) {
       card: "summary_large_image",
       title: page.title,
       description: page.metaDescription,
-      images: ["/og.jpg"]
+      images: [ogImage]
     }
   };
 }

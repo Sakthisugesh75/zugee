@@ -150,7 +150,8 @@ function ZenXProductHero({ product }) {
           boxShadow: `0 8px 32px ${accent.glow}`,
         }}
       >
-        <span>Explore {product.name} Details</span>
+        {/* Says what kind of software the page is about, not just the brand (SEO brief). */}
+        <span>{product.linkText || `Explore ${product.name}`}</span>
         <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/cta:translate-x-1" />
       </Link>
     </div>

@@ -166,16 +166,16 @@ test("every legal page linked from the footer exists", () => {
   }
 });
 
-test("legal pages are always noindex so RAG crawlers skip legal disclaimers", () => {
+test("legal pages are indexable once confirmed, and noindex only while a draft", () => {
   const placeholders = legalSources.reduce((n, page) => n + (page.source.match(/<Confirm[\s>]/g) || []).length, 0);
   if (placeholders > 0) {
     assert.equal(LEGAL_DRAFT, true, `${placeholders} unconfirmed placeholders remain: LEGAL_DRAFT must stay true`);
   }
 
+  // SEO brief (2026-10-31): no noindex on production pages.
   const metadata = legalMetadata({ path: "/privacy", title: "Privacy Policy", description: "x" });
-  assert.equal(metadata.robots.index, false, "legal pages must be noindex");
-  assert.equal(metadata.robots.follow, true, "legal pages must be follow so link equity flows");
-  assert.equal(metadata.robots.nocache, true, "legal pages must be nocache");
+  if (LEGAL_DRAFT) assert.equal(metadata.robots.index, false, "a draft legal page must be noindex");
+  else assert.equal(metadata.robots, undefined, "a confirmed legal page must be indexable");
   // Shared legal links show their own title and URL, not the homepage's.
   assert.equal(metadata.openGraph.url, "/privacy");
   assert.equal(metadata.openGraph.title, "Privacy Policy | ZUGEE");
@@ -183,7 +183,10 @@ test("legal pages are always noindex so RAG crawlers skip legal disclaimers", ()
 
 test("the sitemap never lists a noindex page", () => {
   const sitemap = fs.readFileSync(path.join(import.meta.dirname, "..", "app", "sitemap.js"), "utf8");
-  assert.ok(!/LEGAL_PAGES|\/privacy|\/terms|\/refund/.test(sitemap), "legal pages are noindex: keep them out of the sitemap");
+  // Legal pages are listed only when they are indexable (not LEGAL_DRAFT).
+  assert.match(sitemap, /LEGAL_DRAFT\s*\?\s*\[\]/, "the sitemap must leave legal pages out while they are drafts");
+  // /case-studies is noindex until a real case study is published.
+  assert.ok(!/case-studies/.test(sitemap.replace(/^\s*\/\/.*$/gm, "")), "/case-studies must stay out of the sitemap");
   // lastmod dates are fixed strings, so they only change when the content does.
   for (const [, date] of sitemap.matchAll(/_UPDATED = "([^"]+)"/g)) assert.match(date, /^\d{4}-\d{2}-\d{2}$/);
 });

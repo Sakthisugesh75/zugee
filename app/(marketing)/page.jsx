@@ -21,6 +21,7 @@ import HowWeWork from "@/components/home/HowWeWork";
 import PricingSection from "@/components/home/PricingSection";
 import FinalCTA from "@/components/home/FinalCTA";
 import FAQSection from "@/components/home/FAQSection";
+import TestimonialsSection from "@/components/home/TestimonialsSection";
 import ContactSection from "@/components/home/ContactSection";
 import { DEMO_FORM_BUSINESS_TYPES } from "@/lib/products";
 import { PLANS } from "@/lib/pricing";
@@ -67,6 +68,10 @@ export default function HomePage() {
 
       {/* 6. PRICING — "How to get a quote" */}
       <PricingSection plans={PLAN_SUMMARIES} />
+
+      {/* Real customer quotes. Renders nothing until FEATURES.testimonials is on (lib/features.js)
+          and lib/testimonials.js holds approved quotes. */}
+      <TestimonialsSection />
 
       {/* 7. FAQ — "Common questions answered" */}
       <section className="section-wrapper bg-canvas border-b border-ink/[0.08]">

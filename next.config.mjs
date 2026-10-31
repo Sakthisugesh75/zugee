@@ -58,6 +58,14 @@ const nextConfig = {
         has: [{ type: "host", value: "www.zugee.in" }],
         destination: "https://www.getzugee.com/:path*",
         permanent: true
+      },
+      // Bare domain → www, so each page has one URL. Vercel already sends http → https, and Next.js
+      // redirects a trailing slash to the URL without one (trailingSlash is off).
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "getzugee.com" }],
+        destination: "https://www.getzugee.com/:path*",
+        permanent: true
       }
     ];
   },

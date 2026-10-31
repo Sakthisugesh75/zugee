@@ -24,7 +24,7 @@ export default function ProductCard({ product }) {
       <h3 className="text-lg font-bold text-fg mb-2">{product.name}</h3>
       <p className="text-sm text-slate-300 leading-relaxed mb-4 flex-1">{product.description}</p>
       <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-cyan-400 group-hover:text-cyan-300">
-        See {product.name}
+        {product.linkText || `See ${product.name}`}
         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
       </span>
     </Link>

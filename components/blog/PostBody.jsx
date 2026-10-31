@@ -1,0 +1,113 @@
+// components/blog/PostBody.jsx
+// Renders a post's structured blocks (lib/blog.js) as article HTML. A server component.
+
+import { Download } from "lucide-react";
+
+const H2 = "scroll-mt-28 text-2xl sm:text-3xl font-extrabold text-fg tracking-tight leading-tight mt-12 mb-4";
+const H3 = "text-lg sm:text-xl font-bold text-fg mt-8 mb-3";
+const P = "text-base sm:text-lg text-slate-300 leading-relaxed mb-5";
+
+function TemplateTable({ block }) {
+  return (
+    <div className="my-6 overflow-x-auto rounded-2xl bg-card border border-line shadow-card">
+      <table className="w-full min-w-[320px] border-collapse text-left text-sm sm:text-base">
+        <caption className="sr-only">{block.caption}</caption>
+        <thead>
+          <tr className="bg-ink/[0.04]">
+            {block.columns.map((column, i) => (
+              <th
+                key={column}
+                scope="col"
+                className={`px-4 py-3 font-bold text-fg border-b border-line ${i === 0 ? "w-1/2 sm:w-2/5" : ""}`}
+              >
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {block.rows.map((row) => (
+            <tr key={row.label} className="border-b border-line last:border-b-0">
+              <th scope="row" className={`px-4 py-2.5 align-top text-slate-200 ${row.bold ? "font-bold text-fg" : "font-medium"}`}>
+                {row.label}
+              </th>
+              {/* Empty cell to fill in, with a faint rule so the printed sheet has a line to write on. */}
+              <td className="px-4 py-2.5 border-l border-line">
+                <span className="sr-only">(blank)</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function Block({ block }) {
+  switch (block.type) {
+    case "h2":
+      return (
+        <h2 id={block.id} className={H2}>
+          {block.text}
+        </h2>
+      );
+    case "h3":
+      return <h3 className={H3}>{block.text}</h3>;
+    case "p":
+      return <p className={P}>{block.text}</p>;
+    case "ul":
+      return (
+        <ul className="list-disc pl-6 mb-6 space-y-1.5 text-base sm:text-lg text-slate-300 leading-relaxed marker:text-cyan-400">
+          {block.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      );
+    case "template":
+      return <TemplateTable block={block} />;
+    case "download":
+      return (
+        <p className="mb-8">
+          <a href={block.href} download className="btn-primary text-base !py-3 !px-7">
+            <Download className="w-4 h-4" aria-hidden="true" />
+            <span>{block.label}</span>
+          </a>
+        </p>
+      );
+    case "mistakes":
+      return (
+        <ol className="list-none p-0 m-0 mb-6 space-y-4">
+          {block.items.map((item, i) => (
+            <li key={item.title} className="flex gap-4 p-5 rounded-2xl bg-card border border-line shadow-card">
+              <span
+                className="shrink-0 w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-400 font-bold text-sm inline-flex items-center justify-center"
+                aria-hidden="true"
+              >
+                {i + 1}
+              </span>
+              <p className="text-base sm:text-lg text-slate-300 leading-relaxed m-0">
+                <strong className="text-fg font-bold">
+                  <span className="sr-only">{i + 1}. </span>
+                  {item.title}
+                </strong>{" "}
+                {item.text}
+              </p>
+            </li>
+          ))}
+        </ol>
+      );
+    default:
+      return null;
+  }
+}
+
+/** @param {{ blocks: object[] }} props */
+export default function PostBody({ blocks }) {
+  return (
+    <div>
+      {blocks.map((block, i) => (
+        <Block key={i} block={block} />
+      ))}
+    </div>
+  );
+}

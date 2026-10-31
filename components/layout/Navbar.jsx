@@ -23,7 +23,8 @@ export default function Navbar() {
   const navLinks = [
     { label: "Products", targetId: "products" },
     { label: "How it works", targetId: "how-it-works" },
-    { label: "Pricing", targetId: "pricing" },
+    // Pricing has its own page (SEO brief); the others are homepage sections.
+    { label: "Pricing", href: "/pricing" },
     { label: "FAQ", targetId: "faq" }
   ];
 
@@ -82,8 +83,8 @@ export default function Navbar() {
           {navLinks.map((link) => (
             <Link
               key={link.label}
-              href={`/#${link.targetId}`}
-              onClick={(e) => scrollToSection(e, link.targetId)}
+              href={link.href || `/#${link.targetId}`}
+              onClick={(e) => (link.href ? setMobileMenuOpen(false) : scrollToSection(e, link.targetId))}
               className="text-[13px] font-medium text-slate-300 hover:text-fg px-2.5 xl:px-3 py-1.5 rounded-full transition-all duration-200 hover:bg-cyan-500/10 hover:text-cyan-300 whitespace-nowrap"
             >
               {link.label}
@@ -138,8 +139,8 @@ export default function Navbar() {
               {navLinks.map((link) => (
                 <Link
                   key={link.label}
-                  href={`/#${link.targetId}`}
-                  onClick={(e) => scrollToSection(e, link.targetId)}
+                  href={link.href || `/#${link.targetId}`}
+                  onClick={(e) => (link.href ? setMobileMenuOpen(false) : scrollToSection(e, link.targetId))}
                   className="text-base font-medium text-slate-300 hover:text-brand py-2.5 flex items-center justify-between w-full text-left"
                 >
                   <span>{link.label}</span>

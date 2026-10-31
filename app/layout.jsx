@@ -19,7 +19,8 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"]
 });
 
-const SHARE_TITLE = "ZUGEE — Business software built for the way your business operates";
+// The homepage's <title>, so og:title and twitter:title match it (SEO brief).
+const SHARE_TITLE = "ZUGEE — CRM, ERP & GST Billing Software for Indian SMEs";
 const SHARE_DESCRIPTION = "Industry-focused CRM, ERP, billing and operations software for Indian businesses.";
 
 export const metadata = {

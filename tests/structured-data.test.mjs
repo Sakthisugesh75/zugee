@@ -9,7 +9,7 @@ import { homePageSchema, organizationSchema, serializeJsonLd } from "../lib/stru
 import { FAQ_ITEMS } from "../lib/site-content.js";
 import { PRODUCTS, availableProducts, productFullName } from "../lib/products.js";
 import { COMPANY } from "../lib/legal.js";
-import { SOCIAL_PROFILES } from "../lib/site.js";
+import { PHONE_E164, SOCIAL_PROFILES } from "../lib/site.js";
 
 const SITE = "https://www.example.com";
 const organization = organizationSchema(SITE);
@@ -48,14 +48,14 @@ test("no source file adds rating, review or offer schema", () => {
   }
 });
 
-test("the Organization carries the company's real contact details, without a phone number", () => {
+test("the Organization carries the company's real contact details", () => {
   assert.equal(organization["@type"], "Organization");
   assert.equal(organization.name, "ZUGEE");
   assert.equal(organization.url, `${SITE}/`);
   assert.equal(organization.logo, `${SITE}/icon-512.png`);
   assert.equal(organization.email, COMPANY.email);
-  // The site publishes no phone number (tests/public-contact.test.mjs).
-  assert.ok(!("telephone" in organization));
+  // The one company number, as the footer shows it (tests/public-contact.test.mjs).
+  assert.equal(organization.telephone, PHONE_E164);
   assert.equal(organization.address.addressLocality, "Salem");
   assert.equal(organization.address.addressRegion, "Tamil Nadu");
   assert.equal(organization.address.addressCountry, "IN");
@@ -95,7 +95,7 @@ test("every available product, and only those, is a SoftwareApplication", () => 
     const product = available.find((p) => productFullName(p) === app.name);
     assert.equal(app.description, product.description);
     assert.equal(app.applicationCategory, "BusinessApplication");
-    assert.equal(app.operatingSystem, "Web, Android, iOS");
+    assert.equal(app.operatingSystem, "Web, Android (browser)");
     assert.equal(app.publisher["@id"], organization["@id"]);
   }
 });

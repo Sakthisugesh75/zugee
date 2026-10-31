@@ -18,7 +18,10 @@ export default function MascotLogo({
   showSubline = true,
   preload = false,
   sublineClassName = "",
-  className = ""
+  className = "",
+  // Alt text for the "Z" icon. By default it is decorative next to the wordmark (which already
+  // says ZUGEE) and "ZUGEE" on its own; the footer passes "ZUGEE logo" (SEO brief).
+  alt
 }) {
   // Responsive sizing - larger default for better visibility
   const logoSize = size;
@@ -39,7 +42,7 @@ export default function MascotLogo({
       >
         <Image
           src="/zugee-logo-icon.png"
-          alt={showWordmark ? "" : "ZUGEE"}
+          alt={alt ?? (showWordmark ? "" : "ZUGEE")}
           width={logoSize}
           height={logoSize}
           className="object-contain transition-transform duration-300 group-hover:scale-105"

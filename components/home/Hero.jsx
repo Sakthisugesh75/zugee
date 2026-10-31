@@ -1,8 +1,10 @@
 // components/home/Hero.jsx
 // ZenXAI-inspired high-impact Hero with a two-tab product preview (owner view / field staff view).
-// Message: specialised software for each industry, set up for you in 14 days. Each ZUGEE product
+// H1: the search terms (CRM, ERP, GST billing software); the line under it: specialised software for
+// each industry, set up for you in 14 days. Each ZUGEE product
 // is separate (own login, own database), so nothing here may claim a shared login or shared data.
 
+import Link from "next/link";
 import { ArrowRight, CheckCircle2, MessageCircle } from "lucide-react";
 import SmoothScrollLink from "@/components/layout/SmoothScrollLink";
 import HeroProductPreview from "@/components/home/HeroProductPreview";
@@ -39,8 +41,9 @@ export default function Hero() {
 
         {/* Hero Headline */}
         <div className="max-w-4xl mx-auto text-center mb-6">
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[4rem] font-black tracking-tight text-fg leading-[1.08] uppercase">
-            Specialised Software for Your Industry,{" "}
+          {/* The search terms people use (CRM, ERP, GST billing software) in the page's one H1. */}
+          <h1 className="text-[2rem] sm:text-5xl md:text-[3.5rem] font-black tracking-tight text-fg leading-[1.08] uppercase">
+            Industry-Specific CRM, ERP &amp; GST Billing Software{" "}
             <span
               className="inline-block"
               style={{
@@ -49,9 +52,12 @@ export default function Hero() {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Set Up for You in 14 Days.
+              for Indian Businesses
             </span>
           </h1>
+          <p className="mt-5 text-lg sm:text-xl md:text-2xl font-bold text-fg tracking-tight">
+            Specialised software for your industry, set up for you in 14 days.
+          </p>
         </div>
 
         {/* Subhead Value Proposition */}
@@ -63,8 +69,8 @@ export default function Hero() {
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10">
-          <SmoothScrollLink
-            targetId="products"
+          <Link
+            href="/products"
             className="group/btn w-full sm:w-auto px-8 py-3.5 rounded-full text-white text-sm font-bold uppercase tracking-[0.1em] inline-flex items-center justify-center gap-2.5 transition-all duration-300 cursor-pointer shadow-[0_8px_32px_rgba(6,182,212,0.35)] hover:scale-105"
             style={{
               background: "linear-gradient(135deg, #06B6D4, #3B82F6)",
@@ -72,7 +78,7 @@ export default function Hero() {
           >
             <span>Explore All Products</span>
             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
-          </SmoothScrollLink>
+          </Link>
 
           <SmoothScrollLink
             targetId="contact"

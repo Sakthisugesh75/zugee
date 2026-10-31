@@ -3,7 +3,8 @@
 // smoothly instead of navigating.
 //
 // Contact details (location, phone/WhatsApp, support email) come from lib/site.js.
-// TODO(founder): add the registered address and founder/team names once confirmed (Phase 3).
+// The full street address comes from lib/about.js (ADDRESS) once the owner fills it in; until then
+// the city (LOCATION_DISPLAY) is shown.
 // Never add a CIN, GSTIN, address or number that isn't real.
 
 "use client";
@@ -12,13 +13,17 @@ import Link from "next/link";
 import MascotLogo from "@/components/ui/MascotLogo";
 import { availableProducts, productPagePath } from "@/lib/products";
 import { LEGAL_PAGES } from "@/lib/legal";
+import { ADDRESS, isFilled } from "@/lib/about";
 import { LOCATION_DISPLAY, PHONE_DISPLAY, PHONE_E164, SOCIAL_PROFILES, SUPPORT_EMAIL, WHATSAPP_CHAT_URL } from "@/lib/site";
 import { ArrowUp, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 
+// `href` links go to a page; `targetId` links go to a homepage section (and scroll when it is on this page).
 const SITE_LINKS = [
-  { label: "Products", targetId: "products" },
+  { label: "Products", href: "/products" },
   { label: "How it works", targetId: "how-it-works" },
-  { label: "Pricing", targetId: "pricing" },
+  { label: "Pricing", href: "/pricing" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
   { label: "FAQ", targetId: "faq" },
   { label: "Book a demo", targetId: "contact" }
 ];
@@ -60,7 +65,7 @@ export default function Footer() {
       <div className="container relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-ink/[0.15]">
           <div className="lg:col-span-2 flex flex-col gap-4">
-            <MascotLogo size={44} showWordmark={true} showSubline={true} />
+            <MascotLogo size={44} showWordmark={true} showSubline={true} alt="ZUGEE logo" />
             <p className="text-sm text-slate-300 max-w-sm mt-2 leading-relaxed">
               Industry-focused CRM, ERP, billing and operations software for Indian businesses.
             </p>
@@ -78,7 +83,7 @@ export default function Footer() {
               <ul className="flex flex-col gap-2.5 list-none p-0 m-0 text-sm">
                 <li className="flex items-center gap-2 text-slate-300">
                   <MapPin className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
-                  <span>{LOCATION_DISPLAY}</span>
+                  <span>{isFilled(ADDRESS) ? ADDRESS.join(", ") : LOCATION_DISPLAY}</span>
                 </li>
                 <li className="flex flex-wrap items-center gap-x-2 gap-y-1">
                   <Phone className="w-4 h-4 text-cyan-400 shrink-0" aria-hidden="true" />
@@ -129,10 +134,10 @@ export default function Footer() {
             <p className="text-xs font-bold text-fg uppercase tracking-wider mb-5">Quick Links</p>
             <ul className="flex flex-col gap-3 list-none p-0 m-0 text-sm">
               {SITE_LINKS.map((l) => (
-                <li key={l.targetId}>
+                <li key={l.label}>
                   <Link
-                    href={`/#${l.targetId}`}
-                    onClick={(e) => scrollToSection(e, l.targetId)}
+                    href={l.href || `/#${l.targetId}`}
+                    onClick={l.href ? undefined : (e) => scrollToSection(e, l.targetId)}
                     className={linkClass}
                   >
                     {l.label}

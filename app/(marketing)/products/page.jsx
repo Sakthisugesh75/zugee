@@ -10,16 +10,18 @@ import { PRODUCT_CATEGORIES, availableProducts } from "@/lib/products";
 import { productsHubSchema, serializeJsonLd } from "@/lib/structured-data";
 
 const TITLE = "Industry-Specific Business Software for Indian SMEs";
+// The full <title> (SEO brief). Absolute, so the layout's "%s | ZUGEE" template isn't added to it.
+const META_TITLE = "All Products | Industry-Specific Business Software by ZUGEE";
 const DESCRIPTION =
   "ZUGEE makes separate software for each industry: fleet, travel, water, real estate, garments, schools, colleges, PGs, resorts and hospitals. Book a demo.";
 
 export const metadata = {
-  title: TITLE,
+  title: { absolute: META_TITLE },
   description: DESCRIPTION,
   alternates: { canonical: "/products" },
   // openGraph and twitter replace the root layout's objects, so every field is repeated.
   openGraph: {
-    title: `${TITLE} | ZUGEE`,
+    title: META_TITLE,
     description: DESCRIPTION,
     url: "/products",
     siteName: "ZUGEE",
@@ -27,7 +29,7 @@ export const metadata = {
     locale: "en_IN",
     type: "website"
   },
-  twitter: { card: "summary_large_image", title: `${TITLE} | ZUGEE`, description: DESCRIPTION, images: ["/og.jpg"] }
+  twitter: { card: "summary_large_image", title: META_TITLE, description: DESCRIPTION, images: ["/og.jpg"] }
 };
 
 // One line under each group heading.
