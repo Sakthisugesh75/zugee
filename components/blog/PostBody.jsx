@@ -43,6 +43,41 @@ function TemplateTable({ block }) {
   );
 }
 
+/** A filled-in table (a worked example): the first cell of each row is its label, the rest are values. */
+function DataTable({ block }) {
+  return (
+    <div className="my-6 overflow-x-auto rounded-2xl bg-card border border-line shadow-card">
+      <table className="w-full min-w-[320px] border-collapse text-left text-sm sm:text-base">
+        <caption className="sr-only">{block.caption}</caption>
+        <thead>
+          <tr className="bg-ink/[0.04]">
+            {block.columns.map((column, i) => (
+              <th key={column} scope="col" className={`px-4 py-3 font-bold text-fg border-b border-line ${i > 0 ? "text-right" : ""}`}>
+                {column}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {block.rows.map((row) => (
+            <tr key={row.cells[0]} className={`border-b border-line last:border-b-0 ${row.bold ? "bg-ink/[0.03]" : ""}`}>
+              <th scope="row" className={`px-4 py-2.5 align-top ${row.bold ? "font-bold text-fg" : "font-medium text-slate-200"}`}>
+                {row.cells[0]}
+              </th>
+              {row.cells.slice(1).map((cell, i) => (
+                <td key={i} className={`px-4 py-2.5 text-right tabular-nums ${row.bold ? "font-bold text-fg" : "text-slate-300"}`}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {block.note && <p className="px-4 py-3 text-sm text-slate-400 border-t border-line m-0">{block.note}</p>}
+    </div>
+  );
+}
+
 function Block({ block }) {
   switch (block.type) {
     case "h2":
@@ -65,6 +100,8 @@ function Block({ block }) {
       );
     case "template":
       return <TemplateTable block={block} />;
+    case "table":
+      return <DataTable block={block} />;
     case "download":
       return (
         <p className="mb-8">

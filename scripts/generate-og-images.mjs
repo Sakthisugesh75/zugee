@@ -130,6 +130,12 @@ const BLOG = [
     title: 'Trip Sheet Format',
     subtitle: 'Free template for transport businesses',
   },
+  {
+    file: 'blog-truck-trip-profit-calculation.jpg',
+    chip: 'Fleet & Transport',
+    title: 'Truck Trip Profit',
+    subtitle: 'How to calculate it, with a worked example',
+  },
 ];
 for (const { file, ...spec } of BLOG) await render(spec, file);
 
