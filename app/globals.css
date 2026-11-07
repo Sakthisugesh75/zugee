@@ -554,6 +554,156 @@ body {
 
 .tutu-float { animation: tutuFloat 3.2s ease-in-out infinite; }
 
+/* Festival greeting popup (components/layout/FestiveGreeting.jsx): the diya's flame, Tutu rising in
+   and floating, the sparks a tap sets off, and Tutu's speech bubble popping in. */
+@keyframes diya-flicker {
+  0%, 100% { transform: scale(1, 1) rotate(0deg); }
+  30% { transform: scale(0.94, 1.06) rotate(-3deg); }
+  60% { transform: scale(1.04, 0.96) rotate(2deg); }
+}
+
+@keyframes festive-rise {
+  from { transform: translateY(36px) scale(0.85); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+@keyframes festive-float {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
+
+@keyframes festive-spark {
+  0% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  70% { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.3); opacity: 0; }
+}
+
+@keyframes festive-bubble {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.06); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.festive-rise { animation: festive-rise 0.7s cubic-bezier(0.2, 0.9, 0.3, 1.2) both; }
+.festive-float { animation: festive-float 3.2s ease-in-out 0.7s infinite; }
+.festive-bubble { animation: festive-bubble 0.35s ease-out both; transform-origin: 0% 100%; }
+.festive-spark {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 9999px;
+  pointer-events: none;
+  box-shadow: 0 0 10px 1px currentColor;
+  background: currentColor;
+  animation: festive-spark 1.2s cubic-bezier(0.1, 0.7, 0.3, 1) forwards;
+}
+
+/* The card pops in, the backdrop fades in */
+@keyframes festive-pop {
+  0% { transform: translateY(24px) scale(0.9); opacity: 0; }
+  60% { transform: translateY(-4px) scale(1.02); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+@keyframes festive-fade { from { opacity: 0; } to { opacity: 1; } }
+.festive-dialog[open] { animation: festive-pop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.1) both; }
+.festive-dialog[open]::backdrop { animation: festive-fade 0.4s ease-out both; }
+
+/* Tutu's celebration hop: up, a little twirl, a squashy landing */
+@keyframes festive-hop {
+  0% { transform: none; }
+  25% { transform: translateY(-22px) rotate(-10deg) scale(1.04); }
+  50% { transform: translateY(-30px) rotate(10deg) scale(1.06); }
+  78% { transform: translateY(0) scale(1.08, 0.92); }
+  90% { transform: translateY(-4px) scale(0.98, 1.02); }
+  100% { transform: none; }
+}
+.festive-hop { animation: festive-hop 0.85s ease-in-out; transform-origin: 50% 90%; }
+
+/* Toran lights twinkling one after another */
+@keyframes festive-twinkle {
+  0%, 100% { opacity: 0.35; transform: translate(-50%, 0) scale(0.85); }
+  50% { opacity: 1; transform: translate(-50%, 0) scale(1.15); }
+}
+.festive-bulb {
+  position: absolute;
+  width: 9px;
+  height: 11px;
+  border-radius: 50% 50% 45% 45%;
+  background: currentColor;
+  box-shadow: 0 0 8px 2px currentColor;
+  animation: festive-twinkle 1.4s ease-in-out infinite;
+}
+
+/* Embers rising from the diya's flame */
+@keyframes festive-ember {
+  0% { transform: translate(0, 0) scale(1); opacity: 0; }
+  15% { opacity: 1; }
+  100% { transform: translate(var(--drift), -70px) scale(0.3); opacity: 0; }
+}
+.festive-ember {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: #FDBA74;
+  box-shadow: 0 0 6px 1px #F59E0B;
+  animation: festive-ember 2.4s ease-out infinite;
+}
+
+/* The rangoli behind Tutu turns slowly */
+@keyframes festive-spin { to { transform: rotate(360deg); } }
+.festive-spin { animation: festive-spin 40s linear infinite; }
+
+/* Text lines slide up one after another */
+@keyframes festive-in {
+  from { transform: translateY(14px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.festive-in { animation: festive-in 0.6s ease-out both; }
+
+/* "Happy Diwali!" in moving gold */
+@keyframes festive-shimmer { to { background-position: 200% center; } }
+.festive-shimmer {
+  background-image: linear-gradient(90deg, #F59E0B, #FCD34D, #FB923C, #F59E0B);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: festive-shimmer 3.5s linear infinite;
+}
+/* Deeper golds on the white light-theme card, so the heading keeps its contrast */
+[data-theme="light"] .festive-shimmer {
+  background-image: linear-gradient(90deg, #B45309, #D97706, #C2410C, #B45309);
+}
+
+/* The Thank you button glows gently */
+@keyframes festive-glow {
+  0%, 100% { box-shadow: 0 8px 24px rgba(245, 158, 11, 0.35); }
+  50% { box-shadow: 0 8px 36px rgba(245, 158, 11, 0.7), 0 0 0 4px rgba(251, 191, 36, 0.18); }
+}
+.festive-glow { animation: festive-glow 2.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .festive-rise,
+  .festive-float,
+  .festive-bubble,
+  .festive-dialog[open],
+  .festive-dialog[open]::backdrop,
+  .festive-hop,
+  .festive-bulb,
+  .festive-spin,
+  .festive-in,
+  .festive-shimmer,
+  .festive-glow {
+    animation: none;
+  }
+  .festive-bulb { opacity: 0.9; }
+  .festive-spark,
+  .festive-ember {
+    display: none;
+  }
+}
+
 /* Respect reduced-motion preferences for CSS-driven animations */
 @media (prefers-reduced-motion: reduce) {
   html {

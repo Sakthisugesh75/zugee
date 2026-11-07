@@ -5,6 +5,7 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ChatWidget from "@/components/chat/ChatWidget";
+import FestiveGreeting from "@/components/layout/FestiveGreeting";
 
 export default function MarketingLayout({ children }) {
   return (
@@ -14,6 +15,8 @@ export default function MarketingLayout({ children }) {
       <Footer />
       {/* "Ask Tutu" assistant on every public page. In the layout, so a chat survives page changes. */}
       <ChatWidget />
+      {/* Festival wishes (Diwali…), once per visitor, only during the dates in lib/festive.js. */}
+      <FestiveGreeting />
     </div>
   );
 }
