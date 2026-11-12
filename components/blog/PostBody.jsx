@@ -43,16 +43,33 @@ function TemplateTable({ block }) {
   );
 }
 
-/** A filled-in table (a worked example): the first cell of each row is its label, the rest are values. */
+/**
+ * A filled-in table: the first cell of each row is its label, the rest are values. Values are right
+ * aligned (amounts) unless the block says `align: "left"` (a comparison in words). A comparison
+ * stacks on phones: each row becomes a card, every value labelled with its column, because four
+ * columns of words don't fit 375px and a sideways-scrolling table hides the last column.
+ */
 function DataTable({ block }) {
+  const comparison = block.align === "left";
+  const valueAlign = comparison ? "text-left" : "text-right tabular-nums";
+  // Phone-only stacking classes (max-sm: = below 640px).
+  const stack = comparison
+    ? {
+        table: "max-sm:min-w-0",
+        thead: "max-sm:hidden",
+        tr: "max-sm:block max-sm:py-2",
+        th: "max-sm:block max-sm:pb-1",
+        td: "max-sm:flex max-sm:gap-3 max-sm:py-1 max-sm:before:content-[attr(data-label)] max-sm:before:w-28 max-sm:before:shrink-0 max-sm:before:text-slate-400 max-sm:before:text-xs max-sm:before:pt-0.5"
+      }
+    : { table: "", thead: "", tr: "", th: "", td: "" };
   return (
     <div className="my-6 overflow-x-auto rounded-2xl bg-card border border-line shadow-card">
-      <table className="w-full min-w-[320px] border-collapse text-left text-sm sm:text-base">
+      <table className={`w-full min-w-[320px] border-collapse text-left text-sm sm:text-base ${stack.table}`}>
         <caption className="sr-only">{block.caption}</caption>
-        <thead>
+        <thead className={stack.thead}>
           <tr className="bg-ink/[0.04]">
             {block.columns.map((column, i) => (
-              <th key={column} scope="col" className={`px-4 py-3 font-bold text-fg border-b border-line ${i > 0 ? "text-right" : ""}`}>
+              <th key={column} scope="col" className={`px-4 py-3 font-bold text-fg border-b border-line ${i > 0 && !comparison ? "text-right" : ""}`}>
                 {column}
               </th>
             ))}
@@ -60,12 +77,16 @@ function DataTable({ block }) {
         </thead>
         <tbody>
           {block.rows.map((row) => (
-            <tr key={row.cells[0]} className={`border-b border-line last:border-b-0 ${row.bold ? "bg-ink/[0.03]" : ""}`}>
-              <th scope="row" className={`px-4 py-2.5 align-top ${row.bold ? "font-bold text-fg" : "font-medium text-slate-200"}`}>
+            <tr key={row.cells[0]} className={`border-b border-line last:border-b-0 ${row.bold ? "bg-ink/[0.03]" : ""} ${stack.tr}`}>
+              <th scope="row" className={`px-4 py-2.5 align-top ${row.bold ? "font-bold text-fg" : "font-medium text-slate-200"} ${stack.th}`}>
                 {row.cells[0]}
               </th>
               {row.cells.slice(1).map((cell, i) => (
-                <td key={i} className={`px-4 py-2.5 text-right tabular-nums ${row.bold ? "font-bold text-fg" : "text-slate-300"}`}>
+                <td
+                  key={i}
+                  data-label={block.columns[i + 1]}
+                  className={`px-4 py-2.5 align-top ${valueAlign} ${row.bold ? "font-bold text-fg" : "text-slate-300"} ${stack.td}`}
+                >
                   {cell}
                 </td>
               ))}

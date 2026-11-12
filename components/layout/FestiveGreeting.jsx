@@ -487,7 +487,7 @@ function FestiveScene({ lines, hint }) {
       </div>
 
       {!tapped && (
-        <p className="absolute right-3 bottom-3 max-w-[92px] text-[11px] leading-tight text-left z-10" style={{ color: "rgba(255,255,255,0.7)" }} aria-hidden="true">
+        <p className="absolute right-3 bottom-3 max-w-[92px] text-[11px] leading-tight text-left z-10" style={{ color: "#CBD5E1" }} aria-hidden="true">
           {hint}
         </p>
       )}
@@ -540,8 +540,9 @@ export default function FestiveGreeting() {
         type="button"
         onClick={close}
         aria-label="Close greeting"
-        className="absolute top-3 right-3 z-20 p-2 rounded-xl cursor-pointer hover:bg-white/10"
-        style={{ color: "rgba(255,255,255,0.8)" }}
+        className="absolute top-3 right-3 z-20 p-2 rounded-xl cursor-pointer hover:bg-amber-200/15"
+        // Always over the dark night sky, in both themes.
+        style={{ color: "#E2E8F0" }}
       >
         <X className="w-4 h-4" aria-hidden="true" />
       </button>

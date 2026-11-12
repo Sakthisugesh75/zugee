@@ -136,6 +136,12 @@ const BLOG = [
     title: 'Truck Trip Profit',
     subtitle: 'How to calculate it, with a worked example',
   },
+  {
+    file: 'blog-fleet-management-software-buyers-guide.jpg',
+    chip: 'Fleet & Transport',
+    title: 'Fleet Management Software',
+    subtitle: "A buyer's guide for Indian transport businesses",
+  },
 ];
 for (const { file, ...spec } of BLOG) await render(spec, file);
 
