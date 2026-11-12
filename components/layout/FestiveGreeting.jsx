@@ -1,17 +1,18 @@
 // components/layout/FestiveGreeting.jsx
-// A one-time festival greeting popup (Diwali and others), on every public page during the festival's
-// dates only (lib/festive.js). A native <dialog>: Esc, the close button, "Thank you" or a click
-// outside closes it, and focus is kept inside while it is open.
+// A one-time festival greeting popup (Diwali, Christmas, New Year…), on every public page during the
+// festival's dates only (lib/festive.js). A native <dialog>: Esc, the close button, "Thank you" or a
+// click outside closes it, and focus is kept inside while it is open.
 //
-// The top of the card is a festive night sky that moves on its own on every device (phones have no
-// hover or mouse to react to):
-//   - fireworks launch and burst on a small canvas; a tap anywhere in the sky launches one there
-//   - a toran of string lights twinkles along the top, a rangoli turns slowly behind Tutu
-//   - Tutu, the ZUGEE mascot, rises in above a lit diya with embers rising from its flame, floats,
-//     follows the pointer with its eyes, winks, does a celebration hop every few seconds, and on a
-//     tap laughs, hops, sparkles and says the next line of wishes
-// Same artwork and live-eye drawing as the page mascot (lib/tutu-companion.js: tutu-genie.webp,
-// whose printed eyes are removed, with eyes drawn over the visor).
+// The top of the card is a festive night-sky scene that moves on its own on every device (phones
+// have no hover or mouse to react to). Each greeting's `theme` picks the scene (THEMES below):
+//   diwali     fireworks, toran lights, a turning rangoli, a lit diya with rising embers
+//   christmas  falling snow, fairy lights, a turning snowflake, a Christmas tree, Tutu in a Santa hat
+//   newyear    fireworks, gold lights, turning rays, the new year's number, Tutu in a party hat
+// In every theme Tutu, the ZUGEE mascot, rises in, floats, follows the pointer with its eyes, winks,
+// does a celebration hop every few seconds, and on a tap laughs, hops, sparkles and says the next
+// line. A tap anywhere in the sky sends up a firework (or a burst of sparkle in the snow). Same
+// artwork and live-eye drawing as the page mascot (lib/tutu-companion.js: tutu-genie.webp, whose
+// printed eyes are removed, with eyes drawn over the visor).
 //
 // Light on phones: one canvas that runs only while the popup is open, CSS transforms and opacity
 // only, no blur filters. Visitors who prefer reduced motion get the same scene, still.
@@ -28,19 +29,70 @@ import { activeGreeting, greetingSeenKey } from "@/lib/festive";
 
 const OPEN_DELAY_MS = 1200;
 const HOP_EVERY_MS = 5200;
-const SPARK_COLOURS = ["#FBBF24", "#F97316", "#FDE68A", "#F472B6", "#22D3EE"];
-const FIREWORK_COLOURS = ["#FBBF24", "#F97316", "#F472B6", "#22D3EE", "#A78BFA", "#4ADE80", "#FDE68A"];
-const BULB_COLOURS = ["#FBBF24", "#F472B6", "#22D3EE", "#F97316", "#A3E635"];
 const BULBS = 13;
 
+// Everything that changes from one festival to the next. Class names are written out in full so
+// Tailwind finds them.
+const THEMES = {
+  diwali: {
+    sky: "radial-gradient(120% 90% at 50% 100%, #3B1D5A 0%, #1A1442 45%, #0B1026 100%)",
+    effect: "fireworks",
+    backdrop: "rangoli",
+    centrepiece: "diya",
+    hat: null,
+    bulbs: ["#FBBF24", "#F472B6", "#22D3EE", "#F97316", "#A3E635"],
+    wire: "#FDE68A",
+    sparks: ["#FBBF24", "#F97316", "#FDE68A", "#F472B6", "#22D3EE"],
+    fireworks: ["#FBBF24", "#F97316", "#F472B6", "#22D3EE", "#A78BFA", "#4ADE80", "#FDE68A"],
+    card: "border-amber-400/40 shadow-[0_24px_80px_-12px_rgba(245,158,11,0.4)]",
+    button: "from-amber-500 to-orange-600",
+    tamil: "text-amber-500 light:text-amber-700",
+    bubble: { background: "#FDE68A", color: "#1C1917" }
+  },
+  christmas: {
+    sky: "radial-gradient(120% 90% at 50% 100%, #14532D 0%, #0F2A3D 50%, #071022 100%)",
+    effect: "snow",
+    backdrop: "snowflake",
+    centrepiece: "tree",
+    hat: "santa",
+    bulbs: ["#EF4444", "#22C55E", "#FBBF24", "#F1F5F9", "#38BDF8"],
+    wire: "#BBF7D0",
+    sparks: ["#FBBF24", "#EF4444", "#F1F5F9", "#22C55E", "#FDE68A"],
+    fireworks: ["#FBBF24", "#EF4444", "#22C55E", "#F1F5F9"],
+    card: "border-red-400/40 shadow-[0_24px_80px_-12px_rgba(239,68,68,0.35)]",
+    button: "from-red-500 to-rose-600",
+    tamil: "text-red-400 light:text-red-700",
+    bubble: { background: "#FECACA", color: "#1C1917" }
+  },
+  newyear: {
+    sky: "radial-gradient(120% 90% at 50% 100%, #312E81 0%, #1E1B4B 45%, #0B1026 100%)",
+    effect: "fireworks",
+    backdrop: "rays",
+    centrepiece: "year",
+    hat: "party",
+    bulbs: ["#FBBF24", "#E2E8F0", "#A78BFA", "#22D3EE", "#F472B6"],
+    wire: "#E2E8F0",
+    sparks: ["#FBBF24", "#A78BFA", "#22D3EE", "#F472B6", "#FDE68A"],
+    fireworks: ["#FBBF24", "#A78BFA", "#22D3EE", "#F472B6", "#4ADE80", "#E2E8F0"],
+    card: "border-violet-400/40 shadow-[0_24px_80px_-12px_rgba(139,92,246,0.4)]",
+    button: "from-violet-500 to-fuchsia-600",
+    tamil: "text-violet-400 light:text-violet-700",
+    bubble: { background: "#DDD6FE", color: "#1C1917" }
+  }
+};
+
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const pick = (list) => list[Math.floor(Math.random() * list.length)];
 
 /**
- * Fireworks on a canvas filling its parent. Rockets rise from the bottom and burst into a ring of
- * sparks that fall and fade. Launches on its own every second or so; `apiRef.current.launch(x, y)`
- * sends one up to burst at that point. Does nothing when the visitor prefers reduced motion.
+ * The moving sky on a canvas filling its parent.
+ *   fireworks  rockets rise from the bottom and burst into rings of sparks that fall and fade;
+ *              one goes up every second or so
+ *   snow       flakes drift down and sway
+ * `apiRef.current.launch(x, y)` sends a firework to burst at that point (in snow, a sparkle burst).
+ * Does nothing when the visitor prefers reduced motion.
  */
-function Fireworks({ apiRef }) {
+function Sky({ apiRef, effect, colours }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -65,12 +117,24 @@ function Fireworks({ apiRef }) {
 
     const rockets = [];
     const sparks = [];
-    const pick = (list) => list[Math.floor(Math.random() * list.length)];
+    // Snowflakes are scattered on the first frame that has a size: the canvas can mount before the
+    // dialog opens, when it is still 0 px wide.
+    const flakes = [];
+    const scatterSnow = () => {
+      for (let i = 0; i < 70; i++) {
+        flakes.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          r: 0.8 + Math.random() * 2.2,
+          speed: 0.35 + Math.random() * 0.8,
+          sway: Math.random() * Math.PI * 2
+        });
+      }
+    };
 
-    const burst = (x, y) => {
-      const colour = pick(FIREWORK_COLOURS);
-      const second = pick(FIREWORK_COLOURS);
-      const count = 34;
+    const burst = (x, y, count = 34) => {
+      const colour = pick(colours);
+      const second = pick(colours);
       for (let i = 0; i < count; i++) {
         const angle = (i / count) * Math.PI * 2;
         const speed = 1.4 + Math.random() * 2.1;
@@ -90,6 +154,11 @@ function Fireworks({ apiRef }) {
     };
 
     const launch = (x, y) => {
+      if (effect === "snow") {
+        // In the snow a tap makes a sparkle burst right where the finger is.
+        burst(x ?? width / 2, y ?? height / 3, 22);
+        return;
+      }
       rockets.push({
         x: x ?? width * (0.12 + Math.random() * 0.76),
         y: height + 4,
@@ -106,14 +175,35 @@ function Fireworks({ apiRef }) {
       const step = last ? Math.min((now - last) / 16.67, 3) : 1;
       last = now;
 
-      nextLaunch -= step * 16.67;
-      if (nextLaunch <= 0) {
-        launch();
-        nextLaunch = 700 + Math.random() * 900;
+      if (effect === "fireworks") {
+        nextLaunch -= step * 16.67;
+        if (nextLaunch <= 0) {
+          launch();
+          nextLaunch = 700 + Math.random() * 900;
+        }
       }
 
       ctx.globalCompositeOperation = "source-over";
       ctx.clearRect(0, 0, width, height);
+
+      if (effect === "snow" && !flakes.length && width > 0) scatterSnow();
+      if (flakes.length) {
+        ctx.fillStyle = "#E2E8F0";
+        for (const f of flakes) {
+          f.sway += 0.02 * step;
+          f.y += f.speed * step;
+          f.x += Math.sin(f.sway) * 0.35 * step;
+          if (f.y > height + 4) {
+            f.y = -4;
+            f.x = Math.random() * width;
+          }
+          ctx.globalAlpha = 0.55 + f.r / 6;
+          ctx.beginPath();
+          ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
       ctx.globalCompositeOperation = "lighter";
 
       for (let i = rockets.length - 1; i >= 0; i--) {
@@ -161,23 +251,23 @@ function Fireworks({ apiRef }) {
       observer.disconnect();
       apiRef.current = null;
     };
-  }, [apiRef]);
+  }, [apiRef, effect, colours]);
 
   return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true" />;
 }
 
-/** String lights (a toran) hanging in a gentle curve across the top of the sky. */
-function Toran() {
+/** String lights hanging in a gentle curve across the top of the sky. */
+function Lights({ colours, wire }) {
   const bulbs = Array.from({ length: BULBS }, (_, i) => {
     const t = (i + 0.5) / BULBS;
-    // The same quadratic curve as the wire below: 6px at the ends, 26px in the middle.
+    // The same quadratic curve as the wire below: low at the ends, sagging in the middle.
     const sag = (1 - t) * (1 - t) * 6 + 2 * (1 - t) * t * 46 + t * t * 6;
-    return { left: `${t * 100}%`, top: sag + 2, colour: BULB_COLOURS[i % BULB_COLOURS.length], delay: `${(i * 0.12).toFixed(2)}s` };
+    return { left: `${t * 100}%`, top: sag + 2, colour: colours[i % colours.length], delay: `${(i * 0.12).toFixed(2)}s` };
   });
   return (
     <div className="absolute inset-x-0 top-0 h-12 pointer-events-none" aria-hidden="true">
       <svg viewBox="0 0 100 40" preserveAspectRatio="none" className="absolute inset-0 w-full h-10">
-        <path d="M0 6 Q50 46 100 6" fill="none" stroke="#FDE68A" strokeOpacity="0.45" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />
+        <path d="M0 6 Q50 46 100 6" fill="none" stroke={wire} strokeOpacity="0.45" strokeWidth="0.6" vectorEffect="non-scaling-stroke" />
       </svg>
       {bulbs.map((b, i) => (
         <span key={i} className="festive-bulb" style={{ left: b.left, top: `${b.top}px`, color: b.colour, animationDelay: b.delay }} />
@@ -186,10 +276,43 @@ function Toran() {
   );
 }
 
-/** A simple rangoli: petals and dots in rings, turning slowly behind Tutu. */
-function Rangoli({ className = "" }) {
+/** The large shape turning slowly behind Tutu: a rangoli, a snowflake or rays of light. */
+function Backdrop({ kind }) {
+  if (kind === "snowflake") {
+    return (
+      <svg viewBox="-100 -100 200 200" className="festive-spin w-full h-full" aria-hidden="true">
+        <g stroke="#BAE6FD" strokeOpacity="0.4" strokeWidth="3" strokeLinecap="round" fill="none">
+          {Array.from({ length: 6 }, (_, i) => (
+            <g key={i} transform={`rotate(${i * 60})`}>
+              <path d="M0 0 V-88" />
+              <path d="M0 -36 L-16 -52 M0 -36 L16 -52" />
+              <path d="M0 -62 L-14 -76 M0 -62 L14 -76" />
+            </g>
+          ))}
+          <circle r="16" />
+        </g>
+      </svg>
+    );
+  }
+  if (kind === "rays") {
+    return (
+      <svg viewBox="-100 -100 200 200" className="festive-spin w-full h-full" aria-hidden="true">
+        <g fill="#FBBF24" fillOpacity="0.12">
+          {Array.from({ length: 12 }, (_, i) => (
+            <path key={i} d="M0 0 L-9 -96 L9 -96 Z" transform={`rotate(${i * 30})`} />
+          ))}
+        </g>
+        <g fill="#FDE68A" fillOpacity="0.55">
+          {Array.from({ length: 24 }, (_, i) => (
+            <circle key={i} cx="0" cy="-84" r="2" transform={`rotate(${i * 15 + 7.5})`} />
+          ))}
+        </g>
+      </svg>
+    );
+  }
+  // rangoli: petals and dots in rings
   return (
-    <svg viewBox="-100 -100 200 200" className={className} aria-hidden="true">
+    <svg viewBox="-100 -100 200 200" className="festive-spin w-full h-full" aria-hidden="true">
       <g fill="none" strokeWidth="2">
         {Array.from({ length: 12 }, (_, i) => (
           <ellipse key={`p${i}`} cx="0" cy="-58" rx="13" ry="30" stroke="#F59E0B" strokeOpacity="0.55" transform={`rotate(${i * 30})`} />
@@ -243,6 +366,35 @@ function Diya({ className = "" }) {
   );
 }
 
+/** A small decorated Christmas tree with a glowing star and twinkling baubles. */
+function ChristmasTree({ className = "" }) {
+  const baubles = [
+    { cx: 50, cy: 58, fill: "#EF4444", delay: "0s" },
+    { cx: 70, cy: 64, fill: "#FBBF24", delay: "0.4s" },
+    { cx: 44, cy: 80, fill: "#38BDF8", delay: "0.8s" },
+    { cx: 64, cy: 86, fill: "#EF4444", delay: "1.2s" },
+    { cx: 78, cy: 92, fill: "#FBBF24", delay: "0.6s" },
+    { cx: 36, cy: 98, fill: "#F472B6", delay: "1s" }
+  ];
+  return (
+    <svg viewBox="0 0 120 120" className={className} aria-hidden="true">
+      <circle cx="60" cy="22" r="18" fill="#FDE68A" fillOpacity="0.25" className="motion-safe:animate-pulse" />
+      <rect x="53" y="100" width="14" height="14" rx="2" fill="#92400E" />
+      <path d="M60 22 L84 56 H72 L92 84 H78 L100 106 H20 L42 84 H28 L48 56 H36 Z" fill="#16A34A" />
+      <path d="M60 22 L84 56 H72 L92 84 H78 L100 106 H60 Z" fill="#15803D" />
+      <path d="M38 70 Q60 80 84 66 M30 94 Q60 104 92 90" fill="none" stroke="#FDE68A" strokeWidth="2" strokeOpacity="0.8" />
+      {baubles.map((b, i) => (
+        <circle key={i} cx={b.cx} cy={b.cy} r="4" fill={b.fill} className="motion-safe:animate-pulse" style={{ animationDelay: b.delay }} />
+      ))}
+      <path
+        d="M60 8 L64 18 L75 18 L66 24 L69 35 L60 28 L51 35 L54 24 L45 18 L56 18 Z"
+        fill="#FBBF24"
+        className="origin-[60px_22px] motion-safe:animate-[diya-flicker_2s_ease-in-out_infinite]"
+      />
+    </svg>
+  );
+}
+
 /** Tutu's eyes and mouth for each mood, in the visor's own coordinates (from lib/tutu-companion.js). */
 function Face({ mood }) {
   if (mood === "surprised") {
@@ -282,8 +434,34 @@ function Face({ mood }) {
   );
 }
 
+/** A hat on Tutu's head, in tutu-genie.webp's coordinates (364 x 597), tilted with the head. */
+function Hat({ kind }) {
+  if (kind === "santa") {
+    return (
+      <g transform="translate(176 92) rotate(16)">
+        <path d="M-82 0 C-66 -70 -10 -128 58 -122 C40 -104 52 -58 84 0 Z" fill="#DC2626" />
+        <path d="M-82 0 C-66 -70 -10 -128 58 -122 C30 -112 -20 -70 -40 0 Z" fill="#EF4444" />
+        <rect x="-96" y="-16" width="192" height="34" rx="17" fill="#F1F5F9" />
+        <circle cx="62" cy="-122" r="20" fill="#F1F5F9" />
+      </g>
+    );
+  }
+  if (kind === "party") {
+    return (
+      <g transform="translate(184 84) rotate(16)">
+        <path d="M-56 0 L4 -150 L60 0 Z" fill="#7C3AED" />
+        <path d="M-44 -30 L48 -30 M-31 -62 L36 -62 M-18 -94 L24 -94 M-6 -124 L12 -124" stroke="#FBBF24" strokeWidth="9" strokeLinecap="round" />
+        <rect x="-66" y="-10" width="132" height="22" rx="11" fill="#FBBF24" />
+        <circle cx="4" cy="-154" r="15" fill="#F472B6" />
+      </g>
+    );
+  }
+  return null;
+}
+
 /** The night-sky scene at the top of the card, with Tutu giving the wishes. */
-function FestiveScene({ lines, hint }) {
+function FestiveScene({ greeting, theme }) {
+  const lines = greeting.tutuLines;
   const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
   const [mood, setMood] = useState("surprised");
   const [lineIndex, setLineIndex] = useState(0);
@@ -292,7 +470,7 @@ function FestiveScene({ lines, hint }) {
   const tutuRef = useRef(null);
   const hopRef = useRef(null);
   const lookRef = useRef(null);
-  const fireworksRef = useRef(null);
+  const skyRef = useRef(null);
   const moodTimer = useRef(null);
   const sparkId = useRef(0);
 
@@ -306,7 +484,7 @@ function FestiveScene({ lines, hint }) {
         id: ++sparkId.current,
         dx: Math.cos(angle) * distance,
         dy: Math.sin(angle) * distance,
-        colour: SPARK_COLOURS[i % SPARK_COLOURS.length]
+        colour: theme.sparks[i % theme.sparks.length]
       };
     });
     setSparks((current) => [...current, ...fresh]);
@@ -376,6 +554,8 @@ function FestiveScene({ lines, hint }) {
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", look);
     };
+    // The theme never changes while the popup is open.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const pokeTutu = () => {
@@ -386,26 +566,22 @@ function FestiveScene({ lines, hint }) {
     burst();
   };
 
-  /** A tap anywhere in the sky (not on Tutu) sends a firework up to burst there. */
+  /** A tap anywhere in the sky (not on Tutu) sends a firework (or a sparkle) to that point. */
   const tapSky = (event) => {
     if (event.target.closest("button")) return;
     const box = event.currentTarget.getBoundingClientRect();
-    fireworksRef.current?.launch(event.clientX - box.left, event.clientY - box.top);
+    skyRef.current?.launch(event.clientX - box.left, event.clientY - box.top);
     setTapped(true);
   };
 
   return (
-    <div
-      onPointerDown={tapSky}
-      className="relative h-[268px] overflow-hidden rounded-t-3xl select-none"
-      style={{ background: "radial-gradient(120% 90% at 50% 100%, #3B1D5A 0%, #1A1442 45%, #0B1026 100%)" }}
-    >
-      <Fireworks apiRef={fireworksRef} />
-      <Toran />
+    <div onPointerDown={tapSky} className="relative h-[268px] overflow-hidden rounded-t-3xl select-none" style={{ background: theme.sky }}>
+      <Sky apiRef={skyRef} effect={theme.effect} colours={theme.fireworks} />
+      <Lights colours={theme.bulbs} wire={theme.wire} />
 
-      {/* Rangoli, turning slowly behind Tutu */}
+      {/* Turning slowly behind Tutu */}
       <div className="absolute left-1/2 top-[52%] -translate-x-1/2 -translate-y-1/2 w-[230px] h-[230px] pointer-events-none" aria-hidden="true">
-        <Rangoli className="festive-spin w-full h-full" />
+        <Backdrop kind={theme.backdrop} />
       </div>
 
       {/* Speech bubble, popping in again with each new line. Fixed colours, so it reads the same in
@@ -413,8 +589,8 @@ function FestiveScene({ lines, hint }) {
       <p
         key={lineIndex}
         aria-live="polite"
-        className="festive-bubble absolute left-[calc(50%+46px)] top-12 z-10 max-w-[124px] px-3 py-2 rounded-2xl rounded-bl-sm text-left text-xs sm:text-[13px] font-bold leading-snug shadow-[0_6px_20px_rgba(245,158,11,0.35)]"
-        style={{ background: "#FDE68A", color: "#1C1917" }}
+        className="festive-bubble absolute left-[calc(50%+46px)] top-12 z-10 max-w-[min(124px,calc(50%-58px))] px-3 py-2 rounded-2xl rounded-bl-sm text-left text-xs sm:text-[13px] font-bold leading-snug shadow-[0_6px_20px_rgba(0,0,0,0.3)]"
+        style={theme.bubble}
       >
         {lines[lineIndex]}
       </p>
@@ -426,10 +602,11 @@ function FestiveScene({ lines, hint }) {
             type="button"
             onClick={pokeTutu}
             onPointerEnter={() => mood === "happy" && flashMood("wink", 700)}
-            aria-label="Tap Tutu for another Diwali wish"
+            aria-label={`Tap Tutu for another wish: ${greeting.heading}`}
             className="festive-float block rounded-3xl cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-400"
           >
-            <svg viewBox="0 0 364 597" className="h-[160px] w-auto" aria-hidden="true">
+            {/* The viewBox has room above the head for a hat. */}
+            <svg viewBox="0 -40 364 637" className="h-[170px] w-auto overflow-visible" aria-hidden="true">
               <defs>
                 <clipPath id={`${uid}-visor`}>
                   <ellipse cx="0" cy="0" rx="99.4" ry="59.9" />
@@ -460,6 +637,7 @@ function FestiveScene({ lines, hint }) {
                   </g>
                 </g>
               </g>
+              <Hat kind={theme.hat} />
             </svg>
           </button>
         </div>
@@ -472,23 +650,35 @@ function FestiveScene({ lines, hint }) {
         ))}
       </div>
 
-      {/* Tutu presents the diya; embers rise from its flame */}
-      <div className="absolute left-1/2 bottom-1 -translate-x-1/2 w-24 h-20 z-[6] pointer-events-none" aria-hidden="true">
-        {[
-          { left: "46%", delay: "0s", drift: "-10px" },
-          { left: "52%", delay: "0.5s", drift: "8px" },
-          { left: "49%", delay: "1s", drift: "-4px" },
-          { left: "54%", delay: "1.5s", drift: "12px" },
-          { left: "47%", delay: "1.9s", drift: "-14px" }
-        ].map((e, i) => (
-          <span key={i} className="festive-ember" style={{ left: e.left, top: "14px", animationDelay: e.delay, "--drift": e.drift }} />
-        ))}
-        <Diya className="w-full h-full" />
-      </div>
+      {/* What Tutu presents: the diya (with rising embers), the tree, or the new year's number */}
+      {theme.centrepiece === "diya" && (
+        <div className="absolute left-1/2 bottom-1 -translate-x-1/2 w-24 h-20 z-[6] pointer-events-none" aria-hidden="true">
+          {[
+            { left: "46%", delay: "0s", drift: "-10px" },
+            { left: "52%", delay: "0.5s", drift: "8px" },
+            { left: "49%", delay: "1s", drift: "-4px" },
+            { left: "54%", delay: "1.5s", drift: "12px" },
+            { left: "47%", delay: "1.9s", drift: "-14px" }
+          ].map((e, i) => (
+            <span key={i} className="festive-ember" style={{ left: e.left, top: "14px", animationDelay: e.delay, "--drift": e.drift }} />
+          ))}
+          <Diya className="w-full h-full" />
+        </div>
+      )}
+      {theme.centrepiece === "tree" && (
+        <div className="absolute left-[calc(50%-118px)] bottom-1 w-24 h-24 z-[4] pointer-events-none" aria-hidden="true">
+          <ChristmasTree className="w-full h-full" />
+        </div>
+      )}
+      {theme.centrepiece === "year" && greeting.year && (
+        <p className="absolute inset-x-0 bottom-1 z-[6] text-center text-4xl font-black tracking-tight pointer-events-none" aria-hidden="true">
+          <span className="festive-shimmer">{greeting.year}</span>
+        </p>
+      )}
 
       {!tapped && (
         <p className="absolute right-3 bottom-3 max-w-[92px] text-[11px] leading-tight text-left z-10" style={{ color: "#CBD5E1" }} aria-hidden="true">
-          {hint}
+          {greeting.tutuHint}
         </p>
       )}
     </div>
@@ -523,6 +713,7 @@ export default function FestiveGreeting() {
 
   if (!greeting) return null;
 
+  const theme = THEMES[greeting.theme] || THEMES.diwali;
   const close = () => dialogRef.current?.close();
   // Text lines slide up one after another once the card has popped in.
   const stagger = (i) => ({ animationDelay: `${0.35 + i * 0.12}s` });
@@ -534,7 +725,7 @@ export default function FestiveGreeting() {
       onClose={() => setGreeting(null)}
       // A click on the backdrop lands on the <dialog> itself; clicks inside land on its children.
       onClick={(e) => e.target === e.currentTarget && close()}
-      className="festive-dialog m-auto w-[min(92vw,420px)] max-h-[94dvh] overflow-y-auto overflow-x-hidden p-0 rounded-3xl bg-surface text-fg border border-amber-400/40 shadow-[0_24px_80px_-12px_rgba(245,158,11,0.4)] backdrop:bg-black/65"
+      className={`festive-dialog m-auto w-[min(92vw,420px)] max-h-[94dvh] overflow-y-auto overflow-x-hidden p-0 rounded-3xl bg-surface text-fg border backdrop:bg-black/65 ${theme.card}`}
     >
       <button
         type="button"
@@ -547,21 +738,13 @@ export default function FestiveGreeting() {
         <X className="w-4 h-4" aria-hidden="true" />
       </button>
 
-      {greeting.tutuLines?.length ? (
-        <FestiveScene lines={greeting.tutuLines} hint={greeting.tutuHint} />
-      ) : (
-        <Diya className="w-28 h-24 mx-auto mt-8" />
-      )}
+      {greeting.tutuLines?.length ? <FestiveScene greeting={greeting} theme={theme} /> : <Diya className="w-28 h-24 mx-auto mt-8" />}
 
       <div className="px-6 pt-5 pb-7 sm:px-8 text-center">
-        <p lang="ta" className="festive-in text-sm sm:text-base font-semibold text-amber-500 light:text-amber-700" style={stagger(0)}>
+        <p lang="ta" className={`festive-in text-sm sm:text-base font-semibold ${theme.tamil}`} style={stagger(0)}>
           {greeting.tamil}
         </p>
-        <h2
-          id="festive-greeting-title"
-          className="festive-in mt-2 text-3xl sm:text-4xl font-black tracking-tight"
-          style={stagger(1)}
-        >
+        <h2 id="festive-greeting-title" className="festive-in mt-2 text-3xl sm:text-4xl font-black tracking-tight" style={stagger(1)}>
           <span className="festive-shimmer">{greeting.heading}</span>
         </h2>
         <p className="festive-in mt-3 text-base text-slate-300 leading-relaxed" style={stagger(2)}>
@@ -575,7 +758,7 @@ export default function FestiveGreeting() {
           <button
             type="button"
             onClick={close}
-            className="festive-glow mt-5 w-full sm:w-auto px-8 py-3 rounded-full text-sm font-bold text-white bg-gradient-to-r from-amber-500 to-orange-600 hover:brightness-110 cursor-pointer"
+            className={`festive-glow mt-5 w-full sm:w-auto px-8 py-3 rounded-full text-sm font-bold text-white bg-gradient-to-r hover:brightness-110 cursor-pointer ${theme.button}`}
           >
             {greeting.button}
           </button>

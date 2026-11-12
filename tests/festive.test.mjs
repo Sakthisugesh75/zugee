@@ -36,3 +36,22 @@ test("the Diwali greeting shows during Diwali and not outside it", () => {
 test("each greeting is remembered under its own key", () => {
   assert.equal(greetingSeenKey({ id: "diwali-2026" }), "zugee-greeting-diwali-2026");
 });
+
+test("every greeting uses a known theme and the windows never overlap", async () => {
+  const { FESTIVE_THEMES } = await import("../lib/festive.js");
+  for (const g of FESTIVE_GREETINGS) assert.ok(FESTIVE_THEMES.includes(g.theme), `${g.id}: unknown theme ${g.theme}`);
+  const sorted = [...FESTIVE_GREETINGS].sort((a, b) => a.from.localeCompare(b.from));
+  for (let i = 1; i < sorted.length; i++) {
+    assert.ok(sorted[i].from > sorted[i - 1].to, `${sorted[i - 1].id} and ${sorted[i].id} overlap`);
+  }
+});
+
+test("Christmas and New Year switch on and off by themselves", () => {
+  assert.equal(activeGreeting(new Date("2026-12-22T23:59:00+05:30")), null);
+  assert.equal(activeGreeting(new Date("2026-12-23T00:00:00+05:30"))?.id, "christmas-2026");
+  assert.equal(activeGreeting(new Date("2026-12-25T10:00:00+05:30"))?.id, "christmas-2026");
+  assert.equal(activeGreeting(new Date("2026-12-28T10:00:00+05:30")), null);
+  assert.equal(activeGreeting(new Date("2026-12-31T10:00:00+05:30"))?.id, "new-year-2027");
+  assert.equal(activeGreeting(new Date("2027-01-01T00:05:00+05:30"))?.id, "new-year-2027");
+  assert.equal(activeGreeting(new Date("2027-01-04T00:00:00+05:30")), null);
+});
